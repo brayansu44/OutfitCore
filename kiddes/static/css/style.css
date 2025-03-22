@@ -1,0 +1,101 @@
+.estado {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+    min-width: 90px;
+}
+
+.completo {
+    background-color: #D4EDDA; 
+    color: #155724; 
+    border: 1px solid #C3E6CB;
+}
+
+.incompleto {
+    background-color: #FFF3CD; 
+    color: #856404; 
+    border: 1px solid #FFEEBA;
+}
+
+.completo {
+    background-color: #D4EDDA; 
+    color: #155724; 
+    border: 1px solid #C3E6CB;
+}
+
+.agotado {
+    background-color: #F8D7DA; 
+    color: #721C24; 
+    border: 1px solid #F5C6CB;
+    font-weight: bold; 
+    padding: 5px 10px; 
+    border-radius: 5px; 
+    text-align: center;
+}     
+
+.pendiente {
+    background-color: #FFF3CD; 
+    color: #856404; 
+    border: 1px solid #FFEEBA;
+}
+
+.completada {
+    background-color: #D4EDDA; 
+    color: #155724; 
+    border: 1px solid #C3E6CB;
+}
+
+.cancelada {
+    background-color: #F8D7DA; 
+    color: #721C24; 
+}
+
+.modal-body {
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
+    white-space: normal; 
+    max-height: 400px; 
+    overflow-y: auto; 
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+}
+
+.color-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Tooltip para mostrar el nombre del color */
+.color-circle::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    display: none;
+}
+
+.color-circle:hover::after {
+    display: block;
+}
+
+.hover-effect:hover {
+    background-color: #f1f1f1;  /* Cambia el color de fondo al pasar el mouse */
+    cursor: pointer;            /* Cambia el cursor para mostrar que es clickeable */
+}

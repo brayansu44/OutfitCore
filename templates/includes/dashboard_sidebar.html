@@ -1,0 +1,118 @@
+{% load static %}
+<!--sidebar wrapper -->
+<div class="sidebar-wrapper" data-simplebar="true">
+    <div class="sidebar-header">
+        {% if empresa_activa %}
+            <div>
+                <img src="{{ empresa_activa.logo.url }}" class="logo-icon" alt="logo icon">
+            </div>
+            <div>
+                <h4 class="logo-text">{{ empresa_activa.razon_social }}</h4>
+            </div>
+            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+            </div>
+        {% else %}
+            <div>
+                <h4 class="logo-text">Administrador</h4>
+            </div>
+            <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
+            </div>
+        {% endif %}
+    </div>
+    <!--navigation-->
+    <ul class="metismenu" id="menu">
+        <li>
+            <a href="{% url 'home' %}">
+                <div class="parent-icon"><i class='bx bx-home-circle'></i></div>
+                <div class="menu-title">Dashboard</div>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'proveedores' %}">
+                <div class="parent-icon"><i class="bx bx-category"></i>
+                </div>
+                <div class="menu-title">Proveedores</div>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="has-arrow">
+                <div class="parent-icon"><i class='bx bx-cookie'></i>
+                </div>
+                <div class="menu-title">Telas</div>
+            </a>
+            <ul>
+                <li> <a href="{% url 'telas' %}"><i class="bx bx-right-arrow-alt"></i>Telas</a> </li>
+                <li> <a href="{% url 'rollos_tela' %}"><i class="bx bx-right-arrow-alt"></i>Rollos de tela</a> </li>
+                <li> <a href="{% url 'ordenes_produccion' %}"><i class="bx bx-right-arrow-alt"></i>Órdenes de produccion</a> </li>
+                <li> <a href="{% url 'cortes_tela' %}"><i class="bx bx-right-arrow-alt"></i>Cortes de tela</a> </li>
+                <li> <a href="{% url 'tallas_corte' %}"><i class="bx bx-right-arrow-alt"></i>Tallas de corte</a> </li>
+                <li> <a href="{% url 'componentes_corte' %}"><i class="bx bx-right-arrow-alt"></i>Piezas de corte</a> </li>
+            </ul>
+        </li>
+        <li>
+            <a href="{% url 'productos' %}">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title">Productos</div>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'empresas' %}">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title">Empresas</div>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'locales' %}">
+                <div class="parent-icon"><i class='bx bx-cart'></i>
+                </div>
+                <div class="menu-title">Locales</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+                </div>
+                <div class="menu-title">Bodega</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"><i class="bx bx-repeat"></i>
+                </div>
+                <div class="menu-title">Compras</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"> <i class="bx bx-donate-blood"></i>
+                </div>
+                <div class="menu-title">Movimientos</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"><i class='bx bx-message-square-edit'></i>
+                </div>
+                <div class="menu-title">Ventas</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"><i class="bx bx-grid-alt"></i>
+                </div>
+                <div class="menu-title">Cuentas</div>
+            </a>
+        </li>
+        <li>
+            <a href="#">
+                <div class="parent-icon"><i class="bx bx-lock"></i>
+                </div>
+                <div class="menu-title">Nómina</div>
+            </a>
+        </li>
+    </ul>
+    <!--end navigation-->
+</div>
+<!--end sidebar wrapper -->

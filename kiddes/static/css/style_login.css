@@ -1,0 +1,45 @@
+.invalid-feedback {
+    display: none;
+    width: 100%;
+    margin-top: 0.85rem;
+    font-size: 0.875em;
+    color: #dc3545;
+}
+
+.was-validated :invalid ~ .invalid-feedback,
+.was-validated :invalid ~ .invalid-tooltip,
+.is-invalid ~ .invalid-feedback,
+.is-invalid ~ .invalid-tooltip {
+    display: block;
+}
+.form-check-inline .form-check-input ~ .invalid-feedback {
+    margin-left: 0.5em;
+}
+
+/* Evita que el checkbox cambie de color después de la validación */
+.form-check-input {
+    border-color: #ced4da; /* Color de borde predeterminado */
+    background-color: #fff; /* Fondo blanco */
+}
+
+/* Mantener el estilo del checkbox después de la validación */
+.was-validated .form-check-input {
+    border-color: #ced4da !important;
+    background-color: #fff !important;
+}
+
+/* Cuando está marcado, mantiene su color */
+.form-check-input:checked {
+    background-color: #0d6efd; /* Color azul de Bootstrap */
+    border-color: #0d6efd;
+}
+
+/* Evita que la validación afecte el checkbox */
+.was-validated .form-check-input:checked {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+.was-validated .form-check-label {
+    color: inherit !important; /* Mantiene el color original */
+}

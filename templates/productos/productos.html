@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!--start page wrapper -->
+    <div class="page-wrapper">
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3">Productos</div>
+                <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Consulta de Productos</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <h6 class="mb-0 text-uppercase">Lista de Productos</h6>
+            <hr />
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="productos" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Referencia</th>
+                                    <th>Categoría</th>
+                                    <th>Genero</th>
+                                    <th>Estado</th>
+                                    <th>Tallas</th>
+                                    <th>Colores</th>
+                                    <th>Diseño</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if productos %}
+                                    {% for producto in productos %}
+                                    <tr>
+                                        <td>{{ producto.codigo }}</td>
+                                        <td>{{ producto.referencia }}</td>
+                                        <td>{{ producto.categoria.nombre }}</td>
+                                        <td>{{ producto.genero.nombre }}</td>
+                                        <td>{{ producto.estado }}</td>
+                                        <td>
+                                            {% for talla in producto.talla.all %}
+                                                {{ talla.nombre }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <div class="color-options">
+                                                {% for color in producto.color.all %}
+                                                    <span class="color-circle" style="background-color: {{ color.nombre_en_ingles|lower }};" title="{{ color.nombre }}" data-color="{{ color.nombre }}">
+                                                    </span>
+                                                {% endfor %}
+                                            </div>                                            
+                                        </td>                                                                                                                    
+                                        <td>
+                                            {% with imagenes_diseno=producto.diseno.all %}
+                                                {% if imagenes_diseno %}
+                                                    {% for diseno in imagenes_diseno %}
+                                                        {% if diseno.imagen %}
+                                                            <a href="{{ diseno.imagen.url }}" target="_blank">
+                                                                <img src="{{ diseno.imagen.url }}" alt="{{ diseno.nombre }}" width="40" height="40" style="border-radius: 5px; margin: 2px;">
+                                                            </a>
+                                                        {% else %}
+                                                            {{ diseno.nombre }}{% if not forloop.last %}, {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                    Sin diseños
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>                                                                                                                                                                                  
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">
+                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                            No hay productos disponibles en este momento.
+                                        </td>
+                                    </tr>
+                                {% endif %}        
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Referencia</th>
+                                        <th>Categoría</th>
+                                        <th>Genero</th>
+                                        <th>Estado</th>
+                                        <th>Tallas</th>
+                                        <th>Colores</th>
+                                        <th>Diseño</th>
+                                    </tr>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end page wrapper -->
+    <!--start overlay-->
+    <div class="overlay toggle-icon"></div>
+    <!--end overlay-->
+    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    <!--End Back To Top Button-->
+{% endblock %}
+
+

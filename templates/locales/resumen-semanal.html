@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <h6 class="mb-0 text-uppercase">Historial Semanal de Inventario - {{ producto.referencia }}</h6>
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Semana</th>
+                                <th>Entradas</th>
+                                <th>Salidas</th>
+                                <th>Stock Final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in inventario_semanal %}
+                            <tr>
+                                <td>{{ item.semana|date:"Y-m-d" }}</td>
+                                <td>{{ item.entradas }}</td>
+                                <td>{{ item.salidas }}</td>
+                                <td>{{ item.stock_final }}</td>
+                            </tr> 
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

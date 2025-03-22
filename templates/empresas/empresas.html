@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!--start page wrapper -->
+    <div class="page-wrapper">
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3">Empresas</div>
+                <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Consulta de Empresas</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <h6 class="mb-0 text-uppercase"></h6>
+				<hr/>
+				<div class="row row-cols-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-3">
+                    {% if empresas %}
+                        {% for Empresa in empresas %}
+                            <div class="col">
+                                <div class="card text-center">
+                                    <img src="{{ Empresa.logo.url }}" class="rounded-circle p-1 bg-secondary m-2 mx-auto d-block" width="180" alt="{{ Empresa.razon_social }}">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{Empresa.razon_social}}</h5>
+                                        <p class="card-text">NIT {{Empresa.nit}}</p>
+                                        <p class="card-text">{{Empresa.correo}}</p>
+                                        <p class="card-text">{{Empresa.telefono}}</p>
+                                    </div>
+                                    <ul class="list-group list-group-flush list shadow-none">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center border-top"><a href="{% url 'locales' %}">Locales</a><span class="badge bg-dark rounded-pill">{{Empresa.locales_count}}</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Total Empleados <span class="badge bg-success rounded-pill">{{Empresa.usuarios_count}}</span></li>
+                                    </ul>
+                                    
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+                            <div class="card text-center p-4 shadow-sm" width="350">
+                                <i class="bx bx-info-circle" style="font-size: 40px; color: #ff9800;"></i>
+                                <h5 class="mt-2 text-muted">No hay Empresas Registradas</h5>
+                            </div>
+                        </div>                                                     
+                    {% endif %}
+				</div>
+				<!--end row-->
+        </div>
+    </div>
+    <!--end page wrapper -->
+    <!--start overlay-->
+    <div class="overlay toggle-icon"></div>
+    <!--end overlay-->
+    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    <!--End Back To Top Button-->
+{% endblock %}
+
+

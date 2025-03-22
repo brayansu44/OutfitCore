@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-content">
+            <h6 class="mb-0 text-uppercase">Lista de Referencias</h6>
+            <hr />
+            <div class="col">
+                <hr/>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3 d-flex">
+                            <input type="text" class="form-control" id="searchInput" placeholder="Buscar referencia..." onkeydown="checkEnter(event)">
+                            <button class="btn btn-outline-primary ms-2" onclick="searchFunction()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>                        
+                        <ul class="list-group" id="referenciasList">
+                            {% for referencia in referencias_unicas %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center hover-effect">
+                                    <a href="{% url 'resumen_inventario_producto' referencia.local.id referencia.variante.producto.id %}" class="text-decoration-none text-dark d-flex justify-content-between align-items-center">
+                                        <i class="fas fa-box me-2"></i> 
+                                        {{ referencia.variante.producto.referencia }}
+                                    </a>
+                                </li>                            
+                            {% empty %}
+                                <li class="list-group-item text-center">No hay referencias disponibles.</li>
+                            {% endfor %}
+                        </ul>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
