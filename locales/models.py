@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from datetime import datetime, timedelta
 
 from Producto.models import ProductoVariante
 from empresas.models import Empresa
@@ -62,10 +63,28 @@ class InventarioLocal(models.Model):
 class InventarioSemanal(models.Model):
     local       = models.ForeignKey(Local, on_delete=models.CASCADE)
     variante    = models.ForeignKey(ProductoVariante, on_delete=models.CASCADE)
-    semana      = models.DateField()  
+    semana      = models.DateField()
+    anio        = models.IntegerField(default=datetime.now().year)
     entradas    = models.PositiveIntegerField(default=0)
     salidas     = models.PositiveIntegerField(default=0)
-    stock_final = models.IntegerField(default=0)
+    stock_final = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('local', 'variante', 'semana', 'anio')
 
     def __str__(self):
-        return f"{self.local.nombre} - {self.variante.producto.referencia} - {self.semana}"
+        return f"{self.local.nombre} - {self.variante.producto.referencia} - Semana {self.semana}/{self.anio}"
+
+class VentaSemanal(models.Model):
+    local       = models.ForeignKey(Local, on_delete=models.CASCADE)
+    variante    = models.ForeignKey(ProductoVariante, on_delete=models.CASCADE)
+    semana      = models.DateField()
+    anio        = models.IntegerField(default=datetime.now().year)
+    fecha       = models.DateField(auto_now_add=True)
+    cantidad_vendida = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('local', 'variante', 'semana', 'anio')
+
+    def __str__(self):
+        return f"Venta {self.local.nombre} - {self.variante.producto.referencia} - {self.fecha}"

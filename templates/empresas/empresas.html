@@ -22,19 +22,19 @@
 				<hr/>
 				<div class="row row-cols-1 row-cols-md-1 row-cols-lg-3 row-cols-xl-3">
                     {% if empresas %}
-                        {% for Empresa in empresas %}
+                        {% for empresa in empresas %}
                             <div class="col">
                                 <div class="card text-center">
-                                    <img src="{{ Empresa.logo.url }}" class="rounded-circle p-1 bg-secondary m-2 mx-auto d-block" width="180" alt="{{ Empresa.razon_social }}">
+                                    <img src="{{ empresa.logo.url }}" class="m-3 mx-auto d-block" width="180" height="180" alt="{{ empresa.razon_social }}">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{Empresa.razon_social}}</h5>
-                                        <p class="card-text">NIT {{Empresa.nit}}</p>
-                                        <p class="card-text">{{Empresa.correo}}</p>
-                                        <p class="card-text">{{Empresa.telefono}}</p>
+                                        <h5 class="card-title">{{empresa.razon_social}}</h5>
+                                        <p class="card-text">NIT {{empresa.nit}}</p>
+                                        <p class="card-text">{{empresa.correo}}</p>
+                                        <p class="card-text">{{empresa.telefono}}</p>
                                     </div>
                                     <ul class="list-group list-group-flush list shadow-none">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center border-top"><a href="{% url 'locales' %}">Locales</a><span class="badge bg-dark rounded-pill">{{Empresa.locales_count}}</span></li>
-                                        <li class="list-group-item d-flex justify-content-between align-items-center">Total Empleados <span class="badge bg-success rounded-pill">{{Empresa.usuarios_count}}</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center border-top"><a href="{% url 'set_empresa_id' empresa.id %}">Locales</a><span class="badge bg-dark rounded-pill">{{empresa.locales_count}}</span></li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">Total Empleados <span class="badge bg-success rounded-pill">{{empresa.usuarios_count}}</span></li>
                                     </ul>
                                     
                                 </div>

@@ -49,7 +49,10 @@ INSTALLED_APPS = [
     'gastos',
     'empresas',
     'proveedores',
-    'locales'
+    'locales',
+    'notificaciones',
+    "celery",
+    "django_celery_beat",
 ]
 
 MIDDLEWARE = [
@@ -76,6 +79,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'kiddes.context_processors.global_context',
+                'notificaciones.context_processors.notificaciones_context',
             ],
         },
     },
@@ -173,3 +177,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'brayansayrez400@gmail.com'
 EMAIL_HOST_PASSWORD = 'xhxptpsibyzmxjsr'
 EMAIL_USE_TLS = True
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"

@@ -14,6 +14,10 @@ class Diseno(models.Model):
     def __str__(self):
         return self.nombre
     
+    class Meta:
+        verbose_name='Diseño'
+        verbose_name_plural='Diseños'
+    
 class Genero(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
 

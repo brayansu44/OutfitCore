@@ -11,10 +11,11 @@ def locales(request):
     locales = Local.objects.all()
     return render(request, 'locales/locales.html', {'locales': locales})
 
-@login_required(login_url = 'login')
-def locales_por_empresa(request, empresa_id):
-    locales = Local.objects.filter(empresa=empresa_id)
-    return render(request, 'locales/locales-por-empresa.html', {'locales': locales})
+@login_required(login_url='login') 
+def locales_with_empresa(request): 
+    empresa_id = request.session.get('empresa_id') 
+    locales = Local.objects.filter(empresa_id=empresa_id) 
+    return render(request, 'locales/locales.html', {'locales': locales})
 
 @login_required(login_url = 'login')
 def inventario_local(request, local_id):

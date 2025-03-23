@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="page-wrapper">
+        <div class="page-content">
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3">Bodega</div>
+                <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'inventario_bodega' %}">Inventario</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Salidas de Productos</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+
+            <h6 class="mb-0 text-uppercase">Salidas de Productos</h6>
+            <hr />
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="example2" class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Producto</th>
+                                    <th>Color</th>
+                                    <th>Talla</th>
+                                    <th>Cantidad</th>
+                                    <th>Local Destino</th>
+                                    <th>Estado</th>
+                                    <th>Responsable</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if salida_producto %}
+                                    {% for salida in salida_producto %}
+                                    <tr>
+                                        <td>{{ salida.fecha }}</td>
+                                        <td>{{ salida.producto.producto_variante.producto.referencia }}</td>
+                                        <td>{{ salida.producto.producto_variante.color }}</td>
+                                        <td>{{ salida.producto.producto_variante.talla }}</td>
+                                        <td>{{ salida.cantidad }}</td>
+                                        <td>{{ salida.local.local.nombre }}</td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if salida.estado == 'Pendiente' %} bg-warning 
+                                                {% elif salida.estado == 'Confirmado' %} bg-primary 
+                                                {% elif salida.estado == 'Completado' %} bg-success 
+                                                {% else %} bg-danger {% endif %}">
+                                                {{ salida.estado }}
+                                            </span>
+                                        </td>
+                                        <td>{{ salida.user_responsable }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">
+                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                            No hay registros de salidas de productos.
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Fecha</th>
+                                    <th>Producto</th>
+                                    <th>Color</th>
+                                    <th>Talla</th>
+                                    <th>Cantidad</th>
+                                    <th>Local Destino</th>
+                                    <th>Estado</th>
+                                    <th>Responsable</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end page wrapper -->
+    <!--start overlay-->
+    <div class="overlay toggle-icon"></div>
+    <!--end overlay-->
+    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    <!--End Back To Top Button-->
+{% endblock %}

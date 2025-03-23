@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-from Producto.models import ProductoVariante
 
 class Empresa(models.Model):
     razon_social            = models.CharField(max_length=100)
