@@ -3,6 +3,7 @@ from .models import (
     EntregaCorte, Stock, SalidaProducto, ConfirmacionRecepcion, 
     UnidadMedida, TipoInsumo, Insumo, IngresoInsumo, UsoInsumo
 )
+from .forms import SalidaProductoForm
 
 @admin.register(EntregaCorte)
 class EntregaCorteAdmin(admin.ModelAdmin):
@@ -18,14 +19,27 @@ class StockAdmin(admin.ModelAdmin):
 
 @admin.register(SalidaProducto)
 class SalidaProductoAdmin(admin.ModelAdmin):
-    list_display = ("producto", "cantidad", "local", "estado", "fecha")
-    list_filter = ("estado", "local")
+    form = SalidaProductoForm
+    list_display = ("producto", "cantidad", "local__local", "user_responsable", "fecha", "estado")
+    list_filter = ("estado", "local__local")
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)  # Obtener el formulario base
+        class CustomForm(form):
+            def __init__(self, *args, **inner_kwargs):
+                inner_kwargs['request'] = request  # Pasar request correctamente
+                super().__init__(*args, **inner_kwargs)
+        return CustomForm
+    
 @admin.register(ConfirmacionRecepcion)
 class ConfirmacionRecepcionAdmin(admin.ModelAdmin):
     list_display = ("salida", "user_encargado", "confirmado", "fecha_confirmacion")
     list_filter = ("confirmado",)
     actions = ["confirmar_recepcion"]
+
+    def has_add_permission(self, request):
+        """Evita que los usuarios puedan agregar nuevas confirmaciones."""
+        return False
 
     def save_model(self, request, obj, form, change):
         if obj.confirmado and not obj.user_encargado:

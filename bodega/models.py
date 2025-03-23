@@ -2,7 +2,6 @@ from django.db import models, transaction
 from proveedores.models import Proveedor
 from Producto.models import ProductoVariante
 from locales.models import InventarioLocal
-from django.contrib.auth.models import User
 from notificaciones.models import Notificacion
 
 class EstadoChoices(models.TextChoices):
@@ -45,11 +44,11 @@ class SalidaProducto(models.Model):
     producto = models.ForeignKey(Stock, on_delete=models.CASCADE, related_name="salidas")
     cantidad = models.PositiveIntegerField()
     user_responsable = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE)
-    local = models.ForeignKey("locales.InventarioLocal", on_delete=models.CASCADE)
+    local = models.ForeignKey(InventarioLocal, on_delete=models.CASCADE)
     estado = models.CharField(max_length=50, choices=EstadoChoices.choices, default=EstadoChoices.PENDIENTE)
 
     def save(self, *args, **kwargs):
-        es_nueva = self.pk is None  # Verifica si es una nueva salida
+        es_nueva = self.pk is None 
 
         if es_nueva:  
             stock, created = Stock.objects.get_or_create(producto_variante=self.producto.producto_variante)
@@ -66,9 +65,9 @@ class SalidaProducto(models.Model):
             ConfirmacionRecepcion.objects.create(salida=self, confirmado=False)
 
             # Notificación cuando se crea la salida
-            if self.user_responsable:
+            if self.local.local.encargado:
                 Notificacion.objects.create(
-                    user=self.user_responsable.usuario,
+                    user=self.local.local.encargado.usuario,
                     mensaje=f"Se ha realizado la salida de {self.cantidad} unidades de {self.producto} hacia {self.local.local}.",
                     tipo="salida"
                 )
@@ -77,7 +76,7 @@ class SalidaProducto(models.Model):
             super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Salida {self.cantidad} - {self.producto} - {self.local}"
+        return f"Salida {self.cantidad} - {self.producto} - {self.local.local}"
 
     
 class ConfirmacionRecepcion(models.Model):
@@ -98,6 +97,13 @@ class ConfirmacionRecepcion(models.Model):
             self.salida.estado = EstadoChoices.CONFIRMADO
             self.salida.save()
 
+            if self.user_encargado:
+                Notificacion.objects.create(
+                    user=self.salida.user_responsable.usuario,
+                    mensaje=f"Se confirmó la recepción de {self.salida.cantidad} unidades de {self.salida.producto} en {self.salida.local.local}.",
+                    tipo="confirmacion"
+                )
+
             inventario_local, created = InventarioLocal.objects.get_or_create(
                 local=self.salida.local.local,  
                 variante=self.salida.producto.producto_variante,
@@ -106,14 +112,6 @@ class ConfirmacionRecepcion(models.Model):
             inventario_local.entradas += self.salida.cantidad
             inventario_local.stock_actual += self.salida.cantidad
             inventario_local.save()
-
-            if self.user_encargado:
-                Notificacion.objects.create(
-                    user=self.user_encargado.usuario,
-                    mensaje=f"Se confirmó la recepción de {self.salida.cantidad} unidades de {self.salida.producto} en {self.salida.local.local}.",
-                    tipo="confirmacion"
-                )
-
 
         super().save(*args, **kwargs)
 

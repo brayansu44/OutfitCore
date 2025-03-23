@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 
 from Producto.models import ProductoVariante
 from empresas.models import Empresa
+from usuarios.models import PerfilUsuario
 
 # Create your models here.
 class DiasFuncionamiento(models.Model):
@@ -27,6 +28,7 @@ class Local(models.Model):
     telefono        = models.IntegerField()
     direccion       = models.CharField(max_length=255)
     Horario_habil   = models.ManyToManyField(DiasFuncionamiento, related_name="locales")
+    encargado       = models.ForeignKey(PerfilUsuario, on_delete=models.SET_NULL, null=True, blank=True, related_name="locales_a_cargo")
 
     class Meta:
         verbose_name = 'Local'
