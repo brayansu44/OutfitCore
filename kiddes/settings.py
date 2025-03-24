@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -181,3 +182,49 @@ EMAIL_USE_TLS = True
 CELERY_BROKER_URL = "redis://localhost:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Panel de Administración",
+    "site_header": "Kiddes Admin",
+    "site_brand": "Kiddes",
+    "order_with_respect_to": [
+        # Gestión de la Empresa
+        "empresas", "locales", "locales.DiasFuncionamiento", "locales.Local", "locales.InventarioLocal", "locales.InventarioSemanal", "usuarios",
+        
+        # Inventario y Productos
+        "telas", "Producto", "bodega",
+        
+        # Operaciones y Finanzas
+        "Cuentas", "gastos", "Movimientos", "nomina", "Compras",
+        
+        # Proveedores y Notificaciones
+        "proveedores", "notificaciones"
+    ],
+    "icons": {
+        "bodega": "fas fa-warehouse",
+        "Cuentas": "fas fa-wallet",
+        "usuarios": "fas fa-user",
+        "Compras": "fas fa-shopping-cart",
+        "nomina": "fas fa-file-invoice-dollar",
+        "telas": "fas fa-tshirt",
+        "Producto": "fas fa-box",
+        "Ventas": "fas fa-cash-register",
+        "Movimientos": "fas fa-exchange-alt",
+        "gastos": "fas fa-money-bill-wave",
+        "empresas": "fas fa-building",
+        "proveedores": "fas fa-truck-loading",
+        "locales": "fas fa-store",
+        "notificaciones": "fas fa-bell",
+    },
+    "navigation_expanded": False,
+    "show_ui_builder": False,
+    "related_modal_active": True,
+    "hide_apps": [],
+    "hide_models": [],
+    "custom_sidebar_links": [
+        {"name": "Gestión de la Empresa", "models": ["empresas", "locales", "usuarios"], "icon": "fas fa-building"},
+        {"name": "Inventario y Productos", "models": ["telas", "Producto", "bodega"], "icon": "fas fa-box"},
+        {"name": "Operaciones y Finanzas", "models": ["Cuentas", "gastos", "Movimientos", "nomina", "Compras"], "icon": "fas fa-wallet"},
+        {"name": "Proveedores y Notificaciones", "models": ["proveedores", "notificaciones"], "icon": "fas fa-truck"},
+    ]
+}
