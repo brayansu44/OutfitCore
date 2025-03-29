@@ -34,7 +34,24 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if locales %}
+                                {% if locales_with_empresa %}
+                                    {% for local in locales_with_empresa %}
+                                    <tr>
+                                        <td>{{ local.nombre }}</td>
+                                        <td>{{ local.empresa.razon_social }}</td>
+                                        <td>{{ local.telefono }}</td>
+                                        <td>{{ local.direccion }}</td>
+                                        <td>
+                                            {% for dia in local.Horario_habil.all %}
+                                                {{ dia.get_dia_display }}{% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'inventario_local' local.id %}" class="btn btn-primary btn-sm radius-30 px-4">Ver Inventario</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% elif locales %}
                                     {% for local in locales %}
                                     <tr>
                                         <td>{{ local.nombre }}</td>

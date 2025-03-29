@@ -10,13 +10,13 @@
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
                             <li class="breadcrumb-item"><a href="{% url 'inventario_bodega' %}">Inventario</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Salidas de Productos</li>
+                            <li class="breadcrumb-item active" aria-current="page">Salidas de Insumos</li>
                         </ol>
                     </nav>
                 </div>
             </div>
 
-            <h6 class="mb-0 text-uppercase">Salidas de Productos</h6>
+            <h6 class="mb-0 text-uppercase">Salidas de Insumos</h6>
             <hr />
 
             <div class="card">
@@ -26,13 +26,14 @@
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
-                                    <th>Producto</th>
+                                    <th>Insumo</th>
                                     <th>Color</th>
                                     <th>Talla</th>
                                     <th>Cantidad</th>
-                                    <th>Local Destino</th>
+                                    <th>Destino</th>
                                     <th>Estado</th>
                                     <th>Responsable</th>
+                                    <th>Tipo de Salida</th>  <!-- Nueva columna para indicar si es lavado o no -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -44,7 +45,13 @@
                                         <td>{{ salida.producto.producto_variante.color }}</td>
                                         <td>{{ salida.producto.producto_variante.talla }}</td>
                                         <td>{{ salida.cantidad }}</td>
-                                        <td>{{ salida.local.local.nombre }}</td>
+                                        <td>
+                                            {% if salida.local %}
+                                                {{ salida.local.local.nombre }}
+                                            {% else %}
+                                                Proceso de Lavado
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <span class="badge 
                                                 {% if salida.estado == 'Pendiente' %} bg-warning 
@@ -55,13 +62,20 @@
                                             </span>
                                         </td>
                                         <td>{{ salida.user_responsable }}</td>
+                                        <td>
+                                            {% if salida.es_lavado %}
+                                                Lavado
+                                            {% else %}
+                                                Normal
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="8" class="text-center text-muted">
+                                        <td colspan="9" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            No hay registros de salidas de productos.
+                                            No hay registros de salidas de insumos.
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -69,13 +83,14 @@
                             <tfoot>
                                 <tr>
                                     <th>Fecha</th>
-                                    <th>Producto</th>
+                                    <th>Insumo</th>
                                     <th>Color</th>
                                     <th>Talla</th>
                                     <th>Cantidad</th>
-                                    <th>Local Destino</th>
+                                    <th>Destino</th>
                                     <th>Estado</th>
                                     <th>Responsable</th>
+                                    <th>Tipo de Salida</th>
                                 </tr>
                             </tfoot>
                         </table>

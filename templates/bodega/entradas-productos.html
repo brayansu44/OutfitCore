@@ -10,13 +10,13 @@
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
                             <li class="breadcrumb-item"><a href="{% url 'inventario_bodega' %}">Inventario</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Entradas de Productos</li>
+                            <li class="breadcrumb-item active" aria-current="page">Entradas de Insumos</li>
                         </ol>
                     </nav>
                 </div>
             </div>
 
-            <h6 class="mb-0 text-uppercase">Entradas de Productos</h6>
+            <h6 class="mb-0 text-uppercase">Entradas de Insumos</h6>
             <hr />
 
             <div class="card">
@@ -26,11 +26,11 @@
                             <thead>
                                 <tr>
                                     <th>Fecha</th>
-                                    <th>Producto</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Cantidad</th>
+                                    <th>Insumo</th>
+                                    <th>Cantidad Total</th>
+                                    <th>Cantidad Lavado</th>
                                     <th>Responsable</th>
+                                    <th>Estado</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,17 +39,23 @@
                                     <tr>
                                         <td>{{ entrada.fecha }}</td>
                                         <td>{{ entrada.producto.producto.referencia }}</td>
-                                        <td>{{ entrada.producto.color }}</td>
-                                        <td>{{ entrada.producto.talla }}</td>
                                         <td>{{ entrada.cantidad }}</td>
+                                        <td>{{ entrada.cantidad_lavado }}</td>
                                         <td>{{ entrada.user_responsable }}</td>
+                                        <td>
+                                            {% if entrada.cantidad_lavado > 0 %}
+                                                Lavado
+                                            {% else %}
+                                                Pendiente
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
                                         <td colspan="6" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            No hay registros de entradas de productos.
+                                            No hay registros de entradas de insumos.
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -57,11 +63,11 @@
                             <tfoot>
                                 <tr>
                                     <th>Fecha</th>
-                                    <th>Producto</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Cantidad</th>
+                                    <th>Insumo</th>
+                                    <th>Cantidad Total</th>
+                                    <th>Cantidad Lavado</th>
                                     <th>Responsable</th>
+                                    <th>Estado</th>
                                 </tr>
                             </tfoot>
                         </table>

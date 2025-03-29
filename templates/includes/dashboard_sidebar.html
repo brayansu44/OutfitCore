@@ -23,20 +23,20 @@
     <ul class="metismenu" id="menu">
         <li>
             <a href="{% url 'home' %}">
-                <div class="parent-icon"><i class='bx bx-home-circle'></i></div>
+                <div class="parent-icon"><i class='fas fa-chart-line'></i></div>
                 <div class="menu-title">Dashboard</div>
             </a>
         </li>
         <li>
             <a href="{% url 'proveedores' %}">
-                <div class="parent-icon"><i class="bx bx-category"></i>
+                <div class="parent-icon"><i class="fas fa-truck-loading"></i>
                 </div>
                 <div class="menu-title">Proveedores</div>
             </a>
         </li>
         <li>
             <a href="#" class="has-arrow">
-                <div class="parent-icon"><i class='bx bx-cookie'></i>
+                <div class="parent-icon"><i class='fas fa-tshirt'></i>
                 </div>
                 <div class="menu-title">Telas</div>
             </a>
@@ -51,63 +51,67 @@
         </li>
         <li>
             <a href="{% url 'productos' %}">
-                <div class="parent-icon"><i class='bx bx-cart'></i>
+                <div class="parent-icon"><i class='fas fa-box'></i>
                 </div>
                 <div class="menu-title">Productos</div>
             </a>
         </li>
         <li>
             <a href="{% url 'empresas' %}">
-                <div class="parent-icon"><i class='bx bx-cart'></i>
+                <div class="parent-icon"><i class='fas fa-building'></i>
                 </div>
                 <div class="menu-title">Empresas</div>
             </a>
         </li>
         <li>
             <a href="{% url 'locales' %}">
-                <div class="parent-icon"><i class='bx bx-cart'></i>
+                <div class="parent-icon"><i class='fas fa-store'></i>
                 </div>
                 <div class="menu-title">Locales</div>
             </a>
         </li>
         <li>
-            <a href="{% url 'inventario_bodega' %}">
-                <div class="parent-icon"><i class='bx bx-bookmark-heart'></i>
+            <a href="#" class="has-arrow">
+                <div class="parent-icon"><i class='fas fa-warehouse'></i>
                 </div>
                 <div class="menu-title">Bodega</div>
             </a>
+            <ul>
+                <li> <a href="{% url 'inventario_bodega' %}"><i class="bx bx-right-arrow-alt"></i>Inventario Bodega</a> </li>
+                <li> <a href="{% url 'inventario_insumos' %}"><i class="bx bx-right-arrow-alt"></i>Inventario Insumos</a> </li>
+            </ul>
         </li>
         <li>
             <a href="#">
-                <div class="parent-icon"><i class="bx bx-repeat"></i>
+                <div class="parent-icon"><i class="fas fa-shopping-cart"></i>
                 </div>
                 <div class="menu-title">Compras</div>
             </a>
         </li>
         <li>
             <a href="#">
-                <div class="parent-icon"> <i class="bx bx-donate-blood"></i>
+                <div class="parent-icon"> <i class="fas fa-exchange-alt"></i>
                 </div>
                 <div class="menu-title">Movimientos</div>
             </a>
         </li>
         <li>
             <a href="#">
-                <div class="parent-icon"><i class='bx bx-message-square-edit'></i>
+                <div class="parent-icon"><i class='fas fa-cash-register'></i>
                 </div>
                 <div class="menu-title">Ventas</div>
             </a>
         </li>
         <li>
             <a href="#">
-                <div class="parent-icon"><i class="bx bx-grid-alt"></i>
+                <div class="parent-icon"><i class="fas fa-wallet"></i>
                 </div>
                 <div class="menu-title">Cuentas</div>
             </a>
         </li>
         <li>
             <a href="#">
-                <div class="parent-icon"><i class="bx bx-lock"></i>
+                <div class="parent-icon"><i class="fas fa-file-invoice-dollar"></i>
                 </div>
                 <div class="menu-title">Nómina</div>
             </a>

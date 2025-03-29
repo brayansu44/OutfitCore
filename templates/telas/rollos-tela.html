@@ -26,15 +26,18 @@
                         <table id="example2" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th colspan="3" class="text-center bg-light">Información de la Tela</th>
-                                    <th colspan="4" class="text-center bg-light">Información del Rollo</th>
+                                    <th colspan="4" class="text-center bg-light">Información de la Tela</th>
+                                    <th colspan="5" class="text-center bg-light">Información del Rollo</th>
                                 </tr>
                                 <tr>
                                     <th>Tela</th>
-                                    <th>Proveedor</th>
+                                    <th>Color</th>
+                                    <th>Tipo</th>
                                     <th>Ancho (m)</th>
+                                    <th>Metros Solicitados</th>
                                     <th>Largo Inicial (m)</th>
                                     <th>Largo Restante (m)</th>
+                                    <th>Kilos</th>
                                     <th>Estado</th>
                                     <th>Fecha Ingreso</th>
                                 </tr>
@@ -44,10 +47,13 @@
                                     {% for rollo in rollos_tela %}
                                     <tr>
                                         <td>{{ rollo.tela.nombre }}</td>
-                                        <td>{{ rollo.tela.proveedor }}</td>
+                                        <td>{{ rollo.tela.color }}</td>
+                                        <td>{{ rollo.tela.tipo }}</td>
                                         <td>{{ rollo.tela.ancho }}</td>
+                                        <td>{{ rollo.metros_solicitados }}</td>
                                         <td>{{ rollo.largo_inicial }}</td>
                                         <td>{{ rollo.largo_restante }}</td>
+                                        <td>{{ rollo.kilos }}</td>
                                         <td>
                                             <span class="estado {{ rollo.estado|lower }}">
                                                 {{ rollo.estado }}
@@ -58,7 +64,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">
+                                        <td colspan="10" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             Actualmente no hay rollos de tela disponibles en el inventario.
                                         </td>
@@ -68,10 +74,13 @@
                             <tfoot>
                                 <tr>
                                     <th>Tela</th>
-                                    <th>Proveedor</th>
+                                    <th>Color</th>
+                                    <th>Tipo</th>
                                     <th>Ancho (m)</th>
+                                    <th>Metros Solicitados</th>
                                     <th>Largo Inicial (m)</th>
                                     <th>Largo Restante (m)</th>
+                                    <th>Kilos</th>
                                     <th>Estado</th>
                                     <th>Fecha Ingreso</th>
                                 </tr>
@@ -89,5 +98,3 @@
     <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
     <!--End Back To Top Button-->
 {% endblock %}
-
-

@@ -18,4 +18,8 @@ def entradas_producto(request):
 @login_required(login_url='login')
 def salidas_producto(request):
     salida_producto = SalidaProducto.objects.all() 
-    return render(request, 'bodega/salidas-productos.html', {'salida_producto': salida_producto}) 
+    return render(request, 'bodega/salidas-productos.html', {'salida_producto': salida_producto})
+
+def inventario_insumos(request):
+    insumos = Insumo.objects.all()
+    return render(request, 'bodega/inventario_insumos.html', {'insumos': insumos}) 

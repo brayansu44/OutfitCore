@@ -1,6 +1,7 @@
 from django.db import models
 from usuarios.models import PerfilUsuario
 from proveedores.models import Proveedor
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 class Tela(models.Model):
@@ -19,26 +20,34 @@ class RolloTela(models.Model):
         ('Incompleto', 'Incompleto'),
         ('Agotado', 'Agotado'),
     )
-    tela            = models.ForeignKey(Tela, on_delete=models.CASCADE)
-    largo_inicial   = models.DecimalField(max_digits=6, decimal_places=2)
-    largo_restante  = models.DecimalField(max_digits=6, decimal_places=2)
-    estado          = models.CharField(max_length=50, choices=ESTADO, default='Completo')
-    fecha_registro  = models.DateField(auto_now_add=True)
+    tela                = models.ForeignKey(Tela, on_delete=models.CASCADE)
+    metros_solicitados  = models.DecimalField(max_digits=6, decimal_places=2)
+    largo_inicial       = models.DecimalField(max_digits=6, decimal_places=2)
+    largo_restante      = models.DecimalField(max_digits=6, decimal_places=2)
+    kilos               = models.DecimalField(max_digits=6, decimal_places=2)
+    estado              = models.CharField(max_length=50, choices=ESTADO, default='Completo')
+    fecha_registro      = models.DateField(auto_now_add=True)
 
     def actualizar_estado(self):
         if self.largo_restante <= 0:
             self.estado = 'Agotado'
-        elif self.largo_restante < self.largo_inicial:
+        elif self.largo_inicial < self.metros_solicitados or self.largo_restante < self.largo_inicial:
             self.estado = 'Incompleto'
         else:
             self.estado = 'Completo'
+
+
+    def actualizar_kilos(self, metros_utilizados):
+        if self.largo_inicial > 0:
+            kilos_por_metro = self.kilos / self.largo_inicial  
+            self.kilos -= metros_utilizados * kilos_por_metro        
 
     def save(self, *args, **kwargs):
         self.actualizar_estado()
         super().save(*args, **kwargs)    
 
     def __str__(self):
-        return f"Rollo de {self.tela.nombre} - {self.largo_restante}m restantes - Estado: {self.estado}"
+        return f"Rollo de {self.tela.nombre} - {self.largo_restante}m restantes - {self.kilos}kg - Estado: {self.estado}"
     
 class OrdenProduccion(models.Model):
     ESTADO_CHOICES = (
@@ -54,6 +63,14 @@ class OrdenProduccion(models.Model):
     total_unidades  = models.PositiveIntegerField()
     observaciones   = models.TextField(blank=True, null=True)
     estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Pendiente')
+
+    def save(self, *args, **kwargs):
+        if self.pk:  # Si ya existe en la base de datos
+            original = OrdenProduccion.objects.get(pk=self.pk)
+            if original.estado == "Completada" and self.estado != "Completada":
+                raise ValidationError("No se puede modificar una orden ya completada.")
+        super().save(*args, **kwargs)
+
     
     class Meta:
         verbose_name='Orden Produccion'
@@ -77,11 +94,14 @@ class CorteTela(models.Model):
         return max(0, self.rollo.largo_restante - self.largo_utilizado)
 
     def calcular_rendimiento(self):
-        return self.largo_utilizado / self.rollo.largo_inicial * 100
+        if self.rollo.largo_inicial > 0:
+            return (self.largo_utilizado / self.rollo.largo_inicial) * 100
+        return 0  
+
 
     def save(self, *args, **kwargs):
         if self.largo_utilizado > self.rollo.largo_restante:
-            raise ValueError("No hay suficiente tela en el rollo para realizar este corte.")
+            raise ValidationError("No hay suficiente tela en el rollo para realizar este corte.")
         
         self.faltante_tela = self.calcular_faltante()
         self.rendimiento_rollo = self.calcular_rendimiento()

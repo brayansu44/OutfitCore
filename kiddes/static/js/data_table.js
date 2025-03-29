@@ -7,7 +7,7 @@ $(document).ready(function() {
     var table = $('#example2').DataTable({
         lengthChange: false,
         dom: 'Bfrtip',  // Necesario para mostrar los botones
-        buttons: ['copy', 'excel', 'pdf', 'print'],
+        buttons: ['excel', 'pdf', 'print'],
         language: {
             url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
         },

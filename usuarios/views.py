@@ -14,6 +14,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from usuarios.models import PerfilUsuario
 
 # Create your views here.
 def login(request):
@@ -43,6 +44,7 @@ def login(request):
         else:
             form = LoginForm()  
             return render(request, 'usuarios/login.html', {'form' : form})
+
         
 @login_required(login_url = 'login')
 def logout(request):
@@ -148,3 +150,25 @@ def theme_settings(request):
         return redirect('home')  # Cambia esto a la vista que prefieras después de actualizar
 
     return render(request, 'includes/switcher.html', {'configuracion': configuracion})          
+
+@login_required
+def update_profile(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        telefono = request.POST.get("telefono")
+        
+        
+        perfil = PerfilUsuario.objects.filter(usuario=request.user).first()
+        if perfil:
+            perfil.telefono = telefono
+            perfil.save()
+        
+        user = request.user
+        user.email = email
+        user.save()
+
+        messages.success(request, "Perfil actualizado exitosamente.")
+        return redirect('profile')
+    
+    messages.error(request, "Hubo un error al actualizar el perfil.")
+    return render(request, 'profile.html')

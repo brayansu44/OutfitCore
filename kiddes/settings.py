@@ -184,6 +184,7 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 
 JAZZMIN_SETTINGS = {
+    "site_logo": "/images/icono.jpeg",
     "site_title": "Panel de Administración",
     "site_header": "Kiddes Admin",
     "site_brand": "Kiddes",
@@ -218,7 +219,7 @@ JAZZMIN_SETTINGS = {
     },
     "navigation_expanded": False,
     "show_ui_builder": False,
-    "related_modal_active": True,
+    "related_modal_active": False,
     "hide_apps": [],
     "hide_models": [],
     "custom_sidebar_links": [

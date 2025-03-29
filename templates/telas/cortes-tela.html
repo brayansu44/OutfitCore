@@ -10,7 +10,8 @@
                 <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                            <li class="breadcrumb-item">
+                                <a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">Consulta de Cortes de Tela</li>
                         </ol>
@@ -18,8 +19,10 @@
                 </div>
             </div>
             <!--end breadcrumb-->
+
             <h6 class="mb-0 text-uppercase">Lista de Cortes de Tela</h6>
             <hr />
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -28,6 +31,7 @@
                                 <tr>
                                     <th>Orden de Producción</th>
                                     <th>Rollo de Tela</th>
+                                    <th>Estado del Rollo</th>
                                     <th>Largo Utilizado (m)</th>
                                     <th>Capas Cortadas</th>
                                     <th>Colas (m)</th>
@@ -42,19 +46,29 @@
                                     {% for corte in cortes_tela %}
                                     <tr>
                                         <td>{{ corte.orden.referencia }}</td>
-                                        <td>{{ corte.rollo.tela.nombre }}</td>
+                                        <td>{{ corte.rollo.tela.nombre }} ({{ corte.rollo.tela.color }})</td>
+                                        <td>{{ corte.rollo.estado }}</td>
                                         <td>{{ corte.largo_utilizado }}</td>
                                         <td>{{ corte.capas_cortadas }}</td>
                                         <td>{{ corte.colas }}</td>
-                                        <td>{{ corte.faltante_tela }}</td>
-                                        <td>{{ corte.rendimiento_rollo }}%</td>
+                                        <td>
+                                            {% if corte.faltante_tela > 0 %}
+                                                <span class="text-danger fw-bold">
+                                                    {{ corte.faltante_tela }}
+                                                    <i class="bx bx-error-circle" title="Falta tela"></i>
+                                                </span>
+                                            {% else %}
+                                                {{ corte.faltante_tela }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ corte.rendimiento_rollo|floatformat:2 }}%</td>
                                         <td>{{ corte.fecha_corte|date:"d/m/Y" }}</td>
                                         <td>{{ corte.responsable }}</td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted">
+                                        <td colspan="10" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             No hay registros de cortes de tela disponibles.
                                         </td>
@@ -65,6 +79,7 @@
                                 <tr>
                                     <th>Orden de Producción</th>
                                     <th>Rollo de Tela</th>
+                                    <th>Estado del Rollo</th>
                                     <th>Largo Utilizado (m)</th>
                                     <th>Capas Cortadas</th>
                                     <th>Colas (m)</th>
@@ -81,11 +96,13 @@
         </div>
     </div>
     <!--end page wrapper -->
+    
     <!--start overlay-->
     <div class="overlay toggle-icon"></div>
     <!--end overlay-->
-    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    
+    <!--Start Back To Top Button--> 
+    <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
     <!--End Back To Top Button-->
+
 {% endblock %}
-
-

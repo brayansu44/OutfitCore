@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Max
 
@@ -6,16 +6,16 @@ from locales.models import Local, InventarioLocal, InventarioSemanal
 from Producto.models import Producto
 
 # Create your views here.
-@login_required(login_url = 'login')
-def locales(request):
-    locales = Local.objects.all()
-    return render(request, 'locales/locales.html', {'locales': locales})
 
 @login_required(login_url='login') 
-def locales_with_empresa(request): 
-    empresa_id = request.session.get('empresa_id') 
-    locales = Local.objects.filter(empresa_id=empresa_id) 
-    return render(request, 'locales/locales.html', {'locales': locales})
+def locales(request): 
+    empresa_id = request.session.get('empresa_id')
+    if empresa_id:
+        locales_with_empresa = Local.objects.filter(empresa_id=empresa_id) 
+        return render(request, 'locales/locales.html', {'locales': locales_with_empresa})
+    else:
+        locales = Local.objects.all()
+        return render(request, 'locales/locales.html', {'locales': locales})
 
 @login_required(login_url = 'login')
 def inventario_local(request, local_id):
