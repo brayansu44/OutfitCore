@@ -42,8 +42,10 @@
                     </li>
                     <li class="nav-item dropdown dropdown-large">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span class="alert-count">{{ notificaciones|length }}</span>
-                            <i class='bx bx-bell'></i>
+                            <span id="notificaciones-count" class="alert-count notificacion" data-url="{% url 'contar_notificaciones' %}" style="display: {% if notificaciones|length > 0 %}inline-block{% else %}none{% endif %};">
+                                {{ notificaciones|length }}
+                            </span>
+                            <i class='bx bx-bell'></i>                            
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <a href="javascript:;">
@@ -54,7 +56,7 @@
                             </a>
                             <div class="header-notifications-list">
                                 {% for notificacion in notificaciones %}
-                                    <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'marcar_leida' notificacion.id %}">
+                                    <a class="dropdown-item d-flex align-items-center py-2" href="{% url 'gestionar_notificacion' notificacion.id %}">
                                         <div class="notify d-flex align-items-center justify-content-center 
                                                     {% if 'confirmó' in notificacion.mensaje %} notify bg-light-success text-success
                                                     {% elif 'salida' in notificacion.mensaje %} notify bg-light-danger text-danger
@@ -78,7 +80,7 @@
                                     <p class="text-center text-muted">No hay nuevas notificaciones</p>
                                 {% endfor %}
                             </div>                                                                         
-                            <a href="javascript:;">
+                            <a href="{% url 'notificaciones' %}">
                                 <div class="text-center msg-footer">Ver todas las notificaciones</div>
                             </a>
                         </div>

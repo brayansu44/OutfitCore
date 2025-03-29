@@ -50,7 +50,10 @@ class SalidaProducto(models.Model):
     def save(self, *args, **kwargs):
         es_nueva = self.pk is None 
 
-        if es_nueva:  
+        if es_nueva:
+            if not self.producto:  # Asegura que el producto no es None
+                raise ValueError("El producto no puede ser None en una salida.")
+            
             stock, created = Stock.objects.get_or_create(producto_variante=self.producto.producto_variante)
 
             if stock.cantidad < self.cantidad:
@@ -69,7 +72,8 @@ class SalidaProducto(models.Model):
                 Notificacion.objects.create(
                     user=self.local.local.encargado.usuario,
                     mensaje=f"Se ha realizado la salida de {self.cantidad} unidades de {self.producto} hacia {self.local.local}.",
-                    tipo="salida"
+                    tipo="salida",
+                    salida=self 
                 )
 
         else:
@@ -80,13 +84,18 @@ class SalidaProducto(models.Model):
 
     
 class ConfirmacionRecepcion(models.Model):
-    salida = models.OneToOneField(SalidaProducto, on_delete=models.CASCADE, related_name="confirmacion")
-    fecha_confirmacion = models.DateTimeField(auto_now_add=True)
-    user_encargado = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE, related_name="confirmaciones", null=True, blank=True)
-    confirmado = models.BooleanField(default=False)
+    salida              = models.OneToOneField(SalidaProducto, on_delete=models.CASCADE, related_name="confirmacion")
+    fecha_confirmacion  = models.DateTimeField(auto_now_add=True)
+    user_encargado      = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE, related_name="confirmaciones", null=True, blank=True)
+    confirmado          = models.BooleanField(default=False)
+    observaciones       = models.TextField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         request = kwargs.pop('request', None) 
+
+        if self.confirmado:
+            if not self.salida:  # Asegura que la salida no es None
+                raise ValueError("La salida asociada no puede ser None.")
 
         if self.confirmado:
             if request and not self.user_encargado:
@@ -117,9 +126,8 @@ class ConfirmacionRecepcion(models.Model):
 
     def __str__(self):
         estado = "Confirmado" if self.confirmado else "Pendiente"
-        return f"Recepción {estado} - {self.salida.producto} - {self.salida.local.local}"
- 
- 
+        observaciones = self.observaciones[:30] + "..." if self.observaciones else "Sin observaciones"
+        return f"Recepción {estado} - {self.salida.producto} - {self.salida.local.local} ({observaciones})"
 
 class UnidadMedida(models.Model):
     nombre = models.CharField(max_length=100, unique=True)

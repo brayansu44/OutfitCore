@@ -99,3 +99,18 @@
     background-color: #f1f1f1;  /* Cambia el color de fondo al pasar el mouse */
     cursor: pointer;            /* Cambia el cursor para mostrar que es clickeable */
 }
+
+.notificacion{
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    line-height: 18px;
+    position: absolute;
+    top: 5px;
+    right: -5px;
+}
