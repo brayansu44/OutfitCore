@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Telas</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'telas' %}">Lista de Telas</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+        <div class="col-xl-7 mx-auto">
+            <hr />
+            <div class="card border-top border-0 border-4 border-primary">
+                <div class="card-body p-5">
+                    <div class="card-title d-flex align-items-center">
+                        <div><i class="bx bx-palette me-1 font-22 text-primary"></i></div>
+                        <h5 class="mb-0 text-primary">{{ accion }} Tela</h5>
+                    </div>
+                    <hr>
+
+                    <form method="POST" class="row g-3 needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="col-md-6">
+                            <b><label for="nombre" class="form-label">Nombre</label></b>
+                            {{ form.nombre }}
+                            <div class="invalid-feedback">Por favor, ingrese un nombre.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <b><label for="color" class="form-label">Color</label></b>
+                            {{ form.color }}
+                            <div class="invalid-feedback">Por favor, ingrese un color.</div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <b><label for="proveedor" class="form-label">Proveedor</label></b>
+                            {{ form.proveedor }}
+                            <div class="invalid-feedback">Debe seleccionar un proveedor.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-success px-5">
+                                <i class="bx bx-save"></i> Guardar
+                            </button>
+                            <a href="{% url 'telas' %}" class="btn btn-secondary px-5">
+                                <i class="bx bx-arrow-back"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict'
+
+          // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+          // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+</script>
+{% endblock %}

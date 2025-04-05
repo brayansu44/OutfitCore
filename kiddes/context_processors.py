@@ -12,11 +12,15 @@ def global_context(request):
         perfil = PerfilUsuario.objects.filter(usuario=request.user).first()
         if perfil:
             contrato = Contrato.objects.filter(perfil=perfil).first()
-        empresas = Empresa.objects.all
-        empresa_id = request.session.get('empresa_id')
-        empresa_activa = None
-        if empresa_id:
-            empresa_activa = Empresa.objects.filter(id=empresa_id).first()
+    empresas = Empresa.objects.all
+        
+    empresa_id = request.session.get('empresa_id')
+        
+    empresa_activa = None
+        
+    if empresa_id:
+        
+        empresa_activa = Empresa.objects.filter(id=empresa_id).first()    
     
     return {
         'perfil': perfil,

@@ -10,8 +10,7 @@
                 <div class="ps-3">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
-                            </li>
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
                             <li class="breadcrumb-item active" aria-current="page">Consulta de Telas</li>
                         </ol>
                     </nav>
@@ -20,6 +19,14 @@
             <!--end breadcrumb-->
             <h6 class="mb-0 text-uppercase">Lista de Telas</h6>
             <hr />
+
+            <!-- Botón de agregar tela -->
+            <div class="mb-3">
+                <a href="{% url 'agregar_tela' %}" class="btn btn-success">
+                    <i class="bx bx-plus"></i> Agregar Tela
+                </a>
+            </div>
+
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
@@ -28,9 +35,8 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Color</th>
-                                    <th>Tipo</th>
                                     <th>Proveedor</th>
-                                    <th>Ancho</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,14 +45,20 @@
                                     <tr>
                                         <td>{{ tela.nombre }}</td>
                                         <td>{{ tela.color }}</td>
-                                        <td>{{ tela.tipo }}</td>
                                         <td>{{ tela.proveedor }}</td>
-                                        <td>{{ tela.ancho }}</td>
+                                        <td class="text-center">
+                                            <a href="{% url 'editar_tela' tela.id %}" class="btn btn-sm btn-primary">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
+                                            <button class="btn btn-danger btn-sm delete-tela" data-id="{{ tela.id }}">
+                                                <i class="bx bx-trash"></i>
+                                            </button>                                            
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">
+                                        <td colspan="4" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             Actualmente no hay telas disponibles en el inventario.
                                         </td>
@@ -57,9 +69,8 @@
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Color</th>
-                                    <th>Tipo</th>
                                     <th>Proveedor</th>
-                                    <th>Ancho</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -72,8 +83,7 @@
     <!--start overlay-->
     <div class="overlay toggle-icon"></div>
     <!--end overlay-->
-    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-    <!--End Back To Top Button-->
+    <!--Start Back To Top Button--> 
+    <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    <!--End Back To Top Button--> 
 {% endblock %}
-
-

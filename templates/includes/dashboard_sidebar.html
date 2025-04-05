@@ -34,21 +34,32 @@
                 <div class="menu-title">Proveedores</div>
             </a>
         </li>
-        <li>
-            <a href="#" class="has-arrow">
-                <div class="parent-icon"><i class='fas fa-tshirt'></i>
-                </div>
-                <div class="menu-title">Telas</div>
+        {% with request.path as path %}
+        <li class="{% if '/trazabilidad/' in path %}mm-active{% endif %}">
+            <a href="#" class="has-arrow" aria-expanded="{% if '/trazabilidad/' in path %}true{% else %}false{% endif %}">
+                <div class="parent-icon"><i class='fas fa-boxes'></i></div>
+                <div class="menu-title">Trazabilidad</div>
             </a>
-            <ul>
-                <li> <a href="{% url 'telas' %}"><i class="bx bx-right-arrow-alt"></i>Telas</a> </li>
-                <li> <a href="{% url 'rollos_tela' %}"><i class="bx bx-right-arrow-alt"></i>Rollos de tela</a> </li>
-                <li> <a href="{% url 'ordenes_produccion' %}"><i class="bx bx-right-arrow-alt"></i>Órdenes de produccion</a> </li>
-                <li> <a href="{% url 'cortes_tela' %}"><i class="bx bx-right-arrow-alt"></i>Cortes de tela</a> </li>
-                <li> <a href="{% url 'tallas_corte' %}"><i class="bx bx-right-arrow-alt"></i>Tallas de corte</a> </li>
-                <li> <a href="{% url 'componentes_corte' %}"><i class="bx bx-right-arrow-alt"></i>Piezas de corte</a> </li>
+            <ul class="{% if '/trazabilidad/' in path %}mm-collapse mm-show{% else %}mm-collapse{% endif %}">
+                <li class="{% if '/trazabilidad/telas/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'telas' %}"><i class="bx bx-right-arrow-alt"></i> Telas</a>
+                </li>
+                <li class="{% if '/trazabilidad/rollos/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'rollos' %}"><i class="bx bx-right-arrow-alt"></i> Rollos de tela</a>
+                </li>
+                <li class="{% if '/trazabilidad/ordenes_produccion/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'ordenes_produccion' %}"><i class="bx bx-right-arrow-alt"></i> Órdenes de producción</a>
+                </li>
+                <li class="{% if '/trazabilidad/cortes/' in path %}active mm-active{% endif %}">
+                    <a href="#"><i class="bx bx-right-arrow-alt"></i> Cortes</a>
+                </li>
+                <li class="{% if '/trazabilidad/tallas/' in path %}active mm-active{% endif %}">
+                    <a href="#"><i class="bx bx-right-arrow-alt"></i> Tallas</a>
+                </li>
             </ul>
         </li>
+        {% endwith %}
+
         <li>
             <a href="{% url 'productos' %}">
                 <div class="parent-icon"><i class='fas fa-box'></i>

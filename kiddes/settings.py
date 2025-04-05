@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'usuarios',
     'Compras',
     'nomina',
-    'telas',
+    'trazabilidad',
     'Producto',
     'Ventas',
     'Movimientos',
@@ -193,7 +193,7 @@ JAZZMIN_SETTINGS = {
         "empresas", "locales", "locales.DiasFuncionamiento", "locales.Local", "locales.InventarioLocal", "locales.InventarioSemanal", "usuarios",
         
         # Inventario y Productos
-        "telas", "Producto", "bodega",
+        "trazabilidad", "Producto", "bodega",
         
         # Operaciones y Finanzas
         "Cuentas", "gastos", "Movimientos", "nomina", "Compras",
@@ -207,7 +207,7 @@ JAZZMIN_SETTINGS = {
         "usuarios": "fas fa-user",
         "Compras": "fas fa-shopping-cart",
         "nomina": "fas fa-file-invoice-dollar",
-        "telas": "fas fa-tshirt",
+        "trazabilidad": "fas fa-boxes",
         "Producto": "fas fa-box",
         "Ventas": "fas fa-cash-register",
         "Movimientos": "fas fa-exchange-alt",
@@ -224,7 +224,7 @@ JAZZMIN_SETTINGS = {
     "hide_models": [],
     "custom_sidebar_links": [
         {"name": "Gestión de la Empresa", "models": ["empresas", "locales", "usuarios"], "icon": "fas fa-building"},
-        {"name": "Inventario y Productos", "models": ["telas", "Producto", "bodega"], "icon": "fas fa-box"},
+        {"name": "Inventario y Productos", "models": ["trazabilidad", "Producto", "bodega"], "icon": "fas fa-box"},
         {"name": "Operaciones y Finanzas", "models": ["Cuentas", "gastos", "Movimientos", "nomina", "Compras"], "icon": "fas fa-wallet"},
         {"name": "Proveedores y Notificaciones", "models": ["proveedores", "notificaciones"], "icon": "fas fa-truck"},
     ]

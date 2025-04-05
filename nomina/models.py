@@ -73,7 +73,7 @@ class Contrato(models.Model):
     salario               = models.FloatField()
 
     def __str__(self):
-        return f"Contrato de {self.perfil.nombre} en {self.empresa.nombre} ({self.local.nombre if self.local else 'Sin local'})"
+        return f"Contrato de {self.perfil.full_name} en {self.empresa.razon_social} ({self.local.nombre if self.local else 'Sin local'})"
 
 # 📌 Modelo Devengado
 class Devengado(models.Model):

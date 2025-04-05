@@ -27,7 +27,7 @@ urlpatterns = [
     path('set_empresa/<int:empresa_id>/', views.set_empresa_id, name='set_empresa_id'),
     path('', include('usuarios.urls')),
     path('proveedores/', include('proveedores.urls')),
-    path('telas/', include('telas.urls')),
+    path('trazabilidad/', include('trazabilidad.urls')),
     path('productos/', include('Producto.urls')),
     path('empresas/', include('empresas.urls')),
     path('locales/', include('locales.urls')),
