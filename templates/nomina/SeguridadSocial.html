@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">NOMINA</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'nomina' %}">General</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Seguridad Social</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end breadcrumb-->
+				<div class="row">
+					<div class="col-xl-12 mx-auto">
+						<h6 class="mb-0 text-uppercase">SEGURIDAD SOCIAL</h6>
+						<hr/>
+						<div class="card">
+							<div class="card-body">						
+								<br />
+								<!-- SmartWizard html -->
+								<div id="smartwizard">
+									<ul class="nav">
+										<li class="nav-item">
+											<a class="nav-link" href="#step-1">	<strong>EPS</strong> 
+												<br>Gestión de Entidades promotoras de salud
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#step-2">	<strong>ARL</strong> 
+												<br>Gestión de Administradoras de Riesgos Laborales
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#step-3">	<strong>PENSIÓN</strong> 
+												<br>Gestión de Pensión
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#step-4">	<strong>CAJA COMPENSACIÓN</strong> 
+												<br>Gestión de Cajas de compesación
+                                            </a>
+										</li>
+									</ul>
+									<div class="tab-content">
+										<div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+											<h3>LISTA DE EPS</h3>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="example2" class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% if eps %}
+                                                                    {% for eps in eps %}
+                                                                    <tr>
+                                                                        <td>{{ eps.nombre }}</td>
+                                                                        <td>{{ eps.direccion }}</td>
+                                                                        <td>{{ eps.telefono }}</td>
+                                                                        <td>{{ eps.correo }}</td>
+                                                                        <td>
+                                                                            <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-center text-muted">
+                                                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                                                            Actualmente no hay EPS registradas.
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}    
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+										</div>
+										<div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+											<h3>LISTA DE ARL</h3>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="example2" class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% if arl %}
+                                                                    {% for arl in arl %}
+                                                                    <tr>
+                                                                        <td>{{ arl.nombre }}</td>
+                                                                        <td>{{ arl.direccion }}</td>
+                                                                        <td>{{ arl.telefono }}</td>
+                                                                        <td>{{ arl.correo }}</td>
+                                                                        <td>
+                                                                            <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-center text-muted">
+                                                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                                                            Actualmente no hay ARL registradas.
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}    
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+										</div>
+										<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                                            <h3>LISTA DE PENSIÓNES</h3>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="example2" class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% if pension %}
+                                                                    {% for pension in pension %}
+                                                                    <tr>
+                                                                        <td>{{ pension.nombre }}</td>
+                                                                        <td>{{ pension.direccion }}</td>
+                                                                        <td>{{ pension.telefono }}</td>
+                                                                        <td>{{ pension.correo }}</td>
+                                                                        <td>
+                                                                            <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-center text-muted">
+                                                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                                                            Actualmente no hay Pensiónes registradas.
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}    
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+										<div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+											<h3>LISTA DE CAJA COMPESACIÓN</h3>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="table-responsive">
+                                                        <table id="example2" class="table table-striped table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                {% if cajacompensacion %}
+                                                                    {% for cajacompensacion in cajacompensacion %}
+                                                                    <tr>
+                                                                        <td>{{ cajacompensacion.nombre }}</td>
+                                                                        <td>{{ cajacompensacion.direccion }}</td>
+                                                                        <td>{{ cajacompensacion.telefono }}</td>
+                                                                        <td>{{ cajacompensacion.correo }}</td>
+                                                                        <td>
+                                                                            <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                    {% endfor %}
+                                                                {% else %}
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-center text-muted">
+                                                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                                                            Actualmente no hay Cajas de compesación registradas.
+                                                                        </td>
+                                                                    </tr>
+                                                                {% endif %}    
+                                                            </tbody>
+                                                            <tfoot>
+                                                                <tr>
+                                                                    <th>Nombre</th>
+                                                                    <th>Direccion</th>
+                                                                    <th>Teléfono</th>
+                                                                    <th>Correo</th>
+                                                                    <th>Acciones</th>
+                                                                </tr>
+                                                            </tfoot>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--end row-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+{% endblock %}
+
+{% block script %}
+<script>
+
+    var selectedTabId = "{{ tab_id }}";
+    var steps = ["step-1", "step-2", "step-3", "step-4"];
+    var step = steps.indexOf(selectedTabId);
+    if (step === -1) step = 0; 
+
+    $(document).ready(function () {
+        // Step show event
+        $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+            $("#prev-btn").removeClass('disabled');
+            $("#next-btn").removeClass('disabled');
+            if (stepPosition === 'first') {
+                $("#prev-btn").addClass('disabled');
+            } else if (stepPosition === 'last') {
+                $("#next-btn").addClass('disabled');
+            } else {
+                $("#prev-btn").removeClass('disabled');
+                $("#next-btn").removeClass('disabled');
+            }
+        });
+        // Smart Wizard
+        $('#smartwizard').smartWizard({
+            selected: step,
+            theme: 'dots',
+            transition: {
+                animation: 'fade', // Effect on navigation, none/fade/slide-horizontal/slide-vertical/slide-swing
+            },
+            toolbarSettings: {
+                toolbarPosition: 'both', // both bottom
+            }
+        });
+        $("#prev-btn").on("click", function () {
+            // Navigate previous
+            $('#smartwizard').smartWizard("prev");
+            return true;
+        });
+        $("#next-btn").on("click", function () {
+            // Navigate next
+            $('#smartwizard').smartWizard("next");
+            return true;
+        });
+    });
+</script>
+{% endblock %}
