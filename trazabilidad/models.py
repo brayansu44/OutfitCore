@@ -38,8 +38,10 @@ class RolloTela(models.Model):
             self.estado = 'Completo'
 
     def consumir_metros(self, metros):
+        if metros <= 0:
+            raise ValidationError("Los metros consumidos deben ser mayores a cero.")
         if metros > self.largo_restante:
-            raise ValidationError("No hay suficiente tela en el rollo.")
+            raise ValidationError("No hay suficiente tela disponible en el rollo.")
         self.largo_restante -= metros
         self.actualizar_estado()
         self.save()
@@ -106,24 +108,26 @@ class CorteTela(models.Model):
     categoria = models.CharField(max_length=10, choices=CATEGORIA, default='Adulto')
     responsable = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
 
-    def calcular_faltante(self):
-        return max(0, self.rollo.largo_restante - self.largo_utilizado)
-
     def calcular_rendimiento(self):
-        if self.rollo.largo_inicial:
-            return (self.largo_utilizado / self.rollo.largo_inicial) * 100
+        metros_previos = self.largo_utilizado + self.rollo.largo_restante
+        if metros_previos > 0:
+            return (self.largo_utilizado / metros_previos) * 100
         return 0
 
     def calcular_medida_tendido_mesa(self):
         if self.capas_cortadas > 0:
             return self.metros_tendidos / self.capas_cortadas
-        return 0  
+        return 0
 
     def save(self, *args, **kwargs):
-        if self.largo_utilizado > self.rollo.largo_restante:
-            raise ValidationError("No hay suficiente tela en el rollo para realizar este corte.")
         self.rendimiento_rollo = self.calcular_rendimiento()
-        self.rollo.consumir_metros(self.largo_utilizado)
+        self.medida_tendido_mesa = self.calcular_medida_tendido_mesa()
+
+        if self.pk is None: 
+            if self.largo_utilizado > self.rollo.largo_restante:
+                raise ValidationError("No hay suficiente tela en el rollo para realizar este corte.")
+            self.rollo.consumir_metros(self.largo_utilizado)
+
         super().save(*args, **kwargs)
 
     def __str__(self):

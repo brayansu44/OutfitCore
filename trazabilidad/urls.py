@@ -23,5 +23,7 @@ urlpatterns = [
     # Cortes
     path('cortes_tela/', views.cortes, name='cortes'),
     path('cortes/agregar/', views.agregar_corte, name='agregar_corte'),
+    path('cortes/editar/<int:corte_id>/', views.editar_corte, name='editar_corte'),
+    path('cortes/eliminar/<int:corte_id>/', views.eliminar_corte, name='eliminar_corte'),
     #path('tallas_corte/', views.tallas_corte, name='tallas_corte'),
 ]    

@@ -122,3 +122,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-corte").forEach(button => {
+        button.addEventListener("click", function () {
+            let corteId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Deseas eliminar este corte?",
+                text: "Una vez eliminado, no podrás recuperarlo.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/trazabilidad/cortes/eliminar/${corteId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("Eliminado", "El corte ha sido eliminado.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire("Error", "No se pudo eliminar el corte.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                        });
+                }
+            });
+        });
+    });
+});

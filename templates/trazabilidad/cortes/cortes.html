@@ -52,11 +52,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if cortes_tela %}
-                                    {% for corte in cortes_tela %}
+                                {% if cortes %}
+                                    {% for corte in cortes %}
                                     <tr>
                                         <td>{{ corte.numero_corte }}</td>
-                                        <td>{{ corte.orden.referencia }}</td>
+                                        <td>{{ corte.orden.id }}</td>
                                         <td>{{ corte.rollo.tela.nombre }} - {{ corte.rollo.color }}</td>
                                         <td>{{ corte.rollo.estado }}</td>
                                         <td>{{ corte.largo_utilizado }}</td>
@@ -69,12 +69,12 @@
                                         <td>{{ corte.fecha_corte|date:"d/m/Y" }}</td>
                                         <td>{{ corte.responsable }}</td>
                                         <td>
-                                            <a href="#" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'editar_corte' corte.id %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <a href="#" class="btn btn-sm btn-danger">
+                                            <button class="btn btn-danger btn-sm delete-corte" data-id="{{ corte.id }}">
                                                 <i class="bx bx-trash"></i>
-                                            </a>
+                                            </button>
                                         </td>
                                     </tr>
                                     {% endfor %}

@@ -74,12 +74,9 @@ class OrdenProduccionForm(forms.ModelForm):
 class CorteTelaForm(forms.ModelForm):
     fecha_corte = forms.DateField(
         widget=forms.DateInput(
-            attrs={
-                'type': 'date',
-                'class': 'form-control'
-            }
+            attrs={'type': 'date', 'class': 'form-control'},
+            format='%Y-%m-%d'
         ),
-        initial=localdate,
         required=True
     )
 
@@ -109,5 +106,9 @@ class CorteTelaForm(forms.ModelForm):
         self.fields['rollo'].widget.attrs.update({'class': 'form-select'})  
         
         self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
-        self.fields['responsable'].empty_label = "Seleccione un responsable"             
+        self.fields['responsable'].empty_label = "Seleccione un responsable"
+
+        if self.instance and self.instance.fecha_corte:
+            self.initial['fecha_corte'] = self.instance.fecha_corte.strftime('%Y-%m-%d')
+             
 

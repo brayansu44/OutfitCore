@@ -14,8 +14,8 @@ class EstadoChoices(models.TextChoices):
 class EntregaCorte(models.Model):
     fecha = models.DateField(auto_now_add=True)
     producto = models.ForeignKey(ProductoVariante, on_delete=models.CASCADE, related_name="ingresos")
-    cantidad = models.PositiveIntegerField()  # Cantidad total
-    cantidad_lavado = models.PositiveIntegerField(default=0)  # Cantidad que va a lavado
+    cantidad = models.PositiveIntegerField()  
+    cantidad_lavado = models.PositiveIntegerField(default=0) 
     user_responsable = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE)
 
     def clean(self):

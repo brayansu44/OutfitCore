@@ -160,26 +160,26 @@ def agregar_corte(request):
     return render(request, 'trazabilidad/cortes/form_corte.html', {'form': form, 'accion': 'Agregar'})
 
 @login_required(login_url='login')
-def editar_cortes(request, orden_id):
-    orden = get_object_or_404(OrdenProduccion, id=orden_id)
+def editar_corte(request, corte_id):
+    corte = get_object_or_404(CorteTela, id=corte_id)
     
     if request.method == "POST":
-        form = OrdenProduccionForm(request.POST, instance=orden)
+        form = CorteTelaForm(request.POST, instance=corte)
         if form.is_valid():
             form.save()
-            messages.success(request, "Orden de producción actualizada correctamente.")
-            return redirect('ordenes_produccion')
+            messages.success(request, "Corte actualizado correctamente.")
+            return redirect('cortes')
     else:
-        form = OrdenProduccionForm(instance=orden)
+        form = CorteTelaForm(instance=corte)
     
-    return render(request, 'trazabilidad/ordenes_produccion/form_orden.html', {'form': form, 'accion': 'Editar'})
+    return render(request, 'trazabilidad/cortes/form_corte.html', {'form': form, 'accion': 'Editar'})
 
 @login_required(login_url='login')
 @require_POST
-def eliminar_cortes(request, orden_id):
+def eliminar_corte(request, corte_id):
     if request.method == 'POST':
-        orden = get_object_or_404(OrdenProduccion, id=orden_id)
-        orden.delete()
+        corte = get_object_or_404(CorteTela, id=corte_id)
+        corte.delete()
         return JsonResponse({'success': True})
     
     return JsonResponse({'success': False, 'error': 'Método no permitido'})
