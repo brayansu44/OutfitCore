@@ -3,13 +3,13 @@ from .models import Tela, RolloTela, OrdenProduccion, CorteTela, TallaCorte
 
 @admin.register(Tela)
 class TelaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'color', 'proveedor')
-    search_fields = ('nombre', 'color', 'proveedor__nombre')
-    list_filter = ('color', 'proveedor')
+    list_display = ('nombre', 'proveedor')
+    search_fields = ('nombre', 'proveedor__Razon_Social')
+    list_filter = ('proveedor',)
 
 @admin.register(RolloTela)
 class RolloTelaAdmin(admin.ModelAdmin):
-    list_display = ('numero_rollo', 'tela', 'metros_solicitados', 'largo_inicial', 'largo_restante', 'kilos', 'estado', 'fecha_registro')
+    list_display = ('numero_rollo', 'tela', 'color', 'metros_solicitados', 'largo_inicial', 'largo_restante', 'kilos', 'estado', 'fecha_registro')
     search_fields = ('numero_rollo', 'tela__nombre')
     list_filter = ('estado', 'fecha_registro')
     ordering = ('-fecha_registro',)

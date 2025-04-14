@@ -19,6 +19,9 @@ urlpatterns = [
     path('ordenes_produccion/agregar/', views.agregar_orden, name='agregar_orden'),
     path('ordenes_produccion/editar/<int:orden_id>/', views.editar_orden, name='editar_orden'),
     path('ordenes_produccion/eliminar/<int:orden_id>/', views.eliminar_orden, name='eliminar_orden'),
-    #path('cortes_tela/', views.cortes_tela, name='cortes_tela'),
+
+    # Cortes
+    path('cortes_tela/', views.cortes, name='cortes'),
+    path('cortes/agregar/', views.agregar_corte, name='agregar_corte'),
     #path('tallas_corte/', views.tallas_corte, name='tallas_corte'),
 ]    

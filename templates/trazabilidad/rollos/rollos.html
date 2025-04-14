@@ -52,7 +52,7 @@
                                     <th>Metros Solicitados</th>
                                     <th>Largo Inicial (m)</th>
                                     <th>Largo Restante (m)</th>
-                                    <th>Kilos</th>
+                                    <th>Kilos (kg)</th>
                                     <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
@@ -62,7 +62,7 @@
                                     {% for rollo in rollos %}
                                     <tr>
                                         <td>{{ rollo.tela.nombre }}</td>
-                                        <td>{{ rollo.tela.color }}</td>
+                                        <td>{{ rollo.color }}</td>
                                         <td>{{ rollo.tela.proveedor }}</td>
                                         <td>{{ rollo.fecha_registro }}</td> 
                                         <td>{{ rollo.numero_rollo }}</td>

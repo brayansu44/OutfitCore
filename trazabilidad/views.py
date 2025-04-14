@@ -8,8 +8,6 @@ from .forms import *
 #models
 from .models import *
 
-# Create your views here.
-
 #telas
 @login_required(login_url='login')
 def telas(request):
@@ -135,6 +133,50 @@ def editar_orden(request, orden_id):
 @login_required(login_url='login')
 @require_POST
 def eliminar_orden(request, orden_id):
+    if request.method == 'POST':
+        orden = get_object_or_404(OrdenProduccion, id=orden_id)
+        orden.delete()
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+# Cortes
+@login_required(login_url='login')
+def cortes(request):
+    cortes = CorteTela.objects.all()
+    return render(request, 'trazabilidad/cortes/cortes.html', {'cortes': cortes})
+
+@login_required(login_url='login')
+def agregar_corte(request):
+    if request.method == 'POST':
+        form = CorteTelaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Corte agregado correctamente.")
+            return redirect('cortes')
+    else:
+        form = CorteTelaForm()
+        
+    return render(request, 'trazabilidad/cortes/form_corte.html', {'form': form, 'accion': 'Agregar'})
+
+@login_required(login_url='login')
+def editar_cortes(request, orden_id):
+    orden = get_object_or_404(OrdenProduccion, id=orden_id)
+    
+    if request.method == "POST":
+        form = OrdenProduccionForm(request.POST, instance=orden)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Orden de producción actualizada correctamente.")
+            return redirect('ordenes_produccion')
+    else:
+        form = OrdenProduccionForm(instance=orden)
+    
+    return render(request, 'trazabilidad/ordenes_produccion/form_orden.html', {'form': form, 'accion': 'Editar'})
+
+@login_required(login_url='login')
+@require_POST
+def eliminar_cortes(request, orden_id):
     if request.method == 'POST':
         orden = get_object_or_404(OrdenProduccion, id=orden_id)
         orden.delete()

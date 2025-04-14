@@ -51,7 +51,7 @@
                     <a href="{% url 'ordenes_produccion' %}"><i class="bx bx-right-arrow-alt"></i> Órdenes de producción</a>
                 </li>
                 <li class="{% if '/trazabilidad/cortes/' in path %}active mm-active{% endif %}">
-                    <a href="#"><i class="bx bx-right-arrow-alt"></i> Cortes</a>
+                    <a href="{% url 'cortes' %}"><i class="bx bx-right-arrow-alt"></i> Cortes</a>
                 </li>
                 <li class="{% if '/trazabilidad/tallas/' in path %}active mm-active{% endif %}">
                     <a href="#"><i class="bx bx-right-arrow-alt"></i> Tallas</a>

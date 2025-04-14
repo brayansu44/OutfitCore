@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.timezone import localtime, localdate
 from .models import *
 
 class TelaForm(forms.ModelForm):
@@ -17,7 +18,8 @@ class TelaForm(forms.ModelForm):
 class RolloTelaForm(forms.ModelForm):
     fecha_registro = forms.DateTimeField(
         widget=forms.DateTimeInput(
-            attrs={'type': 'datetime-local', 'class': 'form-control'}
+            attrs={'type': 'datetime-local', 'class': 'form-control'},
+            format='%Y-%m-%dT%H:%M'
         ),
         required=True 
     )
@@ -26,23 +28,23 @@ class RolloTelaForm(forms.ModelForm):
         model = RolloTela
         fields = [
             'numero_rollo', 'numero_referencia', 'referencia', 
-            'tela', 'metros_solicitados', 'largo_inicial', 
+            'tela', 'color', 'metros_solicitados', 'largo_inicial', 
             'kilos', 'fecha_registro'
         ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
         for field_name, field in self.fields.items():
             field.widget.attrs.update({'class': 'form-control'})
-
             if field.required:
                 field.label = f"<strong>{field.label if field.label else field_name}</strong>"
 
         self.fields['tela'].empty_label = "Seleccione una tela"
         self.fields['tela'].widget.attrs.update({'class': 'form-select'})
 
-from django import forms
-from .models import OrdenProduccion
+        if self.instance and self.instance.fecha_registro:
+            self.initial['fecha_registro'] = localtime(self.instance.fecha_registro).strftime('%Y-%m-%dT%H:%M')
 
 class OrdenProduccionForm(forms.ModelForm):
     class Meta:
@@ -58,6 +60,7 @@ class OrdenProduccionForm(forms.ModelForm):
             if field.required:
                 field.label = f"<strong>{field.label if field.label else field_name}</strong>"
 
+        self.fields['producto'].label_from_instance = lambda obj: obj.referencia
         self.fields['producto'].empty_label = "Seleccione una referencia"
         self.fields['producto'].widget.attrs.update({'class': 'form-select'})
 
@@ -66,5 +69,45 @@ class OrdenProduccionForm(forms.ModelForm):
 
         if 'observaciones' in self.fields:
             observaciones_field = self.fields.pop('observaciones')  
-            self.fields['observaciones'] = observaciones_field 
+            self.fields['observaciones'] = observaciones_field
+
+class CorteTelaForm(forms.ModelForm):
+    fecha_corte = forms.DateField(
+        widget=forms.DateInput(
+            attrs={
+                'type': 'date',
+                'class': 'form-control'
+            }
+        ),
+        initial=localdate,
+        required=True
+    )
+
+    class Meta:
+        model = CorteTela
+        fields = [
+            'numero_corte', 'orden', 'rollo', 'largo_utilizado',
+            'capas_cortadas', 'metros_tendidos',
+            'colas', 'metros_dft_gastados',
+            'fecha_corte', 'categoria', 'responsable'
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+            if field.required:
+                field.label = f"<strong>{field.label if field.label else field_name}</strong>"
+
+        
+        self.fields['orden'].empty_label = "Seleccione una orden"
+        self.fields['orden'].widget.attrs.update({'class': 'form-select'})   
+
+        self.fields['rollo'].empty_label = "Seleccione un rollo"
+        self.fields['rollo'].widget.attrs.update({'class': 'form-select'})  
+        
+        self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
+        self.fields['responsable'].empty_label = "Seleccione un responsable"             
 

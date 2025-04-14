@@ -5,12 +5,11 @@ from proveedores.models import Proveedor
 from Producto.models import Producto
 
 class Tela(models.Model):
-    nombre = models.CharField(max_length=100, unique=True, null=False, blank=False)
-    color = models.CharField(max_length=50, null=False, blank=False)
-    proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
+    nombre      = models.CharField(max_length=100, unique=True, null=False, blank=False)
+    proveedor   = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     
     def __str__(self):
-        return f"{self.nombre} - {self.color}"
+        return f"{self.nombre}"
 
 class RolloTela(models.Model):
     ESTADO = (
@@ -18,16 +17,17 @@ class RolloTela(models.Model):
         ('Incompleto', 'Incompleto'),
         ('Agotado', 'Agotado'),
     )
-    numero_rollo = models.CharField(max_length=50, unique=True)
-    referencia = models.CharField(max_length=100)
-    numero_referencia = models.CharField(max_length=50, unique=True)
-    tela = models.ForeignKey(Tela, on_delete=models.CASCADE)
-    metros_solicitados = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    largo_inicial = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, default=0)
-    largo_restante = models.DecimalField(max_digits=6, decimal_places=2)
-    kilos = models.DecimalField(max_digits=6, decimal_places=2, default=0)
-    estado = models.CharField(max_length=50, choices=ESTADO, default='Completo')
-    fecha_registro = models.DateTimeField(null=False, blank=False)
+    numero_rollo        = models.CharField(max_length=50, db_index=True)
+    referencia          = models.CharField(max_length=100, db_index=True)
+    numero_referencia   = models.CharField(max_length=50, unique=True)
+    tela                = models.ForeignKey(Tela, on_delete=models.CASCADE)
+    color               = models.CharField(max_length=50, null=False, blank=False)
+    metros_solicitados  = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    largo_inicial       = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True, default=0)
+    largo_restante      = models.DecimalField(max_digits=6, decimal_places=2)
+    kilos               = models.DecimalField(max_digits=6, decimal_places=2, default=0)
+    estado              = models.CharField(max_length=50, choices=ESTADO, default='Completo')
+    fecha_registro      = models.DateTimeField(null=False, blank=False)
 
     def actualizar_estado(self):
         if self.largo_restante <= 0:
@@ -57,7 +57,7 @@ class RolloTela(models.Model):
         super().save(*args, **kwargs)
     
     def __str__(self):
-        return f"Rollo {self.numero_rollo} - {self.tela.nombre} - {self.largo_restante}m restantes - Estado: {self.estado}"
+        return f"Rollo {self.numero_rollo} - {self.tela.nombre} - {self.color} - {self.largo_restante}m restantes - Estado: {self.estado}"
 
 class OrdenProduccion(models.Model):
     ESTADO_CHOICES = (
