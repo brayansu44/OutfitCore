@@ -140,8 +140,3 @@ $(document).ready(function() {
     table.buttons().container()
         .appendTo('#productos_wrapper .col-md-6:eq(0)');
 });
-
-
-
-
-

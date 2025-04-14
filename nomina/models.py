@@ -2,6 +2,7 @@ from django.db import models
 from usuarios.models import PerfilUsuario
 from empresas.models import Empresa
 from locales.models import Local
+from django.core.exceptions import ValidationError
 
 # 📌 Modelo EPS
 class EPS(models.Model):
@@ -160,7 +161,8 @@ class AportesParafiscal(models.Model):
 
 # 📌 Modelo Nómina
 class Nomina(models.Model):
-    periodo_pago        = models.DateField()
+    fecha_inicio        = models.DateField(null=False, blank=True, default='2025-01-01')
+    fecha_fin           = models.DateField(null=False, blank=True, default='2025-01-31')
     fecha_liquidacion   = models.DateField(auto_now_add=True)
     contrato            = models.ForeignKey(Contrato, on_delete=models.CASCADE)
     devengado           = models.OneToOneField(Devengado, on_delete=models.CASCADE)
@@ -170,11 +172,17 @@ class Nomina(models.Model):
     neto_pagado         = models.FloatField()
 
     def calcular_neto(self):
-        return self.devengado.total - self.deducciones.total_deducciones()
+        return self.devengado.calcular_total - self.deducciones.total_deducciones()
+    
+    def clean(self):
+        if self.fecha_inicio > self.fecha_fin:
+            raise ValidationError("La fecha de inicio del periodo de Nomina no puede ser posterior a la fecha de fin.")
+
 
     def save(self, *args, **kwargs):
+        self.clean()
         self.neto_pagado = self.calcular_neto()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Nómina {self.periodo_pago} - {self.contrato.perfil}"
+        return f"Nómina {self.fecha_inicio} - {self.fecha_fin} - {self.contrato.perfil}"

@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!--start page wrapper -->
+<div class="page-wrapper">
+    <div class="page-content">
+        <!--breadcrumb-->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Nomina</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">General</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="ms-auto">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary">Parametrizar</button>
+                    <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	
+                        <a class="dropdown-item" href="javascript:;">Devengado</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;">Deducciones</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;">Provisiones</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="javascript:;">Aportes ParaFiscal</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end breadcrumb-->
+        <h6 class="mb-0 text-uppercase">GENERAL NOMINA</h6>
+        <hr/>
+        <div class="row row-cols-1 row-cols-lg-1 row-cols-xl-2">
+
+            <div class="col">
+                <div class="card radius-15">
+                    <div class="card-body text-center">
+                        <div class="p-4 border radius-15">
+                            <img src="" width="110" height="110" class="rounded-circle shadow" alt="">
+                            <h5 class="mb-0 mt-5">CONTRATOS</h5>
+                            <p class="mb-3">Gestión de contratos</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-google text-white border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Contact Me</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="card radius-15">
+                    <div class="card-body text-center">
+                        <div class="p-4 border radius-15">
+                            <img src="assets/images/avatars/avatar-3.png" width="110" height="110" class="rounded-circle shadow" alt="">
+                            <h5 class="mb-0 mt-5">NOMINA</h5>
+                            <p class="mb-3">Gestión periodo de nomina</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-google text-white border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Contact Me</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end row-->
+        <h6 class="mb-0 text-uppercase">SEGURIDAD SOCIAL</h6>
+        <hr/>
+        <div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+            <div class="col">
+                <div class="card radius-15 bg-primary">
+                    <div class="card-body text-center">
+                        <div class="p-4 radius-15">
+                            
+                            <img src="assets/images/avatars/avatar-9.png" width="110" height="110" class="rounded-circle shadow p-1 bg-white" alt="">
+                            <h5 class="mb-0 mt-5 text-white">EPS</h5>
+                            <p class="mb-3 text-white">Gestión de Entidades promotoras de salud</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="{% url 'SeguridadSocial' 'step-1' %}" class="btn btn-white radius-15">Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card radius-15 bg-danger">
+                    <div class="card-body text-center">
+                        <div class="p-4 radius-15">
+                            <img src="assets/images/avatars/avatar-15.png" width="110" height="110" class="rounded-circle shadow p-1 bg-white" alt="">
+                            <h5 class="mb-0 mt-5 text-white">ARL</h5>
+                            <p class="mb-3 text-white">Gestión de Administradoras de Riesgos Laborales</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="{% url 'SeguridadSocial' 'step-2' %}" class="btn btn-white radius-15">Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card radius-15 bg-warning">
+                    <div class="card-body text-center">
+                        <div class="p-4 radius-15">
+                            <img src="assets/images/avatars/avatar-7.png" width="110" height="110" class="rounded-circle shadow p-1 bg-white" alt="">
+                            <h5 class="mb-0 mt-5 text-dark">PENSIÓN</h5>
+                            <p class="mb-3 text-dark">Gestión de Pensión</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="{% url 'SeguridadSocial' 'step-3' %}" class="btn btn-white radius-15">Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card radius-15 bg-info">
+                    <div class="card-body text-center">
+                        <div class="p-4 radius-15">
+                            <img src="assets/images/avatars/avatar-8.png" width="110" height="110" class="rounded-circle shadow p-1 bg-white" alt="">
+                            <h5 class="mb-0 mt-5 text-dark">CAJA COMPENSACIÓN</h5>
+                            <p class="mb-3 text-dark">Gestión de Cajas de compesación</p>
+                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-facebook"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-twitter"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-google"></i></a>
+                                <a href="javascript:;" class="list-inline-item border-0"><i class="bx bxl-linkedin"></i></a>
+                            </div>
+                            <div class="d-grid"> <a href="{% url 'SeguridadSocial' 'step-4' %}" class="btn btn-white radius-15">Detalles</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--end row-->
+    </div>
+</div>
+<!--end page wrapper -->
+
+{% endblock %}

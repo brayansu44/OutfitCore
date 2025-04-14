@@ -34,5 +34,5 @@ class AportesParafiscalAdmin(admin.ModelAdmin):
 
 @admin.register(Nomina)
 class NominaAdmin(admin.ModelAdmin):
-    list_display = ('periodo_pago', 'fecha_liquidacion', 'contrato', 'neto_pagado')
-    list_filter = ('periodo_pago', 'contrato')
+    list_display = ('fecha_inicio', 'fecha_fin', 'fecha_liquidacion', 'contrato')
+    list_filter = ('fecha_inicio', 'fecha_fin', 'contrato',)
