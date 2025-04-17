@@ -162,3 +162,83 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-talla").forEach(button => {
+        button.addEventListener("click", function () {
+            let tallaId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Deseas eliminar esta talla?",
+                text: "Una vez eliminada, no podrás recuperarla.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/trazabilidad/tallas_corte/eliminar/${tallaId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("Eliminado", "La talla ha sido eliminada.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire("Error", "No se pudo eliminar la talla.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                        });
+                }
+            });
+        });
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-retazo").forEach(button => {
+        button.addEventListener("click", function () {
+            let retazoId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Deseas eliminar este retazo?",
+                text: "Una vez eliminado, no podrás recuperarlo.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/trazabilidad/retazos_tela/eliminar/${retazoId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("Eliminado", "El retazo ha sido eliminado.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire("Error", "No se pudo eliminar el retazo.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                        });
+                }
+            });
+        });
+    });
+});

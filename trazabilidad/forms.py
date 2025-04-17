@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.timezone import localtime, localdate
+from django.utils.timezone import localtime
 from .models import *
 
 class TelaForm(forms.ModelForm):
@@ -110,5 +110,64 @@ class CorteTelaForm(forms.ModelForm):
 
         if self.instance and self.instance.fecha_corte:
             self.initial['fecha_corte'] = self.instance.fecha_corte.strftime('%Y-%m-%d')
-             
 
+class TallaCorteForm(forms.ModelForm):
+
+    class Meta:
+        model = TallaCorte
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+            if field.required:
+                field.label = f"<strong>{field.label if field.label else field_name}</strong>"
+
+        self.fields['corte'].empty_label = "Seleccione un corte"
+        self.fields['corte'].widget.attrs.update({'class': 'form-select'})   
+
+        self.fields['talla'].widget.attrs.update({'class': 'form-select'})          
+
+class RetazoTelaForm(forms.ModelForm):
+
+    fecha_registro = forms.DateField(
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'},
+            format='%Y-%m-%d'
+        ),
+        required=True
+    )
+
+    class Meta:
+        model = RetazoTela
+        fields = [
+            'rollo', 'orden', 'capas_cortadas',
+            'metros_tendidos', 'colas', 'faltante', 
+            'fecha_registro', 'responsable','observaciones',
+        ]
+        
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+            if field.required:
+                field.label = f"<strong>{field.label if field.label else field_name}</strong>"
+
+        self.fields['rollo'].empty_label = "Seleccione un rollo"
+        self.fields['rollo'].widget.attrs.update({'class': 'form-select'})
+
+        self.fields['orden'].empty_label = "Seleccione una orden"
+        self.fields['orden'].widget.attrs.update({'class': 'form-select'})
+
+        self.fields['responsable'].empty_label = "Seleccione un cortador"
+        self.fields['responsable'].widget.attrs.update({'class': 'form-select'})
+
+        if 'observaciones' in self.fields:
+            observaciones_field = self.fields.pop('observaciones')  
+            self.fields['observaciones'] = observaciones_field

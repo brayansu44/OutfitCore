@@ -184,3 +184,143 @@ def eliminar_corte(request, corte_id):
     
     return JsonResponse({'success': False, 'error': 'Método no permitido'})
 
+# Tallas
+@login_required(login_url='login')
+def tallas(request):
+    tallas = TallaCorte.objects.all()
+    return render(request, 'trazabilidad/tallas/tallas.html', {'tallas': tallas})
+
+@login_required(login_url='login')
+def agregar_talla(request):
+    if request.method == 'POST':
+        form = TallaCorteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Talla agregada correctamente.")
+            return redirect('tallas')
+    else:
+        form = TallaCorteForm()
+        
+    return render(request, 'trazabilidad/tallas/form_talla.html', {'form': form, 'accion': 'Agregar'})
+
+@login_required(login_url='login')
+def editar_talla(request, talla_id):
+    talla = get_object_or_404(TallaCorte, id=talla_id)
+    
+    if request.method == "POST":
+        form = TallaCorteForm(request.POST, instance=talla)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Talla actualizada correctamente.")
+            return redirect('tallas')
+    else:
+        form = TallaCorteForm(instance=talla)
+    
+    return render(request, 'trazabilidad/tallas/form_talla.html', {'form': form, 'accion': 'Editar'})
+
+@login_required(login_url='login')
+@require_POST
+def eliminar_talla(request, talla_id):
+    if request.method == 'POST':
+        talla = get_object_or_404(TallaCorte, id=talla_id)
+        talla.delete()
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+# Retazos
+@login_required(login_url='login')
+def retazos(request):
+    retazos = RetazoTela.objects.all()
+    return render(request, 'trazabilidad/retazos/retazos.html', {'retazos': retazos})
+
+@login_required(login_url='login')
+def agregar_retazo(request):
+    if request.method == 'POST':
+        form = RetazoTelaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Retazo agregado correctamente.")
+            return redirect('retazos')
+    else:
+        form = RetazoTelaForm()
+        
+    return render(request, 'trazabilidad/retazos/form_retazo.html', {'form': form, 'accion': 'Agregar'})
+
+@login_required(login_url='login')
+def editar_retazo(request, retazo_id):
+    retazo = get_object_or_404(RetazoTela, id=retazo_id)
+    
+    if request.method == "POST":
+        form = RetazoTelaForm(request.POST, instance=retazo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "retazo actualizado correctamente.")
+            return redirect('retazos')
+    else:
+        form = RetazoTelaForm(instance=retazo)
+    
+    return render(request, 'trazabilidad/retazos/form_retazo.html', {'form': form, 'accion': 'Editar'})
+
+@login_required(login_url='login')
+@require_POST
+def eliminar_retazo(request, retazo_id):
+    if request.method == 'POST':
+        retazo = get_object_or_404(RetazoTela, id=retazo_id)
+        retazo.delete()
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'})
+
+@login_required(login_url='login')
+def informe_cortes(request):
+    cortes = CorteTela.objects.select_related(
+        'rollo__tela',
+        'orden',
+    ).prefetch_related('tallas_cortes')
+
+    data = []
+    total_metros = 0
+    total_capas = 0 
+    total_tallas = 0
+
+    for corte in cortes:
+        tallas = corte.tallas_cortes.all()
+        tallas_detalle = [f"{t.talla}: {t.cantidad}" for t in tallas]
+        total_tallas_corte = sum(t.cantidad for t in tallas)
+        total_tallas += total_tallas_corte
+
+        capas = corte.capas_cortadas
+
+        retazos_qs = RetazoTela.objects.filter(
+            rollo=corte.rollo,
+            orden=corte.orden
+        )
+        retazos_generados = [f"{r.metros_tendidos} m" for r in retazos_qs]
+
+        total_metros += corte.largo_utilizado
+        total_capas += capas  
+
+        data.append({
+            'numero_corte': corte.numero_corte,
+            'fecha_corte': corte.fecha_corte,
+            'rollo_numero': corte.rollo.numero_rollo,
+            'tela_nombre': corte.rollo.tela.nombre,
+            'rollo_color': corte.rollo.color,
+            'largo_utilizado': corte.largo_utilizado,
+            'tallas_detalle': tallas_detalle,
+            'total_tallas': total_tallas_corte,
+            'retazos_generados': retazos_generados,
+            'capas': capas
+        })
+
+    return render(request, 'trazabilidad/informe_cortes.html', {
+        'data': data,
+        'total_metros': total_metros,
+        'total_capas': total_capas,
+        'total_tallas': total_tallas 
+    })
+
+
+
+

@@ -153,3 +153,52 @@ class TallaCorte(models.Model):
 
     def __str__(self):
         return f"Corte {self.corte.numero_corte} - Talla {self.talla} - {self.cantidad} unidades"
+    
+class RetazoTela(models.Model):
+    rollo = models.ForeignKey(RolloTela, on_delete=models.PROTECT)
+    orden = models.ForeignKey(OrdenProduccion, on_delete=models.SET_NULL, null=True, blank=True)
+    capas_cortadas = models.PositiveIntegerField()
+    metros_tendidos = models.DecimalField(max_digits=6, decimal_places=2)
+    colas = models.DecimalField(max_digits=6, decimal_places=2)
+    medida_tendido_mesa = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    faltante =  models.DecimalField(max_digits=6, decimal_places=2)
+    fecha_registro = models.DateField()
+    observaciones = models.TextField(blank=True, null=True)
+    responsable = models.ForeignKey(PerfilUsuario, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name = "Retazo de Tela"
+        verbose_name_plural = "Retazos de Tela"
+        ordering = ['-fecha_registro']
+
+    def calcular_medida_tendido_mesa(self):
+        if self.capas_cortadas > 0:
+            return self.metros_tendidos / self.capas_cortadas
+        return 0
+    
+    def calcular_faltante(self):
+        # Faltante = metros que no se consumieron de lo tendido
+        # (es decir: metros_tendidos – lo que realmente se usó = colas + faltante)
+        # pero aquí lo tomamos como lo que quedó sin usar:
+        return max(0, self.metros_tendidos - self.colas)
+    
+    def clean(self):
+        # Validaciones previas al save
+        if self.metros_tendidos <= 0:
+            raise ValidationError("Los metros tendidos deben ser mayores a 0.")
+        if self.capas_cortadas <= 0:
+            raise ValidationError("Debe indicar al menos una capa cortada.")
+        if self.colas < 0:
+            raise ValidationError("Las colas no pueden ser negativas.")
+    
+    def save(self, *args, **kwargs):
+        # Calcula automáticamente medida por capa y faltante
+        self.medida_tendido_mesa = self.calcular_medida_tendido_mesa()
+        self.faltante = self.calcular_faltante()
+
+        # Llama validación
+        self.full_clean()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Retazo {self.rollo} – {self.metros_tendidos} m ({self.capas_cortadas} capas)"

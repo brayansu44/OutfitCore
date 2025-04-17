@@ -53,8 +53,14 @@
                 <li class="{% if '/trazabilidad/cortes/' in path %}active mm-active{% endif %}">
                     <a href="{% url 'cortes' %}"><i class="bx bx-right-arrow-alt"></i> Cortes</a>
                 </li>
-                <li class="{% if '/trazabilidad/tallas/' in path %}active mm-active{% endif %}">
-                    <a href="#"><i class="bx bx-right-arrow-alt"></i> Tallas</a>
+                <li class="{% if '/trazabilidad/tallas_corte/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'tallas' %}"><i class="bx bx-right-arrow-alt"></i> Tallas</a>
+                </li>
+                <li class="{% if '/trazabilidad/retazos_tela/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'retazos' %}"><i class="bx bx-right-arrow-alt"></i> Retazos</a>
+                </li>
+                <li class="{% if '/trazabilidad/informe_cortes/' in path %}active mm-active{% endif %}">
+                    <a href="{% url 'informe_cortes' %}"><i class="bx bx-right-arrow-alt"></i> Informe de Cortes</a>
                 </li>
             </ul>
         </li>

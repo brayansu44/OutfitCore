@@ -25,5 +25,18 @@ urlpatterns = [
     path('cortes/agregar/', views.agregar_corte, name='agregar_corte'),
     path('cortes/editar/<int:corte_id>/', views.editar_corte, name='editar_corte'),
     path('cortes/eliminar/<int:corte_id>/', views.eliminar_corte, name='eliminar_corte'),
-    #path('tallas_corte/', views.tallas_corte, name='tallas_corte'),
+
+    #tallas
+    path('tallas_corte/', views.tallas, name='tallas'),
+    path('tallas_corte/agregar/', views.agregar_talla, name='agregar_talla'),
+    path('tallas_corte/editar/<int:talla_id>/', views.editar_talla, name='editar_talla'),
+    path('tallas_corte/eliminar/<int:talla_id>/', views.eliminar_talla, name='eliminar_talla'),
+
+    #Retazos
+    path('retazos_tela/', views.retazos, name='retazos'),
+    path('retazos_tela/agregar', views.agregar_retazo, name='agregar_retazo'),
+    path('retazos_tela/editar/<int:retazo_id>/', views.editar_retazo, name='editar_retazo'),
+    path('retazos_tela/eliminar/<int:retazo_id>/', views.eliminar_retazo, name='eliminar_retazo'),
+
+    path('informe_cortes/', views.informe_cortes, name='informe_cortes'),
 ]    

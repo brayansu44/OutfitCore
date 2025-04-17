@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tela, RolloTela, OrdenProduccion, CorteTela, TallaCorte
+from .models import Tela, RolloTela, OrdenProduccion, CorteTela, TallaCorte, RetazoTela
 
 @admin.register(Tela)
 class TelaAdmin(admin.ModelAdmin):
@@ -36,3 +36,20 @@ class TallaCorteAdmin(admin.ModelAdmin):
     search_fields = ('corte__numero_corte', 'talla')
     list_filter = ('talla',)
     autocomplete_fields = ['corte']
+
+@admin.register(RetazoTela)
+class RetazoTelaAdmin(admin.ModelAdmin):
+    list_display = (
+        'rollo','orden','capas_cortadas',
+        'metros_tendidos','colas','faltante',
+        'medida_tendido_mesa','fecha_registro','responsable'
+    )
+    search_fields = (
+        'rollo__numero_rollo',
+        'orden__producto__referencia',
+        'responsable__full_name'
+    )
+    list_filter = ('fecha_registro','responsable')
+    readonly_fields = ('medida_tendido_mesa','faltante')
+    autocomplete_fields = ('rollo','orden','responsable')
+    ordering = ('-fecha_registro',)
