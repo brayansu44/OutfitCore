@@ -18,14 +18,83 @@
         <!-- end breadcrumb -->
 
         <h6 class="mb-0 text-uppercase">Informe General de Cortes</h6>
-        <p class="card-text text-muted">Aquí encontrarás un resumen de todos los cortes: metros utilizados, tallas producidas y retazos generados. Si no ves datos, es posible que aún no se hayan registrado cortes.</p>
+        <p class="card-text text-muted">Aquí encontrarás un resumen de todos los cortes: metros utilizados, tallas
+            producidas y retazos generados. Si no ves datos, es posible que aún no se hayan registrado cortes.</p>
         <hr />
+
+        <!-- filtros en informe_cortes.html -->
+        <div class="row mb-3 gx-2">
+            <div class="col-md-2">
+                <label class="form-label">Fecha Desde</label>
+                <input type="date" id="filter-fecha-desde" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Fecha Hasta</label>
+                <input type="date" id="filter-fecha-hasta" class="form-control" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Rollo Nº</label>
+                <select id="filter-rollo" class="form-select">
+                    <option value="">Todos</option>
+                    {% for c in data|dictsort:"rollo_numero" %}
+                    <option value="{{ c.rollo_numero }}">{{ c.rollo_numero }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Tela</label>
+                <select id="filter-tela" class="form-select">
+                    <option value="">Todos</option>
+                    {% for c in data|dictsort:"tela_nombre" %}
+                    <option value="{{ c.tela_nombre }}">{{ c.tela_nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label">Color</label>
+                <select id="filter-color" class="form-select">
+                    <option value="">Todos</option>
+                    {% for c in data|dictsort:"rollo_color" %}
+                    <option value="{{ c.rollo_color }}">{{ c.rollo_color }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- ► Tarjetas resumen dinámicas -->
+        <div class="row mb-4 gx-2">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-1">
+                    <div class="card-body">
+                        <h6 class="card-title">Total Cortes</h6>
+                        <p class="display-6 mb-0" id="card-total-cortes">{{ total_cortes }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-1">
+                    <div class="card-body">
+                        <h6 class="card-title">Metros Cortados</h6>
+                        <p class="display-6 mb-0" id="card-total-metros">{{ total_metros|floatformat:2 }} m</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning mb-1">
+                    <div class="card-body">
+                        <h6 class="card-title">Total Capas</h6>
+                        <p class="display-6 mb-0" id="card-total-capas">{{ total_capas }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ► Fin tarjetas resumen -->
 
         <div class="card shadow-sm">
             <div class="card-body">
                 {% if data %}
                 <div class="table-responsive">
-                    <table id="example2" class="table table-striped table-bordered align-middle">
+                    <table id="informe" class="table table-striped table-bordered align-middle">
                         <thead class="table-light">
                             <tr>
                                 <th>Corte Nº</th>
@@ -36,44 +105,44 @@
                                 <th>Metros Cortados</th>
                                 <th>Tallas (Detalle)</th>
                                 <th>Total de Tallas</th>
-                                <th>Capas</th> 
+                                <th>Capas</th>
                                 <th>Retazos Generados</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for c in data %}
-                                <tr>
-                                    <td>{{ c.numero_corte }}</td>
-                                    <td>{{ c.fecha_corte|date:"d/m/Y" }}</td>
-                                    <td>{{ c.rollo_numero }}</td>
-                                    <td>{{ c.tela_nombre }}</td>
-                                    <td>{{ c.rollo_color }}</td>
-                                    <td>{{ c.largo_utilizado }} m</td>
-                                    <td>
-                                        {% if c.tallas_detalle %}
-                                        <ul class="ps-3 mb-0">
-                                            {% for t in c.tallas_detalle %}
-                                            <li>{{ t }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                        {% else %}
-                                        <span class="text-muted">Sin tallas registradas</span>
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ c.total_tallas }}</td>
-                                    <td>{{ c.capas }}</td> 
-                                    <td>
-                                        {% if c.retazos_generados %}
-                                        <ul class="ps-3 mb-0">
-                                            {% for r in c.retazos_generados %}
-                                            <li>{{ r }}</li>
-                                            {% endfor %}
-                                        </ul>
-                                        {% else %}
-                                        <span class="text-muted">No se generaron retazos</span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>{{ c.numero_corte }}</td>
+                                <td>{{ c.fecha_corte|date:"d/m/Y" }}</td>
+                                <td>{{ c.rollo_numero }}</td>
+                                <td>{{ c.tela_nombre }}</td>
+                                <td>{{ c.rollo_color }}</td>
+                                <td>{{ c.largo_utilizado }} m</td>
+                                <td>
+                                    {% if c.tallas_detalle %}
+                                    <ul class="ps-3 mb-0">
+                                        {% for t in c.tallas_detalle %}
+                                        <li>{{ t }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <span class="text-muted">Sin tallas registradas</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ c.total_tallas }}</td>
+                                <td>{{ c.capas }}</td>
+                                <td>
+                                    {% if c.retazos_generados %}
+                                    <ul class="ps-3 mb-0">
+                                        {% for r in c.retazos_generados %}
+                                        <li>{{ r }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                    {% else %}
+                                    <span class="text-muted">No se generaron retazos</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot class="table-light">
@@ -84,7 +153,7 @@
                                 <th>{{ total_tallas }}</th>
                                 <th>{{ total_capas }}</th>
                             </tr>
-                        </tfoot>                        
+                        </tfoot>
                     </table>
                 </div>
                 {% else %}
