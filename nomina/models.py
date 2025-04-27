@@ -10,6 +10,11 @@ class EPS(models.Model):
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
+    ESTADO_CHOICES = [
+        ('Activo', 'Activo'),
+        ('Inactivo', 'Inactivo'),
+    ]
+    estado      = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Activo')
 
     class Meta:
         verbose_name = 'EPS'
@@ -24,6 +29,11 @@ class ARL(models.Model):
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
+    ESTADO_CHOICES = [
+        ('Activo', 'Activo'),
+        ('Inactivo', 'Inactivo'),
+    ]
+    estado      = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Activo')
 
     class Meta:
         verbose_name = 'ARL'
@@ -38,6 +48,11 @@ class Pension(models.Model):
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
+    ESTADO_CHOICES = [
+        ('Activo', 'Activo'),
+        ('Inactivo', 'Inactivo'),
+    ]
+    estado      = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Activo')
 
     class Meta:
         verbose_name = 'Pensión'
@@ -52,6 +67,11 @@ class CajaCompensacion(models.Model):
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
+    ESTADO_CHOICES = [
+        ('Activo', 'Activo'),
+        ('Inactivo', 'Inactivo'),
+    ]
+    estado      = models.CharField(max_length=50, choices=ESTADO_CHOICES, default='Activo')
 
     class Meta:
         verbose_name = 'Caja de Compensación'

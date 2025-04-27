@@ -7,7 +7,13 @@
     min-width: 90px;
 }
 
-.completo {
+.inactivo {
+    background-color: #6c757d; 
+    color: #fff; 
+    border: 1px solid #6c757d;
+}
+
+.completo, .activo {
     background-color: #D4EDDA; 
     color: #155724; 
     border: 1px solid #C3E6CB;

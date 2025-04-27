@@ -86,6 +86,7 @@
                                                                         <th>Direccion</th>
                                                                         <th>Teléfono</th>
                                                                         <th>Correo</th>
+                                                                        <th>Estado</th>
                                                                         <th>Acciones</th>
                                                                     </tr>
                                                                 </thead>
@@ -97,6 +98,11 @@
                                                                             <td>{{ eps.direccion }}</td>
                                                                             <td>{{ eps.telefono }}</td>
                                                                             <td>{{ eps.correo }}</td>
+                                                                            <td>
+                                                                                <span class="estado {{ eps.estado|lower }}">
+                                                                                    {{ eps.estado }}
+                                                                                </span>
+                                                                            </td>
                                                                             <td>
                                                                                 <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
                                                                             </td>
@@ -117,6 +123,7 @@
                                                                         <th>Direccion</th>
                                                                         <th>Teléfono</th>
                                                                         <th>Correo</th>
+                                                                        <th>Estado</th>
                                                                         <th>Acciones</th>
                                                                     </tr>
                                                                 </tfoot>
@@ -130,29 +137,30 @@
                                             <div id="AddEPS" style="display: none;">
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
-                                                        <form class="row g-3">
+                                                        <form class="row g-3" method="POST" action="{% url 'Register_EPS' %}">
+                                                            {% csrf_token %}
                                                             <div class="col-md-6">
                                                                 <label for="Nombre" class="form-label">Nombre</label>
-                                                                <input type="text" class="form-control" id="Nombre">
+                                                                <input type="text" class="form-control" id="nombre_eps">
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label for="inputTelefono" class="form-label">Telefono</label>
-                                                                <input type="password" class="form-control" id="inputTelefono">
+                                                                <input type="password" class="form-control" id="telefono_eps">
                                                             </div>
                                                             <div class="col-md-8">
                                                                 <label for="inputCorreo" class="form-label">Correo</label>
-                                                                <input type="email" class="form-control" id="inputCorreo">
+                                                                <input type="email" class="form-control" id="correo_eps">
                                                             </div>
                                                             <div class="col-md-4">
                                                                 <label for="inputEstado" class="form-label">Estado</label>
-                                                                <select id="inputEstado" class="form-select">
+                                                                <select id="estado_eps" class="form-select">
                                                                     <option selected>Activo</option>
                                                                     <option>Inactivo</option>
                                                                 </select>
                                                             </div>
                                                             <div class="col-12">
                                                                 <label for="inputDireccion" class="form-label">Direccion</label>
-                                                                <textarea class="form-control" id="inputDireccion" placeholder="Direccion..." rows="3"></textarea>
+                                                                <textarea class="form-control" id="direccion_eps" placeholder="Direccion..." rows="3"></textarea>
                                                             </div>
                                                             <div class="col-12">
                                                                 <button type="submit" class="btn btn-info px-5">Registrar</button>
