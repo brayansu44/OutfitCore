@@ -18,17 +18,16 @@
 					</div>
                     <div class="ms-auto">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary">Añadir</button>
-                            <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
+                            <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="">Añadir</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	
-                                <a class="dropdown-item" href="javascript:;">EPS</a>
+                                <a class="dropdown-item" id="BtnAddEPS" href="#step-1">EPS</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:;">ARL</a>
+                                <a class="dropdown-item" id="" href="#step-2">ARL</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:;">PENSIÓN</a>
+                                <a class="dropdown-item" id="" href="#step-3">PENSIÓN</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="javascript:;">CAJA COMPENSACIÓN</a>
+                                <a class="dropdown-item" id="" href="#step-4">CAJA COMPENSACIÓN</a>
                             </div>
                         </div>
                     </div>
@@ -137,15 +136,15 @@
                                             <div id="AddEPS" style="display: none;">
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
-                                                        <form class="row g-3" method="POST" action="{% url 'Register_EPS' %}">
+                                                        <form class="row g-3" method="POST" action="{% url 'Register_EPS' 'step-1'%}">
                                                             {% csrf_token %}
                                                             <div class="col-md-6">
                                                                 <label for="Nombre" class="form-label">Nombre</label>
-                                                                <input type="text" class="form-control" id="nombre_eps">
+                                                                <input type="text" required class="form-control" id="nombre_eps">
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <label for="inputTelefono" class="form-label">Telefono</label>
-                                                                <input type="password" class="form-control" id="telefono_eps">
+                                                                <input type="number" class="form-control" id="telefono_eps">
                                                             </div>
                                                             <div class="col-md-8">
                                                                 <label for="inputCorreo" class="form-label">Correo</label>
@@ -340,21 +339,32 @@
 {% block script %}
 <script>
 
-    document.getElementById("btnMostrarEPS").addEventListener("click", function () {
-        this.textContent = this.textContent === "Añadir" ? "Consultar" : "Añadir";
+    var selectedTabId = "{{ tab_id }}";
+    var steps = ["step-1", "step-2", "step-3", "step-4"];
+    var step = steps.indexOf(selectedTabId);
+    if (step === -1) step = 0;
+
+    //EPS
+    const btnMostrarEPS = document.getElementById("btnMostrarEPS");
+    const BtnAddEPS = document.getElementById("BtnAddEPS");
+    if (btnMostrarEPS || BtnAddEPS){
+        btnMostrarEPS.addEventListener("click", EPS);
+        BtnAddEPS.addEventListener("click", EPS);
+    }
+
+    function EPS() {
+        btnMostrarEPS.textContent = btnMostrarEPS.textContent === "Añadir" ? "Consultar" : "Añadir";
+    
         let AddEPS = document.getElementById("AddEPS");
         let ViewEPS = document.getElementById("ViewEPS");
-        let step1 = document.getElementById("step-1");
 
-        if (ViewEPS.style.display === "block" || AddEPS.style.display === "none"){
+        if (ViewEPS.style.display === "block" && AddEPS.style.display === "none"){
             document.getElementById("TitleEPS").textContent = "REGISTRAR EPS";
             AddEPS.style.opacity = "0";
             AddEPS.style.display = "block";
 
             ViewEPS.style.opacity = "1";
-            ViewEPS.style.display = "none"; 
-
-            step1.style.height = "auto";
+            ViewEPS.style.display = "none";
             
             setTimeout(() => {
                 AddEPS.style.opacity = "1";
@@ -363,16 +373,18 @@
                 ViewEPS.style.opacity = "0";
                 ViewEPS.style.transition = "opacity 0.5s ease-in-out";
             }, 100);
+
+            $('#smartwizard').smartWizard("reset");
+			return true;
+
         }else{
             document.getElementById("TitleEPS").textContent = "LISTA DE EPS";
             ViewEPS.style.opacity = "0";
             ViewEPS.style.display = "block";
 
             AddEPS.style.opacity = "1";
-            AddEPS.style.display = "none"; 
+            AddEPS.style.display = "none";
 
-            step1.style.height = "auto";
-            
             setTimeout(() => {
                 ViewEPS.style.opacity = "1";
                 ViewEPS.style.transition = "opacity 0.5s ease-in-out";
@@ -380,17 +392,14 @@
                 AddEPS.style.opacity = "0";
                 AddEPS.style.transition = "opacity 0.5s ease-in-out";
             }, 100);
+
+            $('#smartwizard').smartWizard("reset");
+			return true;
         }
         
-    });
-
-    var selectedTabId = "{{ tab_id }}";
-    var steps = ["step-1", "step-2", "step-3", "step-4"];
-    var step = steps.indexOf(selectedTabId);
-    if (step === -1) step = 0; 
+    };
 
     $(document).ready(function () {
-        
         // Step show event
         $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
             $("#prev-btn").removeClass('disabled');

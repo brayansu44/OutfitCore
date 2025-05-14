@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages, auth
+from django.contrib import messages
 
 # Create your views here.
 from .models import Nomina, EPS, ARL, Pension, CajaCompensacion
@@ -28,7 +28,7 @@ def SeguridadSocial(request, tab_id):
 
     return render(request, 'nomina/SeguridadSocial.html', context)
 
-def Register_EPS(request):
+def Register_EPS(request, tab_id):
     if request.method == 'POST':
         nombre = request.POST.get('nombre_eps')
         direccion = request.POST.get('direccion_eps')
@@ -37,16 +37,11 @@ def Register_EPS(request):
         correo = request.POST.get('correo_eps')
 
         if nombre and telefono and correo and estado and direccion:
-            Register_EPS = EPS(
-                nombre=nombre,
-                telefono=telefono,
-                correo=correo,
-                estado=estado,
-                direccion=direccion
-            )
-            Register_EPS.save()
-            messages.success(request,"Registro exitoso.")
+            print("Nombre:", nombre)
+            print("Dirección:", direccion)
+            print("Teléfono:", telefono)
+            print("Estado:", estado)
+            print("Correo:", correo)
         else:
             messages.error(request, "Diligenciar los campos correctamente.")
-
-    return render(request, 'SeguridadSocial.html')
+    return render(request, 'nomina/SeguridadSocial.html', {'tab_id': tab_id})

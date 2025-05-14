@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 
 # 📌 Modelo EPS
 class EPS(models.Model):
-    nombre      = models.CharField(max_length=100, unique=True)
+    nombre      = models.CharField(max_length=100, unique=True, null=False)
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
@@ -25,7 +25,7 @@ class EPS(models.Model):
 
 # 📌 Modelo ARL
 class ARL(models.Model):
-    nombre      = models.CharField(max_length=100, unique=True)
+    nombre      = models.CharField(max_length=100, unique=True, null=False)
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
@@ -44,7 +44,7 @@ class ARL(models.Model):
 
 # 📌 Modelo Pension
 class Pension(models.Model):
-    nombre      = models.CharField(max_length=100, unique=True)
+    nombre      = models.CharField(max_length=100, unique=True, null=False)
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
@@ -63,7 +63,7 @@ class Pension(models.Model):
 
 # 📌 Modelo Caja de Compensación
 class CajaCompensacion(models.Model):
-    nombre      = models.CharField(max_length=100, unique=True)
+    nombre      = models.CharField(max_length=100, unique=True, null=False)
     direccion   = models.CharField(max_length=100)
     telefono    = models.IntegerField(unique=True)
     correo      = models.EmailField(max_length=100, unique=True)
