@@ -45,7 +45,7 @@ def EPSadd(request):
     else:
         form = EPSForm()
     
-    return render(request, 'nomina/SeguridadSocial.html', {'form': form})
+    return render(request, 'nomina/SeguridadSocial.html')
 
 @login_required(login_url='login')
 def EPSedit(request, eps_id):
