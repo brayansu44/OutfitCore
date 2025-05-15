@@ -4,5 +4,9 @@ from . import views
 urlpatterns = [
     path('', views.nomina , name='nomina'),
     path('SeguridadSocial/<str:tab_id>/', views.SeguridadSocial , name='SeguridadSocial'),
-    path('SeguridadSocial/<str:tab_id>/', views.Register_EPS, name='Register_EPS'),
+
+    #EPS
+    path('SeguridadSocial/', views.EPSadd, name='EPSadd'),
+    path('SeguridadSocial/EPSedit/<int:eps_id>/', views.EPSedit, name='EPSedit'),
+    path('SeguridadSocial/EPSdelete/<int:eps_id>/', views.EPSdelete, name='EPSdelete'),
 ]

@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib import messages
+from .forms import *
 
 # Create your views here.
 from .models import Nomina, EPS, ARL, Pension, CajaCompensacion
@@ -18,30 +20,54 @@ def SeguridadSocial(request, tab_id):
     pension = Pension.objects.all()
     cajacompensacion = CajaCompensacion.objects.all()
 
+    EPSform = EPSForm()
+
     context = {
         'tab_id': tab_id,
         'eps': eps,
         'arl': arl,
         'pension': pension,
         'cajacompensacion': cajacompensacion,
+        'form': EPSform,
+
     }
 
     return render(request, 'nomina/SeguridadSocial.html', context)
 
-def Register_EPS(request, tab_id):
-    if request.method == 'POST':
-        nombre = request.POST.get('nombre_eps')
-        direccion = request.POST.get('direccion_eps')
-        telefono = request.POST.get('telefono_eps')
-        estado = request.POST.get('estado_eps')
-        correo = request.POST.get('correo_eps')
+@login_required(login_url='login')
+def EPSadd(request):
+    if request.method == "POST":
+        form = EPSForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "EPS agregada correctamente.")
+            return redirect('SeguridadSocial')
+    else:
+        form = EPSForm()
+    
+    return render(request, 'nomina/SeguridadSocial.html', {'form': form})
 
-        if nombre and telefono and correo and estado and direccion:
-            print("Nombre:", nombre)
-            print("Dirección:", direccion)
-            print("Teléfono:", telefono)
-            print("Estado:", estado)
-            print("Correo:", correo)
-        else:
-            messages.error(request, "Diligenciar los campos correctamente.")
-    return render(request, 'nomina/SeguridadSocial.html', {'tab_id': tab_id})
+@login_required(login_url='login')
+def EPSedit(request, eps_id):
+    eps = get_object_or_404(EPS, id=eps_id)
+    
+    if request.method == "POST":
+        form = EPSForm(request.POST, instance=eps)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Tela actualizada correctamente.")
+            return redirect('SeguridadSocial')
+    else:
+        form = EPSForm(instance=eps)
+    
+    return render(request, 'nomina/SeguridadSocial.html', {'form': form, 'accion': 'Editar'})
+
+@login_required(login_url='login')
+@require_POST
+def EPSdelete(request, tela_id):
+    if request.method == "POST":
+        tela = get_object_or_404(Tela, id=tela_id)
+        tela.delete()
+        return JsonResponse({"success": True})
+
+    return JsonResponse({"success": False, "error": "Método no permitido"})

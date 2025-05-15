@@ -102,8 +102,13 @@
                                                                                     {{ eps.estado }}
                                                                                 </span>
                                                                             </td>
-                                                                            <td>
-                                                                                <a href="#" class="btn btn-primary btn-sm radius-30 px-4">Modificar</a>
+                                                                            <td class="text-center">
+                                                                                <a href="{% url 'EPSedit' eps.id %}" class="btn btn-sm btn-info">
+                                                                                    <i class="bx bx-edit"></i>
+                                                                                </a>
+                                                                                <button class="btn btn-danger btn-sm delete-tela" data-id="{{ eps.id }}">
+                                                                                    <i class="bx bx-trash"></i>
+                                                                                </button>                                            
                                                                             </td>
                                                                         </tr>
                                                                         {% endfor %}
@@ -136,7 +141,7 @@
                                             <div id="AddEPS" style="display: none;">
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
-                                                        <form class="row g-3" method="POST" action="{% url 'Register_EPS' 'step-1'%}">
+                                                        <!-- <form class="row g-3" method="POST" action="{% url 'EPSadd'%}">
                                                             {% csrf_token %}
                                                             <div class="col-md-6">
                                                                 <label for="Nombre" class="form-label">Nombre</label>
@@ -164,7 +169,27 @@
                                                             <div class="col-12">
                                                                 <button type="submit" class="btn btn-info px-5">Registrar</button>
                                                             </div>
+                                                        </form> -->
+                                                        
+                                                        <form method="POST" class="row g-3 needs-validation" novalidate>
+
+                                                            {% csrf_token %}
+
+                                                            {% for field in form %}
+                                                                <div class="col-md-6">
+                                                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
+                                                                    {{ field }}
+                                                                    <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                            <div class="col-12">
+                                                                <button type="submit" class="btn btn-info px-5">
+                                                                    Registrar
+                                                                </button>
+                                                            </div>
                                                         </form>
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -437,6 +462,21 @@
             $('#smartwizard').smartWizard("next");
             return true;
         });
+
+        (function () {
+            'use strict';
+            var forms = document.querySelectorAll('.needs-validation');
+            Array.prototype.slice.call(forms)
+            .forEach(function (form) {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
     });
 </script>
 {% endblock %}
