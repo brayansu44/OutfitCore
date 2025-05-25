@@ -103,10 +103,10 @@
                                                                                 </span>
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                <a id="BtnEditEPS" href="{% url 'EPSview' eps.id %}" class="btn btn-sm btn-info">
+                                                                                <a id="BtnEditEPS" class="btn btn-sm btn-info">
                                                                                     <i class="bx bx-edit"></i>
                                                                                 </a>
-                                                                                <button class="btn btn-danger btn-sm delete-tela" data-id="{{ eps.id }}">
+                                                                                <button class="btn btn-danger btn-sm delete-eps" data-id="{{ eps.id }}">
                                                                                     <i class="bx bx-trash"></i>
                                                                                 </button>                                            
                                                                             </td>
@@ -153,6 +153,8 @@
                                                                     <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
                                                                 </div>
                                                             {% endfor %}
+
+                                                            <input type="hidden" name="eps_id" value="{{ eps.id }}">
 
                                                             <div class="col-12">
                                                                 <button id="BtnsubmitRegisterEPS" type="submit" class="btn btn-info px-5">

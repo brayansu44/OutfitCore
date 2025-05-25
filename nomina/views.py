@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from .forms import *
 
 # Create your views here.
@@ -54,18 +54,17 @@ def EPSadd(request):
 @login_required(login_url='login')
 def EPSedit(request, eps_id):
     eps = get_object_or_404(EPS, id=eps_id)
+
     if request.method == "POST":
         form = EPSForm(request.POST, instance=eps)
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de la EPS {eps.nombre} actualizada correctamente.")
-            return render(request, 'nomina/SeguridadSocial.html/step-1')
-        else:
-            messages.success(request, "Actualización Invalidada.")
+            return render(request, 'nomina/SeguridadSocial.html/step-1', {'form': form, 'eps': eps, 'accion': 'Editar'})
     else:
         form = EPSForm(instance=eps)
     
-    return JsonResponse({"success": False, "error": "Método no permitido"})
+    return JsonResponse({"error": "EPS no encontrada"}, status=404)
 
 @login_required(login_url='login')
 @require_POST

@@ -7,6 +7,27 @@ if (step === -1) {
     step = 0;
 }
 
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".btn-info").forEach(button => {
+        button.addEventListener("click", function () {
+            let ID = this.closest("tr").querySelector(".delete-eps").getAttribute("data-id");
+
+            fetch(`/nomina/SeguridadSocial/step-1/${ID}/`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("nombre").value = data.nombre;
+                    document.getElementById("direccion").value = data.direccion;
+                    document.getElementById("telefono").value = data.telefono;
+                    document.getElementById("correo").value = data.correo;
+                    document.getElementById("estado").value = data.estado;
+                })
+                .catch(error => console.error("Error en la solicitud:", error));
+        });
+    });
+});
+
+
 const eps ="EPS";
 const arl = "ARL";
 const pension = "PENSION";

@@ -7,7 +7,7 @@ urlpatterns = [
     path('SeguridadSocial/<str:tab_id>/', views.SeguridadSocial , name='SeguridadSocial'),
 
     #EPS
-    path('SeguridadSocial/step-1/', views.EPSadd, name='EPSadd'),
-    path('SeguridadSocial/step-1/<int:eps_id>/', views.EPSedit, name='EPSedit'),
-    path('SeguridadSocial/step-1/<int:eps_id>/', views.EPSdelete, name='EPSdelete'),
+    path('nomina/SeguridadSocial/step-1/', views.EPSadd, name='EPSadd'),
+    path('nomina/SeguridadSocial/step-1/<int:eps_id>/', views.EPSedit, name='EPSedit'),
+    path('nomina/SeguridadSocial/step-1/<int:eps_id>/', views.EPSdelete, name='EPSdelete'),
 ]
