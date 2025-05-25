@@ -41,7 +41,7 @@
 							<div class="card-body">						
 								<br />
 								<!-- SmartWizard html -->
-								<div id="smartwizard">
+								<div id="smartwizard" data-id="{{ tab_id }}">
 									<ul class="nav">
 										<li class="nav-item">
 											<a class="nav-link" href="#step-1">	<strong>EPS</strong> 
@@ -103,7 +103,7 @@
                                                                                 </span>
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                <a href="{% url 'EPSedit' eps.id %}" class="btn btn-sm btn-info">
+                                                                                <a id="BtnEditEPS" href="{% url 'EPSview' eps.id %}" class="btn btn-sm btn-info">
                                                                                     <i class="bx bx-edit"></i>
                                                                                 </a>
                                                                                 <button class="btn btn-danger btn-sm delete-tela" data-id="{{ eps.id }}">
@@ -142,7 +142,7 @@
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
 
-                                                        <form method="POST" action="{% url 'EPSadd'%}" class="row g-3 needs-validation" novalidate>
+                                                        <form method="POST" class="row g-3 needs-validation" novalidate>
 
                                                             {% csrf_token %}
 
@@ -155,7 +155,7 @@
                                                             {% endfor %}
 
                                                             <div class="col-12">
-                                                                <button type="submit" class="btn btn-info px-5">
+                                                                <button id="BtnsubmitRegisterEPS" type="submit" class="btn btn-info px-5">
                                                                     Registrar
                                                                 </button>
                                                             </div>
@@ -334,6 +334,8 @@
 
 {% load static %}
 
-{% block script %}
-    <script src="{% static 'js/nomina/nomina.js' %}"></script>
+{% block script %}  
+    <script src="{% static 'js/nomina/nomina.js' %}">
+        
+    </script>
 {% endblock %}

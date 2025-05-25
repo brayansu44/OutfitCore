@@ -54,19 +54,18 @@ def EPSadd(request):
 @login_required(login_url='login')
 def EPSedit(request, eps_id):
     eps = get_object_or_404(EPS, id=eps_id)
-    
     if request.method == "POST":
         form = EPSForm(request.POST, instance=eps)
         if form.is_valid():
             form.save()
             messages.success(request, f"Datos de la EPS {eps.nombre} actualizada correctamente.")
+            return render(request, 'nomina/SeguridadSocial.html/step-1')
         else:
             messages.success(request, "Actualización Invalidada.")
     else:
         form = EPSForm(instance=eps)
-        messages.error(request, "Validar el formato correctamente.")
     
-    return render(request, 'nomina/SeguridadSocial.html/step-1')
+    return JsonResponse({"success": False, "error": "Método no permitido"})
 
 @login_required(login_url='login')
 @require_POST

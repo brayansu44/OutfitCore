@@ -1,66 +1,94 @@
-var selectedTabId = "{{ tab_id }}";
-var steps = ["step-1", "step-2", "step-3", "step-4"];
-var step = steps.indexOf(selectedTabId);
-if (step === -1) step = 0;
+let smartwizard = document.getElementById("smartwizard");
+let dataId = smartwizard.getAttribute("data-id");
 
-//EPS
-const btnMostrarEPS = document.getElementById("btnMostrarEPS");
-const BtnAddEPS = document.getElementById("BtnAddEPS");
-if (btnMostrarEPS || BtnAddEPS){
-    btnMostrarEPS.addEventListener("click", EPS);
-    BtnAddEPS.addEventListener("click", EPS);
+var steps = ["step-1", "step-2", "step-3", "step-4"];
+var step = steps.indexOf(dataId);
+if (step === -1) {
+    step = 0;
 }
 
-function EPS() {
-    btnMostrarEPS.textContent = btnMostrarEPS.textContent === "Añadir" ? "Consultar" : "Añadir";
+const eps ="EPS";
+const arl = "ARL";
+const pension = "PENSION";
+const caja = "CAJA";
 
-    let AddEPS = document.getElementById("AddEPS");
-    let ViewEPS = document.getElementById("ViewEPS");
+const btnMostrarEPS = document.getElementById("btnMostrarEPS");
+const BtnAddEPS = document.getElementById("BtnAddEPS");
+const BtnEditEPS = document.getElementById("BtnEditEPS");
 
-    if (ViewEPS.style.display === "block" && AddEPS.style.display === "none"){
-        document.getElementById("TitleEPS").textContent = "REGISTRAR EPS";
-        AddEPS.style.opacity = "0";
-        AddEPS.style.display = "block";
-
-        ViewEPS.style.opacity = "1";
-        ViewEPS.style.display = "none";
-        
-        setTimeout(() => {
-            AddEPS.style.opacity = "1";
-            AddEPS.style.transition = "opacity 0.5s ease-in-out";
-
-            ViewEPS.style.opacity = "0";
-            ViewEPS.style.transition = "opacity 0.5s ease-in-out";
-        }, 100);
-
-        $('#smartwizard').smartWizard("reset");
-        return true;
-
-    }else{
-        document.getElementById("TitleEPS").textContent = "LISTA DE EPS";
-        ViewEPS.style.opacity = "0";
-        ViewEPS.style.display = "block";
-
-        AddEPS.style.opacity = "1";
-        AddEPS.style.display = "none";
-
-        setTimeout(() => {
-            ViewEPS.style.opacity = "1";
-            ViewEPS.style.transition = "opacity 0.5s ease-in-out";
-
-            AddEPS.style.opacity = "0";
-            AddEPS.style.transition = "opacity 0.5s ease-in-out";
-        }, 100);
-
-        $('#smartwizard').smartWizard("reset");
-        return true;
-    }
-    
-};
 
 $(document).ready(function () {
+    var aux = "";
+    if (btnMostrarEPS || BtnAddEPS || BtnEditEPS){
+        aux = eps;
+        btnMostrarEPS.addEventListener("click", Div_dynamic);
+        BtnAddEPS.addEventListener("click", Div_dynamic);
+        BtnEditEPS.addEventListener("click", Div_dynamic);
+    }
+
+    function Div_dynamic() {
+        if (aux === "EPS"){
+            btnMostrarEPS.textContent = btnMostrarEPS.textContent === "Añadir" ? "Consultar" : "Añadir";
+        }
+
+
+        let Add = document.getElementById(`Add${aux}`);
+        let View = document.getElementById(`View${aux}`);
+
+        if (View.style.display === "block" && Add.style.display === "none"){
+
+            if(aux === "EPS"){
+                document.getElementById("TitleEPS").textContent = "REGISTRAR EPS";
+            }
+
+            Add.style.opacity = "0";
+            Add.style.display = "block";
+
+            View.style.opacity = "1";
+            View.style.display = "none";
+            
+            setTimeout(() => {
+                Add.style.opacity = "1";
+                Add.style.transition = "opacity 0.5s ease-in-out";
+
+                View.style.opacity = "0";
+                View.style.transition = "opacity 0.5s ease-in-out";
+            }, 100);
+
+            $('#smartwizard').smartWizard("reset");
+            return true;
+
+        }else{
+            if(aux === "EPS"){
+                document.getElementById("TitleEPS").textContent = "LISTA DE EPS";
+            }
+
+            View.style.opacity = "0";
+            View.style.display = "block";
+
+            Add.style.opacity = "1";
+            Add.style.display = "none";
+
+            setTimeout(() => {
+                View.style.opacity = "1";
+                View.style.transition = "opacity 0.5s ease-in-out";
+
+                Add.style.opacity = "0";
+                Add.style.transition = "opacity 0.5s ease-in-out";
+            }, 100);
+
+            $('#smartwizard').smartWizard("reset");
+            return true;
+        }
+    };
+    
+});
+
+
+//smartwizard
+$(document).ready(function () {
     // Step show event
-    $("#smartwizard").on("showStep", function (e, anchorObject, stepNumber, stepDirection, stepPosition) {
+    $("#smartwizard").on("showStep", function (stepPosition) {
         $("#prev-btn").removeClass('disabled');
         $("#next-btn").removeClass('disabled');
         if (stepPosition === 'first') {
