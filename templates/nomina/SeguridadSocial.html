@@ -142,8 +142,7 @@
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
 
-                                                        <form method="POST" class="row g-3 needs-validation" novalidate>
-
+                                                        <form id="FormEPS" method="POST" class="row g-3 needs-validation" novalidate>
                                                             {% csrf_token %}
 
                                                             {% for field in form %}
@@ -154,14 +153,14 @@
                                                                 </div>
                                                             {% endfor %}
 
-                                                            <input type="hidden" name="eps_id" value="{{ eps.id }}">
-
                                                             <div class="col-12">
-                                                                <button id="BtnsubmitRegisterEPS" type="submit" class="btn btn-info px-5">
+                                                                <button id="submitAddEPS" type="submit" data-add-url="{% url 'EPSadd' %}" class="btn btn-info px-5">
                                                                     Registrar
                                                                 </button>
                                                             </div>
                                                         </form>
+                                                        
+                                                        <div id="messagesContainer"></div>
 
                                                     </div>
                                                 </div>

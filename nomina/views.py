@@ -42,14 +42,15 @@ def EPSadd(request):
         if form.is_valid():
             form.save()
             messages.success(request, "EPS agregada correctamente.")
+            return render(request, 'nomina/SeguridadSocial.html/step-1')
             
         else:
-            messages.success(request, "Registro Invalidado.")
+            messages.warning(request, "Registro Invalidado.")
     else:
         form = EPSForm()
         messages.error(request, "Validar el formato correctamente.") 
 
-    return render(request, 'nomina/SeguridadSocial.html/step-1')
+    return render(request, 'nomina/SeguridadSocial.html')
 
 @login_required(login_url='login')
 def EPSedit(request, eps_id):

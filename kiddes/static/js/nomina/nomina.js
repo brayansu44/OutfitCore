@@ -7,7 +7,72 @@ if (step === -1) {
     step = 0;
 }
 
+//DETONANTE DE VIEWS SEGURIDAD SOCIAL CON EL FORM
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const form = document.getElementById(`FormEPS`);
+    const submitAdd = document.getElementById(`submitAddEPS`); // OBTIENE LA URL DE LAS VIEWS "add" DE SEGURIDAD SOCIAL
+    const messagesContainer = document.getElementById('messagesContainer');
 
+    if (form && submitAdd) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // ¡PREVENIR EL ENVÍO NORMAL DEL FORMULARIO!
+
+            const addUrl = submitAdd.getAttribute('data-add-url');
+            if (!addUrl) {
+                console.error("URL no definida en el botón.");
+                return;
+            }
+
+            // Obtener los datos del formulario
+            const formData = new FormData(form);
+            // Opcional: añadir el token CSRF si no está ya en FormData (FormData lo debería incluir)
+            // const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            // formData.append('csrfmiddlewaretoken', csrftoken);
+
+            fetch(addUrl, {
+                method: 'POST',
+                body: formData,
+                // Si no usas FormData y envías JSON, necesitas Headers:
+                // headers: {
+                //     'Content-Type': 'application/json',
+                //     'X-CSRFToken': csrftoken, // Incluir el token CSRF
+                // },
+                // body: JSON.stringify({
+                //     nombre_eps: form.elements['nombre_eps'].value,
+                //     nit_eps: form.elements['nit_eps'].value,
+                // })
+            })
+            .then(response => {
+                // Si la vista EPSadd devuelve JSON:
+                if (response.headers.get('Content-Type').includes('application/json')) {
+                    return response.json();
+                }
+                // Si devuelve HTML:
+                return response.text(); 
+            })
+            .then(data => {
+                // Asumiendo que la vista EPSadd devuelve JSON con 'success' y 'message'
+                if (typeof data === 'object' && data.success) {
+                    messagesContainer.innerHTML = `<p style="color: green;">${data.message}</p>`;
+                    form.reset(); // Limpiar el formulario
+                    // Aquí podrías actualizar una tabla de EPS dinámicamente si tienes una
+                } else if (typeof data === 'object' && data.message) {
+                    messagesContainer.innerHTML = `<p style="color: red;">${data.message}</p>`;
+                } else {
+                    // Si la vista devuelve HTML (ej. errores de formulario renderizados)
+                    messagesContainer.innerHTML = `<p style="color: blue;">Respuesta del servidor:</p>${data}`;
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar el formulario:', error);
+                messagesContainer.innerHTML = `<p style="color: red;">Ocurrió un error en la solicitud.</p>`;
+            });
+        });
+    }
+});
+
+//EDITAR EPS
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".btn-info").forEach(button => {
         button.addEventListener("click", function () {
@@ -26,41 +91,38 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+ 
 
-
+//DINAMICA DEL SMARTWIZARD
 const eps ="EPS";
 const arl = "ARL";
-const pension = "PENSION";
-const caja = "CAJA";
-
-const btnMostrarEPS = document.getElementById("btnMostrarEPS");
-const BtnAddEPS = document.getElementById("BtnAddEPS");
-const BtnEditEPS = document.getElementById("BtnEditEPS");
-
+const pension = "PENSIÓN";
+const caja = "CAJA DE COMPENSACIÓN";
 
 $(document).ready(function () {
-    var aux = "";
-    if (btnMostrarEPS || BtnAddEPS || BtnEditEPS){
-        aux = eps;
-        btnMostrarEPS.addEventListener("click", Div_dynamic);
-        BtnAddEPS.addEventListener("click", Div_dynamic);
-        BtnEditEPS.addEventListener("click", Div_dynamic);
-    }
+    var aux = ""; //VARIABLE AUXILIAR TEMPORAL DENTRO DE LA FUNCION "Div_dynamic"
+
+    document.getElementById("btnMostrarEPS").addEventListener("click", function(event) {
+        if (event.type === "click") {
+            aux = eps;
+            Div_dynamic();
+        }
+    });
+
 
     function Div_dynamic() {
-        if (aux === "EPS"){
+        if (aux === eps){
+            const btnMostrarEPS = document.getElementById("btnMostrarEPS");
             btnMostrarEPS.textContent = btnMostrarEPS.textContent === "Añadir" ? "Consultar" : "Añadir";
         }
-
 
         let Add = document.getElementById(`Add${aux}`);
         let View = document.getElementById(`View${aux}`);
 
+        //REGISTRAR
         if (View.style.display === "block" && Add.style.display === "none"){
 
-            if(aux === "EPS"){
-                document.getElementById("TitleEPS").textContent = "REGISTRAR EPS";
-            }
+            document.getElementById(`Title${aux}`).textContent = `REGISTRAR ${aux}`;
 
             Add.style.opacity = "0";
             Add.style.display = "block";
@@ -78,11 +140,11 @@ $(document).ready(function () {
 
             $('#smartwizard').smartWizard("reset");
             return true;
-
+        
+        //CONSULTAR
         }else{
-            if(aux === "EPS"){
-                document.getElementById("TitleEPS").textContent = "LISTA DE EPS";
-            }
+            
+            document.getElementById(`Title${aux}`).textContent = `LISTA DE ${aux}`;
 
             View.style.opacity = "0";
             View.style.display = "block";
@@ -102,6 +164,7 @@ $(document).ready(function () {
             return true;
         }
     };
+    
     
 });
 
