@@ -33,7 +33,7 @@ def SeguridadSocial(request, tab_id):
 
     }
 
-    return render(request, 'nomina/SeguridadSocial.html', context)
+    return render(request, 'nomina/SeguridadSocial.html', context )
 
 @login_required(login_url='login')
 def EPSadd(request):
@@ -41,16 +41,10 @@ def EPSadd(request):
         form = EPSForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "EPS agregada correctamente.")
-            return render(request, 'nomina/SeguridadSocial.html/step-1')
-            
+            return JsonResponse({"success": True, "message": "EPS agregada correctamente."})
         else:
-            messages.warning(request, "Registro Invalidado.")
-    else:
-        form = EPSForm()
-        messages.error(request, "Validar el formato correctamente.") 
-
-    return render(request, 'nomina/SeguridadSocial.html')
+            return JsonResponse({"success": False, "message": "Registro invalidado."})
+    return JsonResponse({"success": False, "message": "Validar el formato correctamente."})
 
 @login_required(login_url='login')
 def EPSedit(request, eps_id):
@@ -60,12 +54,12 @@ def EPSedit(request, eps_id):
         form = EPSForm(request.POST, instance=eps)
         if form.is_valid():
             form.save()
-            messages.success(request, f"Datos de la EPS {eps.nombre} actualizada correctamente.")
-            return render(request, 'nomina/SeguridadSocial.html/step-1', {'form': form, 'eps': eps, 'accion': 'Editar'})
-    else:
-        form = EPSForm(instance=eps)
-    
-    return JsonResponse({"error": "EPS no encontrada"}, status=404)
+            msj = f"Datos de la EPS {eps.nombre} actualizada correctamente."
+            return JsonResponse({"success": True, "message": msj})
+        else:
+            return JsonResponse({"success": False, "message": "Actualización invalida."})
+
+    return JsonResponse({"success": False, "message": "Validar el formato correctamente."})
 
 @login_required(login_url='login')
 @require_POST

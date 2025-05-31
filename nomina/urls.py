@@ -6,5 +6,6 @@ urlpatterns = [
     path('SeguridadSocial/<str:tab_id>/', views.SeguridadSocial , name='SeguridadSocial'),
 
     #EPS
-    path('SeguridadSocial/step-1/add/', views.EPSadd, name='EPSadd')
+    path('SeguridadSocial/EPS/add/', views.EPSadd, name='EPSadd'),
+    path('SeguridadSocial/EPS/edit/<int:eps_id>/', views.EPSedit, name='EPSedit'),
 ]

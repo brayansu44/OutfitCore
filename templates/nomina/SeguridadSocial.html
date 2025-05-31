@@ -21,13 +21,13 @@
                             <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="">Añadir</span>
                             </button>
                             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	
-                                <a class="dropdown-item" id="BtnAddEPS" href="#step-1">EPS</a>
+                                <a class="dropdown-item" id="BtnAddEPS" href="#EPS">EPS</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" id="" href="#step-2">ARL</a>
+                                <a class="dropdown-item" id="" href="#ARL">ARL</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" id="" href="#step-3">PENSIÓN</a>
+                                <a class="dropdown-item" id="" href="#PENSION">PENSIÓN</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" id="" href="#step-4">CAJA COMPENSACIÓN</a>
+                                <a class="dropdown-item" id="" href="#CAJA">CAJA COMPENSACIÓN</a>
                             </div>
                         </div>
                     </div>
@@ -44,28 +44,28 @@
 								<div id="smartwizard" data-id="{{ tab_id }}">
 									<ul class="nav">
 										<li class="nav-item">
-											<a class="nav-link" href="#step-1">	<strong>EPS</strong> 
+											<a class="nav-link" href="#EPS">	<strong>EPS</strong> 
 												<br>Gestión de Entidades promotoras de salud
                                             </a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" href="#step-2">	<strong>ARL</strong> 
+											<a class="nav-link" href="#ARL">	<strong>ARL</strong> 
 												<br>Gestión de Administradoras de Riesgos Laborales
                                             </a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" href="#step-3">	<strong>PENSIÓN</strong> 
+											<a class="nav-link" href="#PENSION">	<strong>PENSIÓN</strong> 
 												<br>Gestión de Pensión
                                             </a>
 										</li>
 										<li class="nav-item">
-											<a class="nav-link" href="#step-4">	<strong>CAJA COMPENSACIÓN</strong> 
+											<a class="nav-link" href="#CAJA">	<strong>CAJA COMPENSACIÓN</strong> 
 												<br>Gestión de Cajas de compesación
                                             </a>
 										</li>
 									</ul>
 									<div class="tab-content">
-										<div id="step-1" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+										<div id="EPS" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
                                             <div class="d-none d-sm-flex align-items-center mb-3">
                                                 <h3 id="TitleEPS">LISTA DE EPS</h3>
                                                 <div class="ms-auto">
@@ -103,9 +103,9 @@
                                                                                 </span>
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                <a id="BtnEditEPS" class="btn btn-sm btn-info">
+                                                                                <button id="BtnEditEPS" class="btn btn-sm btn-info">
                                                                                     <i class="bx bx-edit"></i>
-                                                                                </a>
+                                                                                </button>
                                                                                 <button class="btn btn-danger btn-sm delete-eps" data-id="{{ eps.id }}">
                                                                                     <i class="bx bx-trash"></i>
                                                                                 </button>                                            
@@ -141,7 +141,6 @@
                                             <div id="AddEPS" style="display: none;">
                                                 <div class="card border-top border-0 border-4 border-primary">
                                                     <div class="card-body p-5">
-
                                                         <form id="FormEPS" method="POST" class="row g-3 needs-validation" novalidate>
                                                             {% csrf_token %}
 
@@ -157,10 +156,12 @@
                                                                 <button id="submitAddEPS" type="submit" data-add-url="{% url 'EPSadd' %}" class="btn btn-info px-5">
                                                                     Registrar
                                                                 </button>
+                                                                <button id="submitEditEPS" type="submit" data-add-url="{% url 'EPSedit' 'eps_id'%}" class="btn btn-info px-5">
+                                                                    <i class="bx bx-save"></i> Guardar
+                                                                </button>
                                                             </div>
                                                         </form>
                                                         
-                                                        <div id="messagesContainer"></div>
 
                                                     </div>
                                                 </div>
@@ -168,7 +169,7 @@
                                             <!-- FORM REGISTER END-->
 										</div>
                                         
-										<div id="step-2" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+										<div id="ARL" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
 											<h3>LISTA DE ARL</h3>
                                             <div class="card">
                                                 <div class="card-body">
@@ -219,7 +220,7 @@
                                                 </div>
                                             </div>
 										</div>
-										<div id="step-3" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+										<div id="PENSION" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
                                             <h3>LISTA DE PENSIÓNES</h3>
                                             <div class="card">
                                                 <div class="card-body">
@@ -270,7 +271,7 @@
                                                 </div>
                                             </div>
                                         </div>
-										<div id="step-4" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+										<div id="CAJA" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
 											<h3>LISTA DE CAJA COMPESACIÓN</h3>
                                             <div class="card">
                                                 <div class="card-body">
