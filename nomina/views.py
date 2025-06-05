@@ -58,8 +58,10 @@ def EPSedit(request, eps_id):
             return JsonResponse({"success": True, "message": msj})
         else:
             return JsonResponse({"success": False, "message": "Actualización invalida."})
-
-    return JsonResponse({"success": False, "message": "Validar el formato correctamente."})
+        
+    # En caso de GET, devolver datos del registro
+    data = {field.name: getattr(eps, field.name) for field in eps._meta.get_fields() if hasattr(eps, field.name)}
+    return JsonResponse({"success": True, "data": data})
 
 @login_required(login_url='login')
 @require_POST

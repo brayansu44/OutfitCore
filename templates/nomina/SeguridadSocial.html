@@ -103,7 +103,7 @@
                                                                                 </span>
                                                                             </td>
                                                                             <td class="text-center">
-                                                                                <button id="BtnEditEPS" class="btn btn-sm btn-info">
+                                                                                <button class="btn btn-sm btn-info editar-eps" data-id="{{ eps.id }}">
                                                                                     <i class="bx bx-edit"></i>
                                                                                 </button>
                                                                                 <button class="btn btn-danger btn-sm delete-eps" data-id="{{ eps.id }}">
@@ -156,7 +156,7 @@
                                                                 <button id="submitAddEPS" type="submit" data-add-url="{% url 'EPSadd' %}" class="btn btn-info px-5">
                                                                     Registrar
                                                                 </button>
-                                                                <button id="submitEditEPS" type="submit" data-add-url="{% url 'EPSedit' 'eps_id'%}" class="btn btn-info px-5">
+                                                                <button id="submitEditEPS" type="submit" class="btn btn-info px-5">
                                                                     <i class="bx bx-save"></i> Guardar
                                                                 </button>
                                                             </div>
