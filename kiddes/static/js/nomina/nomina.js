@@ -16,16 +16,70 @@ if (step === -1) {
 //Visualizacion dinamica de div dentro del Smartwizard
 function Div_dynamic(aux_temporal, accion) {
     let stepNow = $("#smartwizard").smartWizard("getStepIndex"); // Obtiene el paso actual
-
-
-    const btnMostrar = document.getElementById(`btnMostrar${aux_temporal}`);
-    btnMostrar.textContent = btnMostrar.textContent === "Añadir" ? "Consultar" : "Añadir";
-
-
     let Add = document.getElementById(`Add${aux_temporal}`);
     let View = document.getElementById(`View${aux_temporal}`);
     let submitAdd = document.getElementById(`submitAdd${aux_temporal}`);
     let submitEdit = document.getElementById(`submitEdit${aux_temporal}`);
+
+    const btnMostrar = document.getElementById(`btnMostrar${aux_temporal}`)
+    btnMostrar.textContent = btnMostrar.textContent === "Añadir" ? "Consultar" : "Añadir";
+    
+    btnMostrar.addEventListener("click", function(event) {
+        if (event.type === "click") {
+            btnMostrar.textContent = btnMostrar.textContent === "Añadir" ? "Consultar" : "Añadir";
+            submitAdd.style.opacity = "0";
+            submitAdd.style.display = "block";
+
+            submitEdit.style.opacity = "1";
+            submitEdit.style.display = "none";
+            
+            setTimeout(() => {
+                submitAdd.style.opacity = "1";
+                submitAdd.style.transition = "opacity 0.5s ease-in-out";
+
+                submitEdit.style.opacity = "0";
+                submitEdit.style.transition = "opacity 0.5s ease-in-out";
+            }, 100);
+        }
+    });
+
+    document.querySelectorAll(".editar-eps").forEach(button => {
+        button.addEventListener("click", function () {
+            submitEdit.style.opacity = "0";
+            submitEdit.style.display = "block";
+
+            submitAdd.style.opacity = "1";
+            submitAdd.style.display = "none";
+            
+            setTimeout(() => {
+                submitEdit.style.opacity = "1";
+                submitEdit.style.transition = "opacity 0.5s ease-in-out";
+
+                submitAdd.style.opacity = "0";
+                submitAdd.style.transition = "opacity 0.5s ease-in-out";
+            }, 100);
+
+        });
+    });
+
+    btnMostrar.addEventListener("click", function(event) {
+        if (event.type === "click") {
+            btnMostrar.textContent = btnMostrar.textContent === "Añadir" ? "Consultar" : "Añadir";
+            submitAdd.style.opacity = "0";
+            submitAdd.style.display = "block";
+
+            submitEdit.style.opacity = "1";
+            submitEdit.style.display = "none";
+            
+            setTimeout(() => {
+                submitAdd.style.opacity = "1";
+                submitAdd.style.transition = "opacity 0.5s ease-in-out";
+
+                submitEdit.style.opacity = "0";
+                submitEdit.style.transition = "opacity 0.5s ease-in-out";
+            }, 100);
+        }
+    });
 
     //REGISTRAR
     if (View.style.display === "block" && Add.style.display === "none"){
@@ -181,6 +235,40 @@ function ViewEdit(form, aux, id) {
     });
 }
 
+function ViewDelete(aux, id) {
+    Swal.fire({
+        title: `¿Deseas eliminar esta ${aux}?`,
+        text: "Una vez eliminada, no podrás recuperarla.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch(`/nomina/SeguridadSocial/${aux}/delete/${id}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire("Eliminado", `La ${aux} ha sido eliminada.`, "success")
+                            .then(() => location.reload());
+                    } else {
+                        Swal.fire("Error", `No se pudo eliminar la ${aux}.`, "error");
+                    }
+                })
+                .catch(error => {
+                    Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                });
+        }
+    });
+}
+
 //Cambio de Paso en el SmartWizard dinamico
 function changeTabID(aux_temporal) {
     let nuevaURL = new URL(window.location.href);
@@ -191,6 +279,7 @@ function changeTabID(aux_temporal) {
 //FUNCIONES CRUD
 document.addEventListener("DOMContentLoaded", function () {
 
+    ///EPS
     document.getElementById("btnMostrarEPS").addEventListener("click", function(event) {
         if (event.type === "click") {
             aux = window.location.hash; // Captura el ID del paso smartwizard
@@ -218,6 +307,154 @@ document.addEventListener("DOMContentLoaded", function () {
             Div_dynamic(aux, "EDITAR ");
             ViewField(aux, id);
             ViewEdit(form, aux, id)
+
+        });
+    });
+
+    document.querySelectorAll(".delete-eps").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            let id = this.getAttribute("data-id");
+            
+            ViewDelete(aux, id)
+
+        });
+    });
+
+    ///ARL
+    document.getElementById("btnMostrarARL").addEventListener("click", function(event) {
+        if (event.type === "click") {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //REGISTRAR FORM
+            const form = document.getElementById(`Form${aux}`);
+            const submit = document.getElementById(`submitAdd${aux}`);
+            Div_dynamic(aux, "REGISTRAR ");
+            ViewAdd(form, submit)
+        }
+    });
+
+    document.querySelectorAll(".editar-arl").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //EDITAR
+            let id = this.getAttribute("data-id");
+            const form = document.getElementById(`Form${aux}`);
+            
+            Div_dynamic(aux, "EDITAR ");
+            ViewField(aux, id);
+            ViewEdit(form, aux, id)
+
+        });
+    });
+
+    document.querySelectorAll(".delete-arl").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            let id = this.getAttribute("data-id");
+            
+            ViewDelete(aux, id)
+
+        });
+    });
+
+    ///PENSION
+    document.getElementById("btnMostrarPENSION").addEventListener("click", function(event) {
+        if (event.type === "click") {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //REGISTRAR FORM
+            const form = document.getElementById(`Form${aux}`);
+            const submit = document.getElementById(`submitAdd${aux}`);
+            Div_dynamic(aux, "REGISTRAR ");
+            ViewAdd(form, submit)
+        }
+    });
+
+    document.querySelectorAll(".editar-pension").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //EDITAR
+            let id = this.getAttribute("data-id");
+            const form = document.getElementById(`Form${aux}`);
+            
+            Div_dynamic(aux, "EDITAR ");
+            ViewField(aux, id);
+            ViewEdit(form, aux, id)
+
+        });
+    });
+
+    document.querySelectorAll(".delete-pension").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            let id = this.getAttribute("data-id");
+            
+            ViewDelete(aux, id)
+
+        });
+    });
+
+    ///CAJA
+    document.getElementById("btnMostrarCAJA").addEventListener("click", function(event) {
+        if (event.type === "click") {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //REGISTRAR FORM
+            const form = document.getElementById(`Form${aux}`);
+            const submit = document.getElementById(`submitAdd${aux}`);
+            Div_dynamic(aux, "REGISTRAR ");
+            ViewAdd(form, submit)
+        }
+    });
+
+    document.querySelectorAll(".editar-caja").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            //EDITAR
+            let id = this.getAttribute("data-id");
+            const form = document.getElementById(`Form${aux}`);
+            
+            Div_dynamic(aux, "EDITAR ");
+            ViewField(aux, id);
+            ViewEdit(form, aux, id)
+
+        });
+    });
+
+    document.querySelectorAll(".delete-caja").forEach(button => {
+        button.addEventListener("click", function () {
+            aux = window.location.hash; // Captura el ID del paso smartwizard
+            aux = aux.replace("#", ""); // Elimina el símbolo "#"
+            changeTabID(aux)
+
+            let id = this.getAttribute("data-id");
+            
+            ViewDelete(aux, id)
 
         });
     });
