@@ -23,6 +23,7 @@ class ProductoForm(forms.ModelForm):
 
         self.fields['estado'].widget.attrs.update({'class': 'form-select'})
 
-        if 'descripcion' in self.fields:
-            descripcion_field = self.fields.pop('descripcion')  
-            self.fields['descripcion'] = descripcion_field
+        # ✅ Agrega la clase necesaria para el dual-listbox
+        self.fields['color'].widget.attrs.update({'class': 'dual-listbox'})
+        self.fields['talla'].widget.attrs.update({'class': 'dual-listbox'})
+        self.fields['diseno'].widget.attrs.update({'class': 'dual-listbox'})

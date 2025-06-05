@@ -17,7 +17,9 @@ def agregar_producto(request):
     if request.method == "POST":
         form = ProductoForm(request.POST)
         if form.is_valid():
-            form.save()
+            producto = form.save(commit=False)
+            producto.save()
+            form.save_m2m()
             messages.success(request, "Producto agregado correctamente.")
             return redirect('productos')
     else:

@@ -53,9 +53,9 @@ class Producto(models.Model):
     ]
     codigo              = models.CharField(max_length=50, unique=True)
     referencia          = models.CharField(max_length=100)
-    diseno              = models.ManyToManyField(Diseno, related_name="productos")
-    color               = models.ManyToManyField(Color, related_name="productos")
-    talla               = models.ManyToManyField(Talla, related_name="productos")
+    diseno              = models.ManyToManyField(Diseno, related_name="productos", null=True, blank=True)
+    color               = models.ManyToManyField(Color, related_name="productos", null=False, blank=False)
+    talla               = models.ManyToManyField(Talla, related_name="productos", null=False, blank=False)
     categoria           = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name="productos")
     genero              = models.ForeignKey(Genero, on_delete=models.SET_NULL, null=True, blank=True, related_name="productos")
     descripcion         = models.TextField(blank=True)

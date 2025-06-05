@@ -20,23 +20,60 @@
             <div class="card border-top border-0 border-4 border-primary">
                 <div class="card-body p-5">
                     <div class="card-title d-flex align-items-center">
-                        <div><i class="fas fa-shirt  me-1 font-22 text-primary"></i></div>
+                        <div><i class="fas fa-shirt me-1 font-22 text-primary"></i></div>
                         <h5 class="mb-0 text-primary">{{ accion }} Producto</h5>
                     </div>
                     <hr>
 
-                    <form method="POST" class="row g-3 needs-validation" novalidate>
+                    <form action="{% url 'agregar_producto' %}" method="POST" class="row g-3 needs-validation" novalidate>
                         {% csrf_token %}
 
-                        {% for field in form %}
-                            <div class="{% if field.name == 'descripcion' %}col-md-12{% else %}col-md-6{% endif %}">
-                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
-                                {{ field }}
-                                <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
-                            </div>
-                        {% endfor %}
+                        <div class="col-md-6">
+                            <label for="{{ form.codigo.id_for_label }}" class="form-label">{{ form.codigo.label }}</label>
+                            {{ form.codigo }}
+                        </div>
 
-                        <div class="col-12">
+                        <div class="col-md-6">
+                            <label for="{{ form.referencia.id_for_label }}" class="form-label">{{ form.referencia.label }}</label>
+                            {{ form.referencia }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="{{ form.diseno.id_for_label }}" class="form-label">{{ form.diseno.label }}</label>
+                            {{ form.diseno }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="{{ form.color.id_for_label }}" class="form-label">{{ form.color.label }}</label>
+                            {{ form.color }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="{{ form.talla.id_for_label }}" class="form-label">{{ form.talla.label }}</label>
+                            {{ form.talla }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.categoria.id_for_label }}" class="form-label">{{ form.categoria.label }}</label>
+                            {{ form.categoria }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.genero.id_for_label }}" class="form-label">{{ form.genero.label }}</label>
+                            {{ form.genero }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="{{ form.estado.id_for_label }}" class="form-label">{{ form.estado.label }}</label>
+                            {{ form.estado }}
+                        </div>
+
+                        <div class="col-md-12">
+                            <label for="{{ form.descripcion.id_for_label }}" class="form-label">{{ form.descripcion.label }}</label>
+                            {{ form.descripcion }}
+                        </div>
+
+                        <div class="col-12 mt-4">
                             <button type="submit" class="btn btn-success px-5">
                                 <i class="bx bx-save"></i> Guardar
                             </button>
@@ -52,12 +89,33 @@
     </div>
 </div>
 
+<!-- jQuery y Dual Listbox -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    (function () {
-        'use strict';
+    $(document).ready(function () {
+        const dualList = $('select.dual-listbox').bootstrapDualListbox({
+            nonSelectedListLabel: 'Disponibles',
+            selectedListLabel: 'Seleccionados',
+            preserveSelectionOnMove: 'moved',
+            moveOnSelect: false,
+            filterPlaceHolder: 'Buscar...',
+            infoText: 'Mostrando {0}',
+            infoTextEmpty: 'Sin elementos',
+            infoTextFiltered: '<span class="badge bg-primary">Filtrado</span> {0} de {1}',
+        });
+
+        // Cambiar íconos con Boxicons
+        setTimeout(() => {
+            $('.moveall').html('<i class="bx bx-chevrons-right"></i>');
+            $('.removeall').html('<i class="bx bx-chevrons-left"></i>');
+            $('.move').html('<i class="bx bx-chevron-right"></i>');
+            $('.remove').html('<i class="bx bx-chevron-left"></i>');
+        }, 100);
+
+        // Bootstrap validation
         var forms = document.querySelectorAll('.needs-validation');
-        Array.prototype.slice.call(forms)
-        .forEach(function (form) {
+        Array.prototype.slice.call(forms).forEach(function (form) {
             form.addEventListener('submit', function (event) {
                 if (!form.checkValidity()) {
                     event.preventDefault();
@@ -66,6 +124,6 @@
                 form.classList.add('was-validated');
             }, false);
         });
-    })();
+    });
 </script>
 {% endblock %}
