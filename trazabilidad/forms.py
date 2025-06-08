@@ -103,10 +103,12 @@ class CorteTelaForm(forms.ModelForm):
         self.fields['orden'].widget.attrs.update({'class': 'form-select'})   
 
         self.fields['rollo'].empty_label = "Seleccione un rollo"
-        self.fields['rollo'].widget.attrs.update({'class': 'form-select'})  
+        self.fields['rollo'].widget.attrs.update({'class': 'form-select'})
+
+        self.fields['categoria'].widget.attrs.update({'class': 'form-select'})  
         
-        self.fields['categoria'].widget.attrs.update({'class': 'form-select'})
         self.fields['responsable'].empty_label = "Seleccione un responsable"
+        self.fields['responsable'].widget.attrs.update({'class': 'form-select'})
 
         if self.instance and self.instance.fecha_corte:
             self.initial['fecha_corte'] = self.instance.fecha_corte.strftime('%Y-%m-%d')
