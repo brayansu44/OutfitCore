@@ -108,7 +108,7 @@ class Devengado(models.Model):
     total               = models.FloatField()
 
     def calcular_total(self):
-        return self.contrato.salario + self.auxilio_transporte + (self.horas_extras * 1.25) + (self.recargos_nocturnos * 1.35) + (self.recargos_dominical * 1.75)
+        return ((self.contrato.salario / 30) * self.dias_liquidados) + self.auxilio_transporte + (self.horas_extras * 1.25) + (self.recargos_nocturnos * 1.35) + (self.recargos_dominical * 1.75)
 
     def save(self, *args, **kwargs):
         self.total = self.calcular_total()
@@ -171,10 +171,20 @@ class AportesParafiscal(models.Model):
     icbf                = models.FloatField()
     caja_compensacion   = models.FloatField()
     aporte_salud        = models.FloatField()
+    total               = models.FloatField()
 
     class Meta:
         verbose_name = 'Aporte Parafiscal'
         verbose_name_plural = 'Aportes Parafiscales'
+
+    def calcular_total(self):
+        return sum([
+            self.sena, self.icbf, self.caja_compensacion, self.aporte_salud
+        ])
+
+    def save(self, *args, **kwargs):
+        self.total = self.calcular_total()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Aportes Parafiscales - {self.contrato.perfil}"

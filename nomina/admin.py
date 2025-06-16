@@ -14,7 +14,7 @@ class ContratoAdmin(admin.ModelAdmin):
 
 @admin.register(Devengado)
 class DevengadoAdmin(admin.ModelAdmin):
-    list_display = ('contrato', 'total', 'dias_liquidados', 'horas_extras', 'recargos_nocturnos', 'recargos_dominical')
+    list_display = ('contrato', 'total', 'auxilio_transporte', 'exonerado_aportes', 'dias_liquidados', 'horas_extras', 'recargos_nocturnos', 'recargos_dominical')
     list_filter = ('contrato',)
 
 @admin.register(Deducciones)

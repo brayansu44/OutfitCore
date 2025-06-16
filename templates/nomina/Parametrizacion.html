@@ -1,0 +1,235 @@
+{% extends 'base.html' %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--breadcrumb-->
+				<div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+					<div class="breadcrumb-title pe-3">General Parametrización</div>
+					<div class="ps-3">
+						<nav aria-label="breadcrumb">
+							<ol class="breadcrumb mb-0 p-0">
+								<li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'nomina' %}">General</a></li>
+								<li class="breadcrumb-item active" aria-current="page">Parametrización</li>
+							</ol>
+						</nav>
+					</div>
+				</div>
+				<!--end breadcrumb-->
+				<div class="row">
+					<div class="col-xl-12 mx-auto">
+						<h6 class="mb-0 text-uppercase">PARAMTERIZAR</h6>
+						<hr/>
+                        <div class="card">
+                            <div class="card-body">
+                                <input class="" placeholder="N° Identificación/Contrato"></input>
+                            </div>
+                        </div>
+						<div class="card">
+							<div class="card-body">						
+								<br />
+								<!-- SmartWizard html -->
+								<div id="smartwizard" data-id="{{ tab_id }}">
+									<ul class="nav">
+										<li class="nav-item">
+											<a class="nav-link" href="#EPS">	<strong>EPS</strong> 
+												<br>Gestión de Entidades promotoras de salud
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#ARL">	<strong>ARL</strong> 
+												<br>Gestión de Administradoras de Riesgos Laborales
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#PENSION">	<strong>PENSIÓN</strong> 
+												<br>Gestión de Pensión
+                                            </a>
+										</li>
+										<li class="nav-item">
+											<a class="nav-link" href="#CAJA">	<strong>CAJA COMPENSACIÓN</strong> 
+												<br>Gestión de Cajas de compesación
+                                            </a>
+										</li>
+									</ul>
+									<div class="tab-content">
+										<div id="EPS" class="tab-pane" role="tabpanel" aria-labelledby="step-1">
+                                            <div class="d-none d-sm-flex align-items-center mb-3">
+                                                <h3 id="TitleEPS">LISTA DE EPS</h3>
+                                                <div class="ms-auto">
+                                                    <div class="btn-group">
+                                                        <button id="btnMostrarEPS" class="btn btn-secondary">Añadir</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER -->
+                                            <div>
+                                                <div class="card border-top border-0 border-4 border-primary">
+                                                    <div class="card-body p-5">
+                                                        <form id="FormEPS" method="POST" class="row g-3 needs-validation" novalidate>
+                                                            {% csrf_token %}
+
+                                                            {% for field in form %}
+                                                                <div class="col-md-6">
+                                                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
+                                                                    {{ field }}
+                                                                    <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                            <div class="col-12">
+                                                                <button id="submitAddEPS" type="submit" data-add-url="{% url 'EPSadd' %}" class="btn btn-info px-5"
+                                                                style="display: block;">
+                                                                    Registrar
+                                                                </button>
+                                                                <button id="submitEditEPS" type="submit" class="btn btn-info px-5" style="display: none;">
+                                                                    <i class="bx bx-save"></i> Guardar
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                        
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER END-->
+										</div>                                       
+										<div id="ARL" class="tab-pane" role="tabpanel" aria-labelledby="step-2">
+											<div class="d-none d-sm-flex align-items-center mb-3">
+                                                <h3 id="TitleEPS">LISTA DE ARL</h3>
+                                                <div class="ms-auto">
+                                                    <div class="btn-group">
+                                                        <button id="btnMostrarARL" class="btn btn-secondary">Añadir</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER -->
+                                            <div>
+                                                <div class="card border-top border-0 border-4 border-primary">
+                                                    <div class="card-body p-5">
+                                                        <form id="FormARL" method="POST" class="row g-3 needs-validation" novalidate>
+                                                            {% csrf_token %}
+
+                                                            {% for field in form %}
+                                                                <div class="col-md-6">
+                                                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
+                                                                    {{ field }}
+                                                                    <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                            <div class="col-12">
+                                                                <button id="submitAddARL" type="submit" data-add-url="{% url 'ARLadd' %}" class="btn btn-info px-5"
+                                                                style="display: block;">
+                                                                    Registrar
+                                                                </button>
+                                                                <button id="submitEditARL" type="submit" class="btn btn-info px-5" style="display: none;">
+                                                                    <i class="bx bx-save"></i> Guardar
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                        
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER END-->
+										</div>
+										<div id="PENSION" class="tab-pane" role="tabpanel" aria-labelledby="step-3">
+                                            <div class="d-none d-sm-flex align-items-center mb-3">
+                                                <h3 id="TitlePENSION">LISTA DE PENSIÓN</h3>
+                                                <div class="ms-auto">
+                                                    <div class="btn-group">
+                                                        <button id="btnMostrarPENSION" class="btn btn-secondary">Añadir</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER -->
+                                            <div id="AddPENSION" style="display: none;">
+                                                <div class="card border-top border-0 border-4 border-primary">
+                                                    <div class="card-body p-5">
+                                                        <form id="FormPENSION" method="POST" class="row g-3 needs-validation" novalidate>
+                                                            {% csrf_token %}
+
+                                                            {% for field in form %}
+                                                                <div class="col-md-6">
+                                                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
+                                                                    {{ field }}
+                                                                    <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                            <div class="col-12">
+                                                                <button id="submitAddPENSION" type="submit" data-add-url="{% url 'PENSIONadd' %}" class="btn btn-info px-5"
+                                                                style="display: block;">
+                                                                    Registrar
+                                                                </button>
+                                                                <button id="submitEditPENSION" type="submit" class="btn btn-info px-5" style="display: none;">
+                                                                    <i class="bx bx-save"></i> Guardar
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER END-->
+                                        </div>
+										<div id="CAJA" class="tab-pane" role="tabpanel" aria-labelledby="step-4">
+											<div class="d-none d-sm-flex align-items-center mb-3">
+                                                <h3 id="TitleCAJA">LISTA DE CAJAS COMPENSACIÓN</h3>
+                                                <div class="ms-auto">
+                                                    <div class="btn-group">
+                                                        <button id="btnMostrarCAJA" class="btn btn-secondary">Añadir</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- FORM REGISTER -->
+                                            <div id="AddCAJA" style="display: none;">
+                                                <div class="card border-top border-0 border-4 border-primary">
+                                                    <div class="card-body p-5">
+                                                        <form id="FormCAJA" method="POST" class="row g-3 needs-validation" novalidate>
+                                                            {% csrf_token %}
+
+                                                            {% for field in form %}
+                                                                <div class="col-md-6">
+                                                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
+                                                                    {{ field }}
+                                                                    <div class="invalid-feedback">Por favor, ingrese {{ field.label|striptags|lower }}.</div>
+                                                                </div>
+                                                            {% endfor %}
+
+                                                            <div class="col-12">
+                                                                <button id="submitAddCAJA" type="submit" data-add-url="{% url 'CAJAadd' %}" class="btn btn-info px-5"
+                                                                style="display: block;">
+                                                                    Registrar
+                                                                </button>
+                                                                <button id="submitEditCAJA" type="submit" class="btn btn-info px-5" style="display: none;">
+                                                                    <i class="bx bx-save"></i> Guardar
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- FORM REGISTER END-->
+                                        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--end row-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+{% endblock %}
+
+{% load static %}
+
+{% block script %}  
+    <script src="{% static 'js/nomina/parametrizacion.js' %}"></script>
+{% endblock %}

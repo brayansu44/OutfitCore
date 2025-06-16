@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <!--start page wrapper -->
+    <div class="page-wrapper">
+        <div class="page-content">
+            <!--breadcrumb-->
+            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+                <div class="breadcrumb-title pe-3">Contratos</div>
+                <div class="ps-3">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb mb-0 p-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'nomina' %}">General</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Consulta de Contratos</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+            <!--end breadcrumb-->
+            <h6 class="mb-0 text-uppercase">Lista de Contratos</h6>
+            <hr />
+
+            <!-- Botón de agregar tela -->
+            <div class="mb-3">
+                <a href="" class="btn btn-success">
+                    <i class="bx bx-plus"></i> Agregar Contrato
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Empresa</th>
+                                    <th>Local</th>
+                                    <th>EPS</th>
+                                    <th>Pensión</th>
+                                    <th>ARL</th>
+                                    <th>Caja de compensación</th>
+                                    <th>Fecha de Inicio</th>
+                                    <th>Fecha de Fin</th>
+                                    <th>Salario</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if contrato %}
+                                    {% for contrato in contrato %}
+                                    <tr>
+                                        <td>{{ contrato.perfil }}</td>
+                                        <td>{{ contrato.empresa }}</td>
+                                        <td>{{ contrato.local }}</td>
+                                        <td>{{ contrato.eps }}</td>
+                                        <td>{{ contrato.pension }}</td>
+                                        <td>{{ contrato.arl }}</td>
+                                        <td>{{ contrato.caja_compensacion }}</td>
+                                        <td>{{ contrato.fecha_inicio }}</td>
+                                        <td>{{ contrato.fecha_fin }}</td>
+                                        <td>{{ contrato.salario }}</td>
+                                        <td class="text-center">
+                                            <a href="" class="btn btn-sm btn-primary">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
+                                            <button class="btn btn-danger btn-sm delete-tela" data-id="{{ tela.id }}">
+                                                <i class="bx bx-trash"></i>
+                                            </button>                                            
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="11" class="text-center text-muted">
+                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
+                                            Actualmente no hay contratos generados.
+                                        </td>
+                                    </tr>
+                                {% endif %}    
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Proveedor</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--end page wrapper -->
+    <!--start overlay-->
+    <div class="overlay toggle-icon"></div>
+    <!--end overlay-->
+    <!--Start Back To Top Button--> 
+    <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+    <!--End Back To Top Button--> 
+{% endblock %}

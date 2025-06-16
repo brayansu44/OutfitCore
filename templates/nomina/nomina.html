@@ -18,7 +18,7 @@
             </div>
             <div class="ms-auto">
                 <div class="btn-group">
-                    <button type="button" class="btn btn-primary">Parametrizar</button>
+                    <button type="button" class="btn btn-primary"><a href="{% url 'Parametrizacion' %}">Parametrizar</a></button>
                     <button type="button" class="btn btn-primary split-bg-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">	<span class="visually-hidden">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-end">	
@@ -45,12 +45,7 @@
                             <img src="" width="110" height="110" class="rounded-circle shadow" alt="">
                             <h5 class="mb-0 mt-5">CONTRATOS</h5>
                             <p class="mb-3">Gestión de contratos</p>
-                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-google text-white border-0"><i class="bx bxl-google"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0"><i class="bx bxl-linkedin"></i></a>
-                            </div>
-                            <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Contact Me</a>
+                            <div class="d-grid"> <a href="{% url 'Contratos' %}" class="btn btn-outline-primary radius-15">Consultar</a>
                             </div>
                         </div>
                     </div>
@@ -64,12 +59,7 @@
                             <img src="" width="110" height="110" class="rounded-circle shadow" alt="">
                             <h5 class="mb-0 mt-5">NOMINA</h5>
                             <p class="mb-3">Gestión periodo de nomina</p>
-                            <div class="list-inline contacts-social mt-3 mb-3"> <a href="javascript:;" class="list-inline-item bg-facebook text-white border-0"><i class="bx bxl-facebook"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-twitter text-white border-0"><i class="bx bxl-twitter"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-google text-white border-0"><i class="bx bxl-google"></i></a>
-                                <a href="javascript:;" class="list-inline-item bg-linkedin text-white border-0"><i class="bx bxl-linkedin"></i></a>
-                            </div>
-                            <div class="d-grid"> <a href="#" class="btn btn-outline-primary radius-15">Contact Me</a>
+                            <div class="d-grid"> <a href="{% url 'Nomina_personal' %}" class="btn btn-outline-primary radius-15">Contact Me</a>
                             </div>
                         </div>
                     </div>
@@ -101,7 +91,7 @@
                         <div class="p-4 radius-15">
                             <img src="" width="110" height="110" class="rounded-circle shadow p-1 bg-white" alt="">
                             <h5 class="mb-0 mt-5 text-white">ARL</h5>
-                            <p class="mb-3 text-white">Gestión de Administradoras de Riesgos Laborales</p>
+                            <p class="mb-3 text-white">Gestión Administrador Riesgo Laboral</p>
                             
                             <div class="d-grid"> <a href="{% url 'SeguridadSocial' 'ARL' %}" class="btn btn-white radius-15">Detalles</a>
                             </div>
