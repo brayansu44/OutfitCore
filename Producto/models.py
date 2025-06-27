@@ -53,9 +53,9 @@ class Producto(models.Model):
     ]
     codigo              = models.CharField(max_length=50, unique=True)
     referencia          = models.CharField(max_length=100)
-    diseno              = models.ManyToManyField(Diseno, related_name="productos", null=True, blank=True)
-    color               = models.ManyToManyField(Color, related_name="productos", null=False, blank=False)
-    talla               = models.ManyToManyField(Talla, related_name="productos", null=False, blank=False)
+    diseno              = models.ManyToManyField(Diseno, related_name="productos", blank=True)
+    color               = models.ManyToManyField(Color, related_name="productos", blank=False)
+    talla               = models.ManyToManyField(Talla, related_name="productos", blank=False)
     categoria           = models.ForeignKey(Categoria, on_delete=models.SET_NULL, null=True, blank=True, related_name="productos")
     genero              = models.ForeignKey(Genero, on_delete=models.SET_NULL, null=True, blank=True, related_name="productos")
     descripcion         = models.TextField(blank=True)
@@ -79,4 +79,7 @@ class ProductoVariante(models.Model):
 
     def __str__(self):
         return f"{self.producto.referencia} - {self.color.nombre} - {self.talla.nombre} - {self.diseno.nombre if self.diseno else 'Sin diseño'}"
+    
+    def get_codigo_barra(self):
+        return f"{self.producto.codigo}-{self.color.nombre}-{self.talla.nombre}"
 
