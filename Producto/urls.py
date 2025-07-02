@@ -9,5 +9,5 @@ urlpatterns = [
     path('generar-todos-codigos/', views.generar_codigos_todos_productos, name='generar_codigos_todos_productos'),
     path('generar-codigo-por-producto/<int:producto_id>/', views.generar_codigos_por_producto, name='generar_codigos_por_producto'),
     path("buscar-por-codigo/", views.buscar_por_codigo, name="buscar_por_codigo"),
-
+    path('productos/detalle-producto/<int:producto_id>/', views.detalle_producto, name='detalle_producto'),
 ]    

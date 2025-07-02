@@ -15,7 +15,19 @@ import zipfile
 @login_required(login_url='login')
 def productos(request):
     productos = Producto.objects.prefetch_related('talla', 'color').all()
-    return render(request, 'productos/productos.html', {'productos': productos})
+    diseno_id = request.GET.get("diseno_id")
+
+    if diseno_id:
+        productos = productos.filter(diseno__id=diseno_id).distinct()
+
+    disenos = Diseno.objects.all()
+
+    context = {
+        'productos': productos,
+        'disenos': disenos,
+    }
+
+    return render(request, 'productos/productos.html', context)
 
 @login_required(login_url='login')
 def agregar_producto(request):
@@ -144,5 +156,15 @@ def buscar_por_codigo(request):
             variante = v
             break
 
-    return render(request, 'productos/detalle_producto.html', {'variante': variante})
+    return render(request, 'productos/detalle_variante.html', {'variante': variante})
+
+def detalle_producto(request, producto_id):
+    producto = get_object_or_404(Producto, id=producto_id)
+    variantes = ProductoVariante.objects.filter(producto=producto)
+    return render(request, 'productos/detalle_producto.html', {
+        'producto': producto,
+        'variantes': variantes
+    })
+
+
 

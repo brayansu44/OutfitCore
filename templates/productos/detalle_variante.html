@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+  <div class="page-content">
+    <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+      <div class="breadcrumb-title pe-3">Resultado del Escaneo</div>
+      <div class="ps-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 p-0">
+            <li class="breadcrumb-item">
+              <a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+            </li>
+            <li class="breadcrumb-item">
+              <a href="{% url 'productos' %}">Productos</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Resultado</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <div class="card p-3">
+      {% if variante %}
+      <div class="row g-0">
+        <div class="col-md-4">
+          {% if variante.diseno and variante.diseno.imagen %}
+          <img src="{{ variante.diseno.imagen.url }}" class="img-fluid rounded" alt="Diseño del producto">
+          {% else %}
+          <img src="/static/images/no-image.png" class="img-fluid rounded" alt="Sin imagen disponible">
+          {% endif %}
+        </div>
+
+        <div class="col-md-8">
+          <div class="card-body">
+            <h4 class="card-title">{{ variante.producto.referencia }}</h4>
+            <div class="mb-3">
+              <strong>Código de Barras:</strong> {{ variante.get_codigo_barra }}
+            </div>
+            <p class="card-text">
+              <strong>Color:</strong> {{ variante.color.nombre }}<br>
+              <strong>Talla:</strong> {{ variante.talla.nombre }}<br>
+              {% if variante.producto.descripcion %}
+              <strong>Descripción:</strong> {{ variante.producto.descripcion }}
+              {% endif %}
+            </p>
+
+            <a href="{% url 'productos' %}" class="btn btn-secondary mt-3">
+              <i class="bx bx-arrow-back"></i> Volver
+            </a>
+          </div>
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-warning">
+        No se encontró ninguna variante con ese código de barras.
+      </div>
+      <a href="{% url 'productos' %}" class="btn btn-secondary mt-3">
+        <i class="bx bx-arrow-back"></i> Volver
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
