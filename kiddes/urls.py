@@ -34,4 +34,5 @@ urlpatterns = [
     path('bodega/', include('bodega.urls')),
     path('notificaiones/', include('notificaciones.urls')),
     path('nomina/', include('nomina.urls')),
+    path('cuentas/', include('Cuentas.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

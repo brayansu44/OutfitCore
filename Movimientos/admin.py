@@ -30,5 +30,5 @@ class EgresoAdmin(admin.ModelAdmin):
 @admin.register(RegistroContable)
 class RegistroContableAdmin(admin.ModelAdmin):
     list_display = ('cuenta', 'anio', 'mes', 'ingresos', 'gastos', 'saldo_mensual', 'saldo_acumulado')
-    list_filter = ('anio', 'mes', 'cuenta')
+    list_filter = ( 'mes', 'cuenta')
     search_fields = ('cuenta__nombre',)

@@ -1,9 +1,11 @@
 from django.db import models
+from proveedores.models import Proveedor
 
 # Create your models here.
 
 # Modulo de cuentas por cobrar
 class Cliente(models.Model):
+    identificacion = models.IntegerField(unique=True, null=False, blank=False, default='0')
     nombre = models.CharField(max_length=100)
 
     def __str__(self):
@@ -55,7 +57,7 @@ class PagoRecibido(models.Model):
 # Modulo de cuentas por pagar
 class FacturaCompra(models.Model):
     numero_factura      = models.CharField(max_length=20)
-    proveedor           = models.CharField(max_length=50)
+    proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField()
     monto_total         = models.FloatField()

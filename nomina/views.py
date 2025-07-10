@@ -94,7 +94,7 @@ def ARLedit(request, arl_id):
         form = ARLForm(request.POST, instance=arl)
         if form.is_valid():
             form.save()
-            msj = f"Datos de la ARL {arl.nombre} actualizada correctamente."
+            msj = f"Datos de la EPS {arl.nombre} actualizada correctamente."
             return JsonResponse({"success": True, "message": msj})
         else:
             return JsonResponse({"success": False, "message": "Actualización invalida."})

@@ -120,11 +120,15 @@
             </a>
         </li>
         <li>
-            <a href="#">
+            <a href="#" class="has-arrow">
                 <div class="parent-icon"><i class="fas fa-wallet"></i>
                 </div>
                 <div class="menu-title">Cuentas</div>
             </a>
+            <ul>
+                <li> <a href="{% url 'ventas' %}"><i class="bx bx-right-arrow-alt"></i>Ventas</a> </li>
+                <li> <a href="{% url 'compras' %}"><i class="bx bx-right-arrow-alt"></i>Compras</a> </li>
+            </ul>
         </li>
         <li>
             <a href="{% url 'nomina' %}">

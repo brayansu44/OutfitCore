@@ -5,8 +5,8 @@ from .models import Cliente, FacturaVenta, PagoRecibido, FacturaCompra, Pago
 # ---- Módulo de Cuentas por Cobrar ----
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre')
-    search_fields = ('nombre',)
+    list_display = ('id', 'identificacion', 'nombre')
+    search_fields = ('identificacion', 'nombre',)
 
 @admin.register(FacturaVenta)
 class FacturaVentaAdmin(admin.ModelAdmin):
