@@ -9,7 +9,6 @@ class Categoria(models.Model):
 
 class Diseno(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
-    imagen = models.ImageField(upload_to='productos', blank=True)
 
     def __str__(self):
         return self.nombre
@@ -17,6 +16,13 @@ class Diseno(models.Model):
     class Meta:
         verbose_name='Diseño'
         verbose_name_plural='Diseños'
+
+class ImagenDiseno(models.Model):
+    diseno = models.ForeignKey(Diseno, on_delete=models.CASCADE, related_name='imagenes')
+    imagen = models.ImageField(upload_to='productos_diseños')
+
+    def __str__(self):
+        return f"Imagen de {self.diseno.nombre}"
     
 class Genero(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -79,4 +85,7 @@ class ProductoVariante(models.Model):
 
     def __str__(self):
         return f"{self.producto.referencia} - {self.color.nombre} - {self.talla.nombre} - {self.diseno.nombre if self.diseno else 'Sin diseño'}"
+    
+    def get_codigo_barra(self):
+        return f"{self.producto.codigo}-{self.color.nombre}-{self.talla.nombre}"
 

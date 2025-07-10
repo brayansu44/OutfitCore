@@ -6,13 +6,72 @@ from django.http import JsonResponse
 from .forms import *
 
 # Create your views here.
-from .models import Nomina, EPS, ARL, Pension, CajaCompensacion
+from .models import *
 
 @login_required(login_url = 'login')
 def nomina(request):
     nomina        = Nomina.objects.all()
 
     return render(request, 'nomina/nomina.html', {'nomina': nomina})
+
+@login_required(login_url = 'login')
+def Contratos(request):
+    contrato     = Contrato.objects.all()
+
+    context = {
+        'contrato': contrato,
+    }
+
+    return render(request, 'nomina/contratos.html', context )
+
+@login_required(login_url = 'login')
+def Nomina_personal(request):
+    nomina     = Nomina.objects.all()
+    # Filtrar perfil usando los contratos de la nómina
+    perfil_contrato = Contrato.objects.filter(perfil__contrato__in=[nomina.contrato for nomina in nomina]) 
+
+    context = {
+        'nomina': nomina,
+        'perfil': perfil_contrato,
+    }
+
+    return render(request, 'nomina/nomina_personal.html', context )
+
+@login_required(login_url = 'login')
+def Parametrizacion(request):
+    contrato = Contrato.objects.all()
+    devengado = Devengado.objects.all()
+    deducciones = Deducciones.objects.all()
+    provisiones = Provisiones.objects.all()
+    aportes = AportesParafiscal.objects.all() 
+ 
+    context = {
+        'contrato': contrato,
+        'devengado': devengado,
+        'deducciones': deducciones,
+        'provisiones': provisiones,
+        'aportes': aportes,
+    }
+
+    return render(request, 'nomina/Parametrizacion.html', context )
+
+@login_required(login_url='login')
+def devengado(request, user_id):
+    contrato = Contrato.objects.filter(perfil=user_id) 
+    devengado = get_object_or_404(Devengado)
+
+    if request.method == "POST":
+        form = DevengadoForm(request.POST, instance=devengado)
+        if form.is_valid():
+            form.save()
+            msj = f"Datos devengado del usuario {eps.nombre} actualizada correctamente."
+            return JsonResponse({"success": True, "message": msj})
+        else:
+            return JsonResponse({"success": False, "message": "Actualización invalida."})
+        
+    # En caso de GET, devolver datos del registro
+    data = {field.name: getattr(eps, field.name) for field in eps._meta.get_fields() if hasattr(eps, field.name)}
+    return JsonResponse({"success": True, "data": data})
 
 @login_required(login_url = 'login')
 def SeguridadSocial(request, tab_id):

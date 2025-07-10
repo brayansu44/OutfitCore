@@ -52,3 +52,44 @@ class CAJAForm(forms.ModelForm):
 
         self.fields['estado'].empty_label = "Seleccione un estado"
         self.fields['estado'].widget.attrs.update({'class': 'form-select'})
+
+
+class DevengadoForm(forms.ModelForm):
+    class Meta:
+        model = Devengado
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class DeduccionesForm(forms.ModelForm):
+    class Meta:
+        model = Deducciones
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class ProvisionesForm(forms.ModelForm):
+    class Meta:
+        model = Provisiones
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+class AportesParafiscalForm(forms.ModelForm):
+    class Meta:
+        model = AportesParafiscal
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
