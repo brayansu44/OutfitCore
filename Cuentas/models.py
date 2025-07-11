@@ -6,7 +6,9 @@ from proveedores.models import Proveedor
 # Modulo de cuentas por cobrar
 class Cliente(models.Model):
     identificacion = models.IntegerField(unique=True, null=False, blank=False, default='0')
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=50)
+    telefono = models.IntegerField(blank=True)
+    direccion = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -16,7 +18,7 @@ class FacturaVenta(models.Model):
     cliente             = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField()
-    monto_total         = models.FloatField()
+    monto_total         = models.FloatField(blank=True)
     saldo_pendiente     = models.FloatField()
 
     def actualizar_saldo(self):
@@ -60,7 +62,7 @@ class FacturaCompra(models.Model):
     proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField()
-    monto_total         = models.FloatField()
+    monto_total         = models.FloatField(blank=True)
     saldo_pendiente     = models.FloatField()
 
     def __str__(self):

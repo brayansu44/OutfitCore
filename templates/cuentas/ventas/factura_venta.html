@@ -19,7 +19,7 @@
             </div>
             <!-- Botón de agregar tela -->
             <div class="mb-3">
-                <a href="#" class="btn btn-success">
+                <a href="{% url 'agregar_factura_venta' %}" class="btn btn-success">
                     <i class="bx bx-plus"></i> Agregar Factura de Venta
                 </a>
             </div>
@@ -52,7 +52,7 @@
                                         <td>{{ factura.monto_total }}</td>
                                         <td>{{ factura.saldo_pendiente }}</td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'editar_factura_venta' factura.id %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>
                                             </a>
                                             <button class="btn btn-danger btn-sm delete-tela" data-id="{{ factura.id }}">

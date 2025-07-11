@@ -2,8 +2,8 @@ from django import forms
 from django.utils.timezone import localtime
 from .models import *
 
-class Factura_ventaForm(forms.ModelForm):
-    fecha_emision = forms.DateField(
+class FacturaVentaForm(forms.ModelForm):
+    fecha_vencimiento = forms.DateField(
         widget=forms.DateInput(
             attrs={'type': 'date', 'class': 'form-control'},
             format='%Y-%m-%d'
@@ -14,8 +14,7 @@ class Factura_ventaForm(forms.ModelForm):
     class Meta:
         model = FacturaVenta
         fields = [
-            'numero_factura', 'cliente', 'fecha_vencimiento', 'monto_total',
-            'fecha_emision']
+            'numero_factura', 'cliente', 'fecha_vencimiento', 'monto_total']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -25,6 +24,6 @@ class Factura_ventaForm(forms.ModelForm):
 
             if field.required:
                 field.label = f"<strong>{field.label if field.label else field_name}</strong>"
-
-        if self.instance and self.instance.fecha_corte:
-            self.initial['fecha_corte'] = self.instance.fecha_corte.strftime('%Y-%m-%d')
+        
+        if self.instance and self.instance.fecha_vencimiento:
+            self.initial['fecha_vencimiento'] = self.instance.fecha_vencimiento.strftime('%Y-%m-%d')
