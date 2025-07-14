@@ -33,14 +33,21 @@
 
                     <form method="POST" class="row g-3 needs-validation" novalidate>
                         {% csrf_token %}
+
+                        <div class="col-md-6">
+                            <label class="form-label"><strong>Número de factura</strong></label>
+                            <input type="text" class="form-control" value="TKV-{{ now|date:'Y' }}-XXXX" disabled>
+                            <div class="form-text">Este número se asignará automáticamente al guardar.</div>
+                        </div>
+
                         {% for field in form %}
-                            <div class="{% if field.name == 'fecha_emision' or field.name == 'fecha_vencimiento' %}col-md-12{% else %}col-md-6{% endif %}">
+                            <div class="{% if field.name == 'fecha_vencimiento' %}col-md-12{% else %}col-md-6{% endif %}">
                                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
                                 {% if field.name == 'cliente' %}
                                     <div class="d-flex align-items-center">
                                         {{ field }}
-                                        <a href="#" class="btn btn-outline-primary btn-sm ms-2" target="_blank" title="Agregar nuevo cliente">
-                                            <i class="bx bx-plus"></i>
+                                        <a href="#" class="btn btn-outline-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" title="Agregar nuevo cliente">
+                                           <i class="bx bx-plus"></i>
                                         </a>
                                     </div>
                                 {% else %}
@@ -60,6 +67,25 @@
                         </div>
                     </form>
 
+                    <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <form id="clienteForm">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Nuevo Cliente</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body" id="modalClienteBody">
+                                    <!-- formulario vía AJAX -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                </div>
+                            </form>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -73,4 +99,12 @@
     <!--Start Back To Top Button--> 
     <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
     <!--End Back To Top Button--> 
+{% endblock %}
+
+{% load static %}
+
+{% block script %}  
+    <script src="{% static 'js/cuentas/cuentas.js' %}">
+        
+    </script>
 {% endblock %}

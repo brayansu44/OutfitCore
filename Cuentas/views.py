@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from django.http import JsonResponse
+from django.utils import timezone
+from django.template.loader import render_to_string
 from .forms import *
 
 # Create your views here.
@@ -32,6 +34,20 @@ def Compras(request):
 
     return render(request, 'cuentas/compras/compras.html', context)
 
+#CLIENTE
+@login_required(login_url='login')
+def agregar_cliente(request):
+    if request.method == 'POST':
+        form = ClienteForm(request.POST)
+        if form.is_valid():
+            cliente = form.save()
+            return JsonResponse({'success': True, 'id': cliente.id, 'nombre': str(cliente)})
+        else:
+            return JsonResponse({'success': False, 'form_html': render_to_string('cuentas/form_cliente.html', {'form': form}, request)})
+    else:
+        form = ClienteForm()
+        return render(request, 'cuentas/form_cliente.html', {'form': form})
+
 #FACTURA DE VENTA
 @login_required(login_url = 'login')
 def Factura_venta(request):
@@ -49,8 +65,14 @@ def agregar_factura_venta(request):
             return redirect('factura_venta')
     else:
         form = FacturaVentaForm()
+
+    context = {
+        'form': form, 
+        'accion': 'Agregar',
+        'now': timezone.now()
+    }
         
-    return render(request, 'cuentas/ventas/form_factura_venta.html', {'form': form, 'accion': 'Agregar'})
+    return render(request, 'cuentas/ventas/form_factura_venta.html', context)
 
 @login_required(login_url='login')
 def editar_factura_venta(request, factura_id):

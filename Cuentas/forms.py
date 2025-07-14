@@ -2,6 +2,18 @@ from django import forms
 from django.utils.timezone import localtime
 from .models import *
 
+
+class ClienteForm(forms.ModelForm):
+    class Meta:
+        model = Cliente
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
+
 class FacturaVentaForm(forms.ModelForm):
     fecha_vencimiento = forms.DateField(
         widget=forms.DateInput(
@@ -14,7 +26,7 @@ class FacturaVentaForm(forms.ModelForm):
     class Meta:
         model = FacturaVenta
         fields = [
-            'numero_factura', 'cliente', 'fecha_vencimiento', 'monto_total']
+            'cliente', 'fecha_vencimiento', 'monto_total']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

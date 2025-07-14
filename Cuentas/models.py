@@ -1,5 +1,6 @@
-from django.db import models
+from django.db import models, transaction
 from proveedores.models import Proveedor
+from django.utils import timezone
 
 # Create your models here.
 
@@ -14,12 +15,30 @@ class Cliente(models.Model):
         return self.nombre
 
 class FacturaVenta(models.Model):
-    numero_factura      = models.CharField(max_length=20)
+    numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     cliente             = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField()
     monto_total         = models.FloatField(blank=True)
     saldo_pendiente     = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        if not self.numero_factura:
+            año = timezone.now().year
+            with transaction.atomic():
+                ultima_factura = FacturaVenta.objects.filter(
+                    numero_factura__startswith=f"FV-{año}-"
+                ).order_by('-numero_factura').first()
+
+                if ultima_factura:
+                    ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1])
+                else:
+                    ultimo_numero = 0
+
+                nuevo_numero = ultimo_numero + 1
+                self.numero_factura = f"FV-{año}-{nuevo_numero:04d}"
+                
+        super().save(*args, **kwargs)
 
     def actualizar_saldo(self):
         pagos = self.pagorecibido_set.aggregate(models.Sum('monto_pagado'))['monto_pagado__sum'] or 0
@@ -58,12 +77,30 @@ class PagoRecibido(models.Model):
 
 # Modulo de cuentas por pagar
 class FacturaCompra(models.Model):
-    numero_factura      = models.CharField(max_length=20)
+    numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField()
     monto_total         = models.FloatField(blank=True)
     saldo_pendiente     = models.FloatField()
+
+    def save(self, *args, **kwargs):
+        if not self.numero_factura:
+            año = timezone.now().year
+            with transaction.atomic():
+                ultima_factura = FacturaVenta.objects.filter(
+                    numero_factura__startswith=f"FV-{año}-"
+                ).order_by('-numero_factura').first()
+
+                if ultima_factura:
+                    ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1])
+                else:
+                    ultimo_numero = 0
+
+                nuevo_numero = ultimo_numero + 1
+                self.numero_factura = f"FV-{año}-{nuevo_numero:04d}"
+                
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Factura {self.numero_factura} - {self.proveedor.nombre}"

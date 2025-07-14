@@ -1,0 +1,17 @@
+{% block content %}
+
+{% for field in form %}
+    <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+        <div class="invalid-feedback">Por favor ingrese {{ field.label }}</div>
+    </div>
+{% endfor %}
+
+{% endblock %}
+
+{% load static %}
+
+{% block script %}  
+    <script src="{% static 'js/cuentas/cuentas.js' %}"></script>
+{% endblock %}
