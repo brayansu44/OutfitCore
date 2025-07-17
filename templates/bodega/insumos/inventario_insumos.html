@@ -15,6 +15,10 @@
                 </div>
             </div>
 
+            <a href="{% url 'agregar_insumo' %}" class="btn btn-primary mb-3">
+                <i class="bx bx-plus"></i> Agregar Insumo
+            </a>
+
             <h6 class="mb-0 text-uppercase">Inventario de Insumos</h6>
             <hr />
 
@@ -28,6 +32,7 @@
                                     <th>Tipo</th>
                                     <th>Unidad de Medida</th>
                                     <th>Stock Actual</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -37,7 +42,21 @@
                                         <td>{{ insumo.nombre }}</td>
                                         <td>{{ insumo.tipo_insumo.nombre }}</td>
                                         <td>{{ insumo.unidad_medida.abrev }}</td>
-                                        <td>{{ insumo.stock_actual }}</td>
+                                        <td>
+                                            {% if insumo.stock_actual < 10 %}
+                                                <span class="badge bg-danger">{{ insumo.stock_actual }}</span>
+                                            {% else %}
+                                                {{ insumo.stock_actual }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'editar_insumo' insumo.id %}" class="btn btn-sm btn-primary">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-danger delete-insumo" data-id="{{ insumo.id }}" title="Eliminar">
+                                            <i class="bx bx-trash"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
@@ -55,6 +74,7 @@
                                     <th>Tipo</th>
                                     <th>Unidad de Medida</th>
                                     <th>Stock Actual</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </tfoot>
                         </table>

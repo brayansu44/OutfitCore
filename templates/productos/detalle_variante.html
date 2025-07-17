@@ -3,6 +3,8 @@
 {% block content %}
 <div class="page-wrapper">
   <div class="page-content">
+
+    <!-- Migas de pan -->
     <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
       <div class="breadcrumb-title pe-3">Resultado del Escaneo</div>
       <div class="ps-3">
@@ -20,46 +22,168 @@
       </div>
     </div>
 
-    <div class="card p-3">
+    <!-- Contenido principal -->
+    <div class="card p-4">
       {% if variante %}
-      <div class="row g-0">
+      <div class="row g-4">
+
+        <!-- Imagen del diseño -->
         <div class="col-md-4">
-          {% if variante.diseno and variante.diseno.imagen %}
-          <img src="{{ variante.diseno.imagen.url }}" class="img-fluid rounded" alt="Diseño del producto">
+          {% if variante.diseno and variante.diseno.imagenes.exists %}
+          <!-- Carrusel de imágenes -->
+          <div id="carouselDiseno{{ variante.id }}" class="carousel slide mb-3" data-bs-ride="carousel">
+            <div class="carousel-inner border rounded shadow-sm">
+              {% for imagen in variante.diseno.imagenes.all %}
+              <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <img src="{{ imagen.imagen.url }}" class="d-block w-100 cursor-zoom" alt="Imagen {{ forloop.counter }}"
+                  data-bs-toggle="modal" data-bs-target="#modalImagen{{ forloop.counter }}">
+              </div>
+
+              <!-- Modal para visor -->
+              <div class="modal fade" id="modalImagen{{ forloop.counter }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                  <div class="modal-content bg-dark">
+                    <div class="modal-body text-center">
+                      <img src="{{ imagen.imagen.url }}" class="img-fluid rounded" alt="Imagen grande">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+
+            {% if variante.diseno.imagenes.count > 1 %}
+            <!-- Botones oscuros de navegación -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselDiseno{{ variante.id }}"
+              data-bs-slide="prev">
+              <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselDiseno{{ variante.id }}"
+              data-bs-slide="next">
+              <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
+            {% endif %}
+          </div>
+
+          <!-- Miniaturas con resaltado -->
+          <div class="d-flex flex-wrap gap-2 justify-content-center" id="miniaturas-{{ variante.id }}">
+            {% for imagen in variante.diseno.imagenes.all %}
+            <img src="{{ imagen.imagen.url }}"
+              class="img-thumbnail miniatura {% if forloop.first %}active-thumbnail{% endif %}"
+              style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;"
+              onclick="seleccionarMiniatura({{ variante.id }}, {{ forloop.counter0 }})">
+            {% endfor %}
+          </div>
           {% else %}
-          <img src="/static/images/no-image.png" class="img-fluid rounded" alt="Sin imagen disponible">
+          <div class="text-center text-muted">
+            <i class="bx bx-image-alt" style="font-size: 48px;"></i>
+            <p class="mt-2">Este producto no tiene imágenes de diseño asociadas.</p>
+          </div>
           {% endif %}
         </div>
 
-        <div class="col-md-8">
-          <div class="card-body">
-            <h4 class="card-title">{{ variante.producto.referencia }}</h4>
-            <div class="mb-3">
-              <strong>Código de Barras:</strong> {{ variante.get_codigo_barra }}
-            </div>
-            <p class="card-text">
-              <strong>Color:</strong> {{ variante.color.nombre }}<br>
-              <strong>Talla:</strong> {{ variante.talla.nombre }}<br>
-              {% if variante.producto.descripcion %}
-              <strong>Descripción:</strong> {{ variante.producto.descripcion }}
-              {% endif %}
-            </p>
 
-            <a href="{% url 'productos' %}" class="btn btn-secondary mt-3">
+        <!-- Información y código de barras -->
+        <div class="col-md-8">
+          <h4 class="mb-3">{{ variante.producto.referencia }}</h4>
+
+          <div class="mb-2"><strong>Código de Barras:</strong> {{ variante.get_codigo_barra }}</div>
+          <div class="mb-2"><strong>Color:</strong> {{ variante.color.nombre }}</div>
+          <div class="mb-2"><strong>Talla:</strong> {{ variante.talla.nombre }}</div>
+          <div class="mb-2">
+            <strong>Descripción:</strong><br>
+            {{ variante.producto.descripcion|default:"Sin descripción disponible." }}
+          </div>
+
+          <!-- Imagen del código de barras -->
+          <div class="my-3">
+            <strong>Imagen del Código de Barras:</strong><br>
+            <img id="codigo-barra-img" src="{% url 'codigo_barras_variante' variante.id %}" alt="Código de barras"
+              class="img-fluid border rounded p-2" style="max-width: 300px;">
+          </div>
+
+          <!-- Botones -->
+          <div class="mt-4 d-flex gap-2 flex-wrap">
+            <a href="{% url 'productos' %}" class="btn btn-secondary">
               <i class="bx bx-arrow-back"></i> Volver
+            </a>
+            <button onclick="imprimirCodigo()" class="btn btn-dark">
+              <i class="bx bx-printer"></i> Imprimir código de barras
+            </button>
+            <a id="descargarCodigo" class="btn btn-dark" download="codigo_barras_{{ variante.get_codigo_barra }}.png">
+              <i class="bx bx-download"></i> Descargar código de barras
+            </a>
+            <a href="{% url 'generar_codigos_por_producto' variante.producto.id %}" target="_blank"
+              class="btn btn-outline-dark">
+              <i class="bx bx-package"></i> Descargar todos los códigos del producto
             </a>
           </div>
         </div>
       </div>
+
       {% else %}
-      <div class="alert alert-warning">
+      <!-- Variante no encontrada -->
+      <div class="alert alert-warning text-center">
+        <i class="bx bx-barcode" style="font-size: 24px;"></i><br>
         No se encontró ninguna variante con ese código de barras.
       </div>
-      <a href="{% url 'productos' %}" class="btn btn-secondary mt-3">
-        <i class="bx bx-arrow-back"></i> Volver
-      </a>
+      <div class="text-center">
+        <a href="{% url 'productos' %}" class="btn btn-secondary">
+          <i class="bx bx-arrow-back"></i> Volver
+        </a>
+      </div>
       {% endif %}
     </div>
+
   </div>
 </div>
+
+<!-- Script para imprimir y descargar -->
+<script>
+  function imprimirCodigo() {
+    const img = document.getElementById("codigo-barra-img").src;
+    const ventana = window.open('', '_blank');
+    ventana.document.write(`
+      <html>
+        <head>
+          <title>Imprimir Código</title>
+          <style>
+            body { text-align: center; padding: 30px; }
+            img { max-width: 100%; height: auto; }
+          </style>
+        </head>
+        <body>
+          <img src="${img}" alt="Código de barras" />
+          <script>window.onload = () => window.print();<\/script>
+        </body>
+      </html>
+    `);
+    ventana.document.close();
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const link = document.getElementById("descargarCodigo");
+    const img = document.getElementById("codigo-barra-img");
+    if (img && link) {
+      link.href = img.src;
+    }
+  });
+
+
+  function seleccionarMiniatura(varianteId, index) {
+    const carrusel = document.querySelector(`#carouselDiseno${varianteId}`);
+    const items = carrusel.querySelectorAll(".carousel-item");
+    const miniaturas = document.querySelectorAll(`#miniaturas-${varianteId} .miniatura`);
+
+    items.forEach(el => el.classList.remove("active"));
+    items[index].classList.add("active");
+
+    miniaturas.forEach(el => el.classList.remove("active-thumbnail"));
+    miniaturas[index].classList.add("active-thumbnail");
+  }
+
+
+</script>
 {% endblock %}

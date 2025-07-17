@@ -1,4 +1,5 @@
 from django.db import models, transaction
+from django.db.models import F
 from proveedores.models import Proveedor
 from Producto.models import ProductoVariante
 from locales.models import InventarioLocal
@@ -14,8 +15,9 @@ class EstadoChoices(models.TextChoices):
 class EntregaCorte(models.Model):
     fecha = models.DateField(auto_now_add=True)
     producto = models.ForeignKey(ProductoVariante, on_delete=models.CASCADE, related_name="ingresos")
-    cantidad = models.PositiveIntegerField()  
-    cantidad_lavado = models.PositiveIntegerField(default=0) 
+    cantidad = models.PositiveIntegerField(default=0)  
+    cantidad_lavado = models.PositiveIntegerField(default=0)
+    salida_lavado = models.OneToOneField("SalidaProducto", on_delete=models.SET_NULL, null=True, blank=True, related_name="entrega_lavado") 
     user_responsable = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE)
 
     def clean(self):
@@ -26,30 +28,77 @@ class EntregaCorte(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
 
+        with transaction.atomic():
+            # Si estamos editando (ya existe en BD)
+            if self.pk:
+                entrada_anterior = EntregaCorte.objects.select_for_update().get(pk=self.pk)
+
+                # Revertir efecto anterior en el stock
+                cantidad_bodega_anterior = entrada_anterior.cantidad - entrada_anterior.cantidad_lavado
+
+                try:
+                    stock = Stock.objects.select_for_update().get(producto_variante=entrada_anterior.producto)
+                    stock.cantidad -= cantidad_bodega_anterior
+                    if stock.cantidad < 0:
+                        stock.cantidad = 0  # O puedes lanzar un error si no deseas valores negativos
+                    stock.save()
+                except Stock.DoesNotExist:
+                    pass
+
+                # Eliminar salida anterior de lavado (si existía)
+                SalidaProducto.objects.filter(
+                    producto__producto_variante=entrada_anterior.producto,
+                    user_responsable=entrada_anterior.user_responsable,
+                    es_lavado=True
+                ).delete()
+
         super().save(*args, **kwargs)
 
         with transaction.atomic():
-            # Stock que realmente entra en bodega
             cantidad_a_bodega = self.cantidad - self.cantidad_lavado
 
-            producto_bodega, created = Stock.objects.select_for_update().get_or_create(
-                producto_variante=self.producto,
-                defaults={'cantidad': cantidad_a_bodega}
-            )
-            
-            if not created:
-                producto_bodega.cantidad += cantidad_a_bodega
-                producto_bodega.save()
+            if cantidad_a_bodega > 0:
+                producto_bodega, created = Stock.objects.select_for_update().get_or_create(
+                    producto_variante=self.producto,
+                    defaults={'cantidad': cantidad_a_bodega}
+                )
+                if not created:
+                    producto_bodega.cantidad += cantidad_a_bodega
+                    producto_bodega.save()
+            else:
+                producto_bodega = None  # Todo va a lavado
 
             if self.cantidad_lavado > 0:
                 SalidaProducto.objects.create(
-                    producto=producto_bodega,  
+                    producto=producto_bodega,
                     cantidad=self.cantidad_lavado,
                     user_responsable=self.user_responsable,
-                    local=None,  
+                    local=None,
                     estado=EstadoChoices.PENDIENTE,
-                    es_lavado=True  
+                    es_lavado=True
                 )
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            # 1. Revertir cantidad ingresada en bodega
+            cantidad_a_bodega = self.cantidad - self.cantidad_lavado
+            try:
+                stock = Stock.objects.select_for_update().get(producto_variante=self.producto)
+                stock.cantidad -= cantidad_a_bodega
+                if stock.cantidad < 0:
+                    stock.cantidad = 0  # Para evitar valores negativos
+                stock.save()
+            except Stock.DoesNotExist:
+                pass
+
+            # 2. Eliminar salidas asociadas a esta entrada (lavado)
+            SalidaProducto.objects.filter(
+                producto__producto_variante=self.producto,
+                user_responsable=self.user_responsable,
+                es_lavado=True
+            ).delete()
+
+            # 3. Eliminar la entrada
+            super().delete(*args, **kwargs)
 
     def __str__(self):
         return f"Entrega Corte {self.cantidad} - {self.producto} (Lavado: {self.cantidad_lavado})"
@@ -71,39 +120,54 @@ class SalidaProducto(models.Model):
     es_lavado = models.BooleanField(default=False)  # Indica si es una salida a lavado
 
     def save(self, *args, **kwargs):
-        es_nueva = self.pk is None  
+        es_nueva = self.pk is None
+
+        # Obtener la cantidad anterior solo si ya existe
+        cantidad_anterior = 0
+        if not es_nueva:
+            salida_anterior = SalidaProducto.objects.get(pk=self.pk)
+            cantidad_anterior = salida_anterior.cantidad
+
+        # Validación de stock
+        stock = self.producto  # Esto ya es un objeto Stock
+        if not stock:
+            raise ValueError("El producto no puede ser None en una salida.")
 
         if es_nueva:
-            if not self.producto:  
-                raise ValueError("El producto no puede ser None en una salida.")
-
-            stock, created = Stock.objects.get_or_create(producto_variante=self.producto.producto_variante)
-
-            if stock.cantidad < self.cantidad:
+            if stock.cantidad < self.cantidad and not self.es_lavado:
                 raise ValueError(f"No hay suficiente stock para la salida de {self.producto}. Stock disponible: {stock.cantidad}")
 
-            # Solo restar del stock si NO es una salida a lavado
             if not self.es_lavado:
                 stock.cantidad -= self.cantidad
                 stock.save()
 
             super().save(*args, **kwargs)
 
-            # Crear confirmación de recepción si no es lavado
             if not self.es_lavado:
                 ConfirmacionRecepcion.objects.create(salida=self, confirmado=False)
 
-            # Notificación si es una salida normal a un local
             if not self.es_lavado and self.local and self.local.local.encargado:
                 Notificacion.objects.create(
                     user=self.local.local.encargado.usuario,
                     mensaje=f"Se ha realizado la salida de {self.cantidad} unidades de {self.producto} hacia {self.local.local}.",
                     tipo="salida",
-                    salida=self 
+                    salida=self
                 )
 
         else:
+            # Solo se edita una salida existente
+            diferencia = self.cantidad - cantidad_anterior
+            if not self.es_lavado:
+                if diferencia > 0:
+                    if stock.cantidad < diferencia:
+                        raise ValueError(f"No hay suficiente stock para aumentar la salida. Stock disponible: {stock.cantidad}")
+                    stock.cantidad -= diferencia
+                elif diferencia < 0:
+                    stock.cantidad += abs(diferencia)
+                stock.save()
+
             super().save(*args, **kwargs)
+
 
     def __str__(self):
         tipo = "Lavado" if self.es_lavado else "Salida"
