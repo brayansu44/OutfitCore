@@ -10,6 +10,7 @@ class ClienteAdmin(admin.ModelAdmin):
 
 @admin.register(FacturaVenta)
 class FacturaVentaAdmin(admin.ModelAdmin):
+    readonly_fields = ('numero_factura', 'fecha_emision')
     list_display = ('numero_factura', 'cliente', 'fecha_emision', 'fecha_vencimiento', 'monto_total', 'saldo_pendiente')
     list_filter = ('fecha_emision', 'fecha_vencimiento')
     search_fields = ('numero_factura', 'cliente__nombre')
@@ -24,6 +25,7 @@ class PagoRecibidoAdmin(admin.ModelAdmin):
 # ---- Módulo de Cuentas por Pagar ----
 @admin.register(FacturaCompra)
 class FacturaCompraAdmin(admin.ModelAdmin):
+    readonly_fields = ('numero_factura', 'fecha_emision')
     list_display = ('numero_factura', 'proveedor', 'fecha_emision', 'fecha_vencimiento', 'monto_total', 'saldo_pendiente')
     list_filter = ('fecha_emision', 'fecha_vencimiento')
     search_fields = ('numero_factura', 'proveedor__nombre')
