@@ -7,9 +7,9 @@ from django.utils import timezone
 # Modulo de cuentas por cobrar
 class Cliente(models.Model):
     identificacion = models.IntegerField(unique=True, null=False, blank=False, default='0')
-    nombre = models.CharField(max_length=50)
-    telefono = models.IntegerField(blank=True)
-    direccion = models.CharField(max_length=100, blank=True)
+    nombre = models.CharField(max_length=50, null=False)
+    telefono = models.IntegerField(null=True, blank=True)
+    direccion = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         return self.nombre
@@ -18,9 +18,9 @@ class FacturaVenta(models.Model):
     numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     cliente             = models.ForeignKey(Cliente, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
-    fecha_vencimiento   = models.DateField()
+    fecha_vencimiento   = models.DateField(null=True)
     monto_total         = models.FloatField(blank=True)
-    saldo_pendiente     = models.FloatField()
+    saldo_pendiente     = models.FloatField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.numero_factura:
@@ -59,7 +59,7 @@ class PagoRecibido(models.Model):
         ('Tarjeta', 'Tarjeta de Crédito/Débito'),
     ]
     factura         = models.ForeignKey(FacturaVenta, on_delete=models.CASCADE)   
-    monto_pagado    = models.FloatField()
+    monto_pagado    = models.FloatField(null=False)
     fecha_pago      = models.DateField(auto_now_add=True)
     metodo_pago     = models.CharField(max_length=50, choices=METODOS_PAGO)
     observaciones   = models.TextField(blank=True, null=True)
@@ -80,9 +80,9 @@ class FacturaCompra(models.Model):
     numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
-    fecha_vencimiento   = models.DateField()
+    fecha_vencimiento   = models.DateField(null=True)
     monto_total         = models.FloatField(blank=True)
-    saldo_pendiente     = models.FloatField()
+    saldo_pendiente     = models.FloatField(null=True)
 
     def save(self, *args, **kwargs):
         if not self.numero_factura:

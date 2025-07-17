@@ -10,8 +10,13 @@ class ClienteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.fields['direccion'].required = False
         for field in self.fields.values():
             field.widget.attrs.update({'class': 'form-control'})
+
+            if field.required:
+                field.label = f"<strong>{field.label if field.label else field}</strong>"
 
 
 class FacturaVentaForm(forms.ModelForm):
@@ -39,3 +44,22 @@ class FacturaVentaForm(forms.ModelForm):
         
         if self.instance and self.instance.fecha_vencimiento:
             self.initial['fecha_vencimiento'] = self.instance.fecha_vencimiento.strftime('%Y-%m-%d')
+
+class PagoVentaForm(forms.ModelForm):
+
+    class Meta:
+        model = PagoRecibido
+        fields = [
+            'factura', 'metodo_pago', 'monto_pagado', 'observaciones']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
+            if field.required:
+                field.label = f"<strong>{field.label if field.label else field_name}</strong>"
+        self.fields['metodo_pago'].empty_label = "Seleccione un metodo de pago"
+        self.fields['metodo_pago'].widget.attrs.update({'class': 'form-select'})
+        

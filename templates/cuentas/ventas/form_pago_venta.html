@@ -12,8 +12,8 @@
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
                             <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'ventas' %}">Ventas</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'factura_venta' %}">Lista de Facturas</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ accion }} Factura</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'pago_venta' %}">Lista de pagos</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ accion }} Pago</li>
                         </ol>
                     </nav>
                 </div>
@@ -27,28 +27,21 @@
                         <div>
                             <i class="bx bx-palette me-1 font-22 text-primary"></i>
                         </div>
-                        <h5 class="mb-0 text-primary">{{ accion }} Factura de Venta</h5>
+                        <h5 class="mb-0 text-primary">{{ accion }} Pago recibido</h5>
                     </div>
                     <hr>
 
                     <form method="POST" class="row g-3 needs-validation" novalidate>
                         {% csrf_token %}
-
-                        <div class="col-md-6">
-                            <label class="form-label"><strong>Número de factura</strong></label>
-                            <input type="text" class="form-control" value="TKV-{{ now|date:'Y' }}-XXXX" disabled>
-                            <div class="form-text">Este número se asignará automáticamente al guardar.</div>
-                        </div>
-
                         {% for field in form %}
-                            <div class="{% if field.name == 'fecha_vencimiento' %}col-md-12{% else %}col-md-6{% endif %}">
+                            <div class="{% if field.name == 'observaciones' %}col-md-12{% else %}col-md-6{% endif %}">
                                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
-                                {% if field.name == 'cliente' %}
+                                {% if field.name == 'factura' %}
                                     <div class="d-flex align-items-center">
                                         {{ field }}
-                                        <a href="#" class="btn btn-outline-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" 
-                                        data-url="{% url 'agregar_cliente' %}" 
-                                        title="Agregar nuevo cliente">
+                                        <a href="#" class="btn btn-outline-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalFactura" 
+                                        data-url="{% url 'addFacturaVenta' %}"
+                                        title="Agregar nueva Factura">
                                            <i class="bx bx-plus"></i>
                                         </a>
                                     </div>
@@ -63,30 +56,28 @@
                             <button type="submit" class="btn btn-success px-5">
                                 <i class="bx bx-save"></i> Guardar
                             </button>
-                            <a href="{% url 'factura_venta' %}" class="btn btn-secondary px-5">
+                            <a href="{% url 'pago_venta' %}" class="btn btn-secondary px-5">
                                 <i class="bx bx-arrow-back"></i> Cancelar
                             </a>
                         </div>
                     </form>
 
-                    <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content bg-dark">
+                    <div class="modal fade" id="modalFactura" tabindex="-1" aria-labelledby="modalFacturaLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                            <form id="facturaForm" class="row g-3 needs-validation" novalidate>
+                                {% csrf_token %}
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-white">Nuevo Cliente</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    <h5 class="modal-title">Nueva Factura</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                 </div>
-                                <form id="clienteForm" class="row g-3 needs-validation" novalidate>
-                                    {% csrf_token %}
-                                
-                                    <div class="modal-body text-white" id="modalClienteBody">
-                                        <!-- formulario vía AJAX -->
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Volver</button>
-                                        <button type="submit" class="btn btn-dark">Guardar Cambios</button>
-                                    </div>
-                                </form>
+                                <div class="modal-body" id="modalFacturaBody">
+                                    <!-- formulario vía AJAX -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-success px-5">Guardar</button>
+                                </div>
+                            </form>
                             </div>
                         </div>
                     </div>

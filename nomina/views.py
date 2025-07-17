@@ -64,13 +64,13 @@ def devengado(request, user_id):
         form = DevengadoForm(request.POST, instance=devengado)
         if form.is_valid():
             form.save()
-            msj = f"Datos devengado del usuario {eps.nombre} actualizada correctamente."
+            msj = f"Datos devengado del usuario {devengado.nombre} actualizada correctamente."
             return JsonResponse({"success": True, "message": msj})
         else:
             return JsonResponse({"success": False, "message": "Actualización invalida."})
         
     # En caso de GET, devolver datos del registro
-    data = {field.name: getattr(eps, field.name) for field in eps._meta.get_fields() if hasattr(eps, field.name)}
+    data = {field.name: getattr(devengado, field.name) for field in devengado._meta.get_fields() if hasattr(devengado, field.name)}
     return JsonResponse({"success": True, "data": data})
 
 @login_required(login_url = 'login')
