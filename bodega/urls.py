@@ -25,4 +25,10 @@ urlpatterns = [
     path('insumos/agregar/', views.agregar_insumo, name='agregar_insumo'),
     path('insumos/editar/<int:insumo_id>/', views.editar_insumo, name='editar_insumo'),
     path('insumos/eliminar/<int:insumo_id>/', views.eliminar_insumo, name='eliminar_insumo'),
+
+    path('ingresos/', views.listar_ingresos_insumo, name='ingresos_insumos'),
+    path('insumos/ingreso/nuevo/', views.agregar_ingreso_insumo, name='agregar_ingreso_insumo'),
+    path('ingresos-insumos/<int:ingreso_id>/editar/', views.editar_ingreso_insumo, name='editar_ingreso_insumo'),
+    path('ingresos-insumos/eliminar/<int:ingreso_id>/', views.eliminar_ingreso_insumo, name='eliminar_ingreso_insumo'),
+    path('ingresos-insumos/<int:ingreso_id>/detalle/', views.detalle_ingreso_insumo, name='detalle_ingreso_insumo'),
 ]    

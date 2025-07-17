@@ -555,3 +555,44 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+// Ingresos insumos
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-ingreso-insumo").forEach(button => {
+        button.addEventListener("click", function () {
+            let ingresoId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Deseas eliminar este ingreso?",
+                text: "Una vez eliminada, no podrás recuperarla.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/bodega/ingresos-insumos/eliminar/${ingresoId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("Eliminado", "El ingreso ha sido eliminado.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire("Error", "No se pudo eliminar el ingreso.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                        });
+                }
+            });
+        });
+    });
+});

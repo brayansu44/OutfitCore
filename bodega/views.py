@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
 from .models import *
 from usuarios.models import PerfilUsuario
-from .forms import SalidaProductoForm, StockForm, EntregaCorteForm, InsumoForm
+from .forms import SalidaProductoForm, StockForm, EntregaCorteForm, InsumoForm, IngresoInsumoForm, UsoInsumoForm
 import json
 import openpyxl
 import os
@@ -413,3 +413,116 @@ def eliminar_insumo(request, insumo_id):
         insumo.delete()
 
     return JsonResponse({'success': True})
+
+# Ingreso Insumo
+
+@login_required
+def listar_ingresos_insumo(request):
+    ingresos = IngresoInsumo.objects.select_related('user_responsable').order_by('-fecha')
+    return render(request, 'bodega/insumos/listar_ingresos_insumo.html', {'ingresos': ingresos})
+
+@login_required
+def agregar_ingreso_insumo(request):
+    if request.method == 'POST':
+        form = IngresoInsumoForm(request.POST)
+        if form.is_valid():
+            ingreso = form.save(commit=False)
+            ingreso.user_responsable = request.user.perfilusuario  # Ajusta según tu modelo
+            ingreso.estado = 'COMPLETADO'  # O usa EstadoChoices.COMPLETADO
+            ingreso.save()
+            messages.success(request, 'Ingreso registrado exitosamente.')
+            return redirect('ingresos_insumos')
+    else:
+        form = IngresoInsumoForm()
+
+    return render(request, 'bodega/insumos/form_ingreso_insumo.html', {
+        'form': form,
+        'accion': 'Agregar'
+    })
+
+@login_required
+def editar_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+
+    if request.method == 'POST':
+        form = IngresoInsumoForm(request.POST, instance=ingreso)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Ingreso actualizado correctamente.')
+            return redirect('ingresos_insumos')
+    else:
+        form = IngresoInsumoForm(instance=ingreso)
+
+    return render(request, 'bodega/insumos/form_ingreso_insumo.html', {
+        'form': form,
+        'accion': 'Editar ingreso de insumo'
+    })
+
+@login_required
+def eliminar_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+
+    with transaction.atomic():
+        ingreso.delete()
+
+    return JsonResponse({'success': True})
+
+
+def detalle_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+    detalles = ingreso.detalle_ingresoinsumo_set.all()
+    return render(request, 'bodega/insumos/detalle_ingreso_insumo.html', {
+        'ingreso': ingreso,
+        'detalles': detalles
+    })
+
+@login_required(login_url='login')
+def lista_uso_insumos(request):
+    usos = UsoInsumo.objects.select_related('insumo', 'producto', 'user_responsable')
+    return render(request, 'insumos/uso_insumo_list.html', {'usos': usos})
+
+
+@login_required(login_url='login')
+def crear_uso_insumo(request):
+    if request.method == 'POST':
+        form = UsoInsumoForm(request.POST)
+        if form.is_valid():
+            uso = form.save(commit=False)
+            uso.user_responsable = request.user.perfilusuario  # Asignamos el usuario actual
+            uso.save()
+            messages.success(request, "Uso de insumo registrado.")
+            return redirect('lista_uso_insumos')
+    else:
+        form = UsoInsumoForm()
+
+    return render(request, 'insumos/uso_insumo_form.html', {
+        'form': form,
+        'accion': 'Registrar uso de insumo'
+    })
+
+
+@login_required(login_url='login')
+def editar_uso_insumo(request, uso_id):
+    uso = get_object_or_404(UsoInsumo, id=uso_id)
+
+    if request.method == 'POST':
+        form = UsoInsumoForm(request.POST, instance=uso)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Uso de insumo actualizado.")
+            return redirect('lista_uso_insumos')
+    else:
+        form = UsoInsumoForm(instance=uso)
+
+    return render(request, 'insumos/uso_insumo_form.html', {
+        'form': form,
+        'accion': 'Editar uso de insumo'
+    })
+
+
+@login_required(login_url='login')
+@require_POST
+def eliminar_uso_insumo(request, uso_id):
+    uso = get_object_or_404(UsoInsumo, id=uso_id)
+    uso.delete()
+    return JsonResponse({"success": True})

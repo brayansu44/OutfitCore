@@ -9,14 +9,15 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Inventario de Insumos</li>
+                            <li class="breadcrumb-item"><a href="{% url 'inventario_insumos' %}">Inventario de Insumos</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Ingresos de Insumos</li>
                         </ol>
                     </nav>
                 </div>
             </div>
 
-            <a href="{% url 'agregar_insumo' %}" class="btn btn-primary mb-3">
-                <i class="bx bx-plus"></i> Agregar Insumo
+            <a href="{% url 'agregar_ingreso_insumo' %}" class="btn btn-primary mb-3">
+                <i class="bx bx-plus"></i> Nuevo ingreso
             </a>
 
             <h6 class="mb-0 text-uppercase">Inventario de Insumos</h6>
@@ -28,32 +29,33 @@
                         <table id="example2" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
+                                    <th>Fecha</th>
                                     <th>Insumo</th>
-                                    <th>Tipo</th>
-                                    <th>Unidad de Medida</th>
-                                    <th>Stock Actual</th>
+                                    <th>Cantidad</th>
+                                    <th>Proveedor</th>
+                                    <th>Usuario Responsable</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% if insumos %}
-                                    {% for insumo in insumos %}
+                                {% if ingresos %}
+                                    {% for ingreso in ingresos %}
                                     <tr>
-                                        <td>{{ insumo.nombre }}</td>
-                                        <td>{{ insumo.tipo_insumo.nombre }}</td>
-                                        <td>{{ insumo.unidad_medida.abrev }}</td>
+                                        <td>{{ ingreso.fecha }}</td>
+                                        <td>{{ ingreso.insumo.nombre }}</td>
+                                        <td>{{ ingreso.cantidad }}</td>
+                                        <td>{{ ingreso.proveedor.Razon_Social }}</td>
+                                        <td>{{ ingreso.user_responsable.full_name }}</td>
+                                        <td>{{ ingreso.estado }}</td>
                                         <td>
-                                            {% if insumo.stock_actual < 10 %}
-                                                <span class="badge bg-danger">{{ insumo.stock_actual }}</span>
-                                            {% else %}
-                                                {{ insumo.stock_actual }}
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'editar_insumo' insumo.id %}" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'detalle_ingreso_insumo' ingreso.id %}" class="btn btn-sm btn-info">
+                                                <i class="bx bx-show"></i>
+                                            </a>
+                                            <a href="{% url 'editar_ingreso_insumo' ingreso.id %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <button class="btn btn-sm btn-danger delete-insumo" data-id="{{ insumo.id }}" title="Eliminar">
+                                            <button class="btn btn-sm btn-danger delete-ingreso-insumo" data-id="{{ ingreso.id }}" title="Eliminar">
                                             <i class="bx bx-trash"></i>
                                             </button>
                                         </td>
@@ -61,19 +63,21 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="5" class="text-center text-muted">
+                                        <td colspan="7" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            No hay insumos registrados en el inventario.
+                                            No hay ingresos de insumos registrados.
                                         </td>
                                     </tr>
                                 {% endif %}
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th>Fecha</th>
                                     <th>Insumo</th>
-                                    <th>Tipo</th>
-                                    <th>Unidad de Medida</th>
-                                    <th>Stock Actual</th>
+                                    <th>Cantidad</th>
+                                    <th>Proveedor</th>
+                                    <th>Usuario Responsable</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </tfoot>

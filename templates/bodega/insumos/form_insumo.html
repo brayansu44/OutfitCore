@@ -5,14 +5,6 @@
     <div class="page-content">
         <h4 class="mb-4">{{ accion }}</h4>
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
-
         <div class="card">
             <div class="card-body">
                 <form method="post" class="needs-validation" novalidate>

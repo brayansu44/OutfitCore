@@ -6,6 +6,9 @@ from locales.models import InventarioLocal
 from notificaciones.models import Notificacion
 from django.core.exceptions import ValidationError
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 class EstadoChoices(models.TextChoices):
     PENDIENTE = 'Pendiente', 'Pendiente'
     CONFIRMADO = 'Confirmado', 'Confirmado'
@@ -299,6 +302,24 @@ class IngresoInsumo(models.Model):
     def save(self, *args, **kwargs):
         """Si el ingreso está completado, actualiza el stock del insumo."""
         super().save(*args, **kwargs)
+
+class DetalleIngresoInsumo(models.Model):
+    ingreso = models.ForeignKey(IngresoInsumo, on_delete=models.CASCADE)
+    insumo = models.ForeignKey(Insumo, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+    @receiver(post_save, sender=IngresoInsumo)
+    def crear_detalles_ingreso(sender, instance, created, **kwargs):
+        if created and hasattr(instance, 'detalles_a_crear'):
+            for detalle in instance.detalles_a_crear:
+                DetalleIngresoInsumo.objects.create(
+                    ingreso=instance,
+                    insumo=detalle['insumo'],
+                    cantidad=detalle['cantidad']
+            )
+
+    def __str__(self):
+        return f"{self.insumo.nombre} x {self.cantidad}"
 
 class UsoInsumo(models.Model):
     DESTINO_CHOICES = [
