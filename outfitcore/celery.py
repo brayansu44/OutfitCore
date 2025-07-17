@@ -1,9 +1,9 @@
 import os
 from celery import Celery
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kiddes.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "outfitcore.settings")
 
-app = Celery("kiddes")
+app = Celery("outfitcore")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 
 # Agregar la configuración correctamente

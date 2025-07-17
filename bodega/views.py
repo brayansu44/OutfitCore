@@ -304,7 +304,7 @@ def exportar_historial_pdf(request, variante_id):
     styles = getSampleStyleSheet()
 
     # --- Logo ---
-    logo_path = os.path.join(settings.BASE_DIR, 'kiddes', 'static', 'images', 'logo-img.png')
+    logo_path = os.path.join(settings.BASE_DIR, 'outfitcore', 'static', 'images', 'logo-img.png')
     if os.path.exists(logo_path):
         logo = Image(logo_path, width=2 * inch, height=1 * inch)
         elements.append(logo)
