@@ -19,7 +19,7 @@
             </div>
             <!-- Botón de agregar tela -->
             <div class="mb-3">
-                <a href="#" class="btn btn-success">
+                <a href="{% url 'agregar_pago_venta' %}" class="btn btn-success">
                     <i class="bx bx-plus"></i> Agregar Pago
                 </a>
             </div>
@@ -34,10 +34,10 @@
                             <thead>
                                 <tr>  
                                     <th>Factura</th>
-                                    <th>Monto Pagado</th>
-                                    <th>Fecha de Pago</th>
                                     <th>Metodo de pago</th>
+                                    <th>Monto Pagado</th>
                                     <th>Observaciones</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,14 +46,13 @@
                                     <tr>
                                         <td>{{ pago.factura }}</td>
                                         <td>{{ pago.monto_pagado }}</td>
-                                        <td>{{ pago.fecha_pago }}</td>
                                         <td>{{ pago.metodo_pago }}</td>
                                         <td>{{ pago.observaciones }}</td>
                                         <td class="text-center">
-                                            <a href="#" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'editar_pago_venta' pago.id %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete-tela" data-id="{{ pago.id }}">
+                                            <button class="btn btn-danger btn-sm delete-pago" id="ventas" data-id="{{ pago.id }}">
                                                 <i class="bx bx-trash"></i>
                                             </button>                                            
                                         </td>
@@ -71,10 +70,10 @@
                             <tfoot>
                                 <tr>
                                     <th>Factura</th>
-                                    <th>Monto Pagado</th>
-                                    <th>Fecha de Pago</th>
                                     <th>Metodo de pago</th>
+                                    <th>Monto Pagado</th>
                                     <th>Observaciones</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </tfoot>
                         </table>
@@ -90,4 +89,10 @@
     <!--Start Back To Top Button--> 
     <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
     <!--End Back To Top Button--> 
+{% endblock %}
+
+{% load static %}
+
+{% block script %}  
+    <script src="{% static 'js/cuentas/cuentas.js' %}"></script>
 {% endblock %}
