@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import Categoria, Diseno, Genero, Color, Producto, Talla, ProductoVariante
+from .models import Categoria, Diseno, Genero, Color, Producto, Talla, ProductoVariante, ImagenDiseno
 
 @admin.register(Categoria)
 class CategoriaAdmin(admin.ModelAdmin):
@@ -8,17 +8,24 @@ class CategoriaAdmin(admin.ModelAdmin):
     search_fields = ('nombre',)
     ordering = ('nombre',)
 
+class ImagenDisenoInline(admin.TabularInline):
+    model = ImagenDiseno
+    extra = 1
+
 @admin.register(Diseno)
 class DisenoAdmin(admin.ModelAdmin):
-    list_display = ("nombre", "imagen_preview")
+    list_display = ("nombre", "ver_imagenes")
+    inlines = [ImagenDisenoInline]
 
-    def imagen_preview(self, obj):
-        if obj.imagen:
-            return format_html(
-                '<img src="{}" width="80" height="80" style="border-radius: 5px;" />', obj.imagen.url)
-        return "(Sin imagen)"
-    
-    imagen_preview.short_description = "Vista Previa"
+    def ver_imagenes(self, obj):
+        imagenes = obj.imagenes.all()
+        if not imagenes:
+            return "(Sin imágenes)"
+        return format_html("".join([
+            f'<img src="{img.imagen.url}" width="60" height="60" style="margin:2px; border-radius:4px;" />'
+            for img in imagenes
+        ]))
+    ver_imagenes.short_description = "Imágenes"
 
 @admin.register(Genero)
 class GeneroAdmin(admin.ModelAdmin):
@@ -66,18 +73,20 @@ class ProductoAdmin(admin.ModelAdmin):
     mostrar_colores.short_description = "Colores"
 
     def mostrar_disenos(self, obj):
-        disenios_html = "".join([
-            f'<div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">'
-            f'  <a href="{diseno.imagen.url}" target="_blank">'
-            f'    <img src="{diseno.imagen.url}" width="50" height="50" '
-            f'    style="border-radius:5px; object-fit:cover; cursor:pointer;" />'
-            f'  </a>'
-            f'  <span style="font-size: 12px; color: #666;">{diseno.nombre}</span>'
-            f'</div>'
-            for diseno in obj.diseno.all() if diseno.imagen
-        ])
+        disenios_html = ""
+        for diseno in obj.diseno.all():
+            for img in diseno.imagenes.all():
+                disenios_html += f'''
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 5px;">
+                        <a href="{img.imagen.url}" target="_blank">
+                            <img src="{img.imagen.url}" width="50" height="50" 
+                            style="border-radius:5px; object-fit:cover; cursor:pointer;" />
+                        </a>
+                        <span style="font-size: 12px; color: #666;">{diseno.nombre}</span>
+                    </div>
+                '''
         return format_html(disenios_html) if disenios_html else "(Sin diseños)"
-    mostrar_disenos.short_description = "Diseños"
+
 
 @admin.register(ProductoVariante)
 class ProductoVarianteAdmin(admin.ModelAdmin):
@@ -93,5 +102,5 @@ class ProductoVarianteAdmin(admin.ModelAdmin):
         return False  # Evita edición
 
     def has_delete_permission(self, request, obj=None):  
-        return False  # Evita eliminación
+        return True  # Evita eliminación
 

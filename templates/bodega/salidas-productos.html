@@ -15,6 +15,12 @@
                     </nav>
                 </div>
             </div>
+            
+            <div class="mb-3">
+                <a href="{% url 'crear_salida_producto' %}" class="btn btn-success">
+                    <i class="bx bx-plus"></i> Registrar salida
+                </a>
+            </div>
 
             <h6 class="mb-0 text-uppercase">Salidas de Insumos</h6>
             <hr />
@@ -25,16 +31,17 @@
                         <table id="example2" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
                                     <th>Fecha</th>
                                     <th>Insumo</th>
                                     <th>Color</th>
                                     <th>Talla</th>
+                                    <th>Diseño</th>
                                     <th>Cantidad</th>
                                     <th>Destino</th>
                                     <th>Estado</th>
                                     <th>Responsable</th>
-                                    <th>Tipo de Salida</th>  <!-- Nueva columna para indicar si es lavado o no -->
+                                    <th>Tipo de Salida</th> <!-- Nueva columna para indicar si es lavado o no -->
+                                    <th>Acciones</th>  
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,6 +52,24 @@
                                         <td>{{ salida.producto.producto_variante.producto.referencia }}</td>
                                         <td>{{ salida.producto.producto_variante.color }}</td>
                                         <td>{{ salida.producto.producto_variante.talla }}</td>
+                                        <td>
+                                            {% if salida.producto.producto_variante.diseno %}
+                                                {% with imagen=salida.producto.producto_variante.diseno.imagenes.first %}
+                                                    {% if imagen %}
+                                                        <a href="{{ imagen.imagen.url }}" target="_blank" title="{{ salida.producto.producto_variante.diseno.nombre }}">
+                                                            <img src="{{ imagen.imagen.url }}"
+                                                                alt="Diseño: {{ salida.producto.producto_variante.diseno.nombre }}"
+                                                                width="45" height="45"
+                                                                class="rounded shadow-sm border">
+                                                        </a>
+                                                    {% else %}
+                                                        <span class="text-muted">Sin imagen</span>
+                                                    {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                                <span class="badge bg-secondary">Sin diseño</span>
+                                            {% endif %}
+                                        </td>
                                         <td>{{ salida.cantidad }}</td>
                                         <td>
                                             {% if salida.local %}
@@ -70,11 +95,21 @@
                                                 Normal
                                             {% endif %}
                                         </td>
+                                        <td>
+                                            <a href="{% url 'editar_salida_producto' salida.id %}" class="btn btn-sm btn-primary">
+                                                <i class="bx bx-edit"></i>
+                                            </a>
+                                            <button class="btn btn-danger btn-sm delete-salida"
+                                                    data-id="{{ salida.id }}"
+                                                    data-producto="{{ salida.producto }}">
+                                                <i class="bx bx-trash"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted">
+                                        <td colspan="11" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             No hay registros de salidas de insumos.
                                         </td>
@@ -87,11 +122,13 @@
                                     <th>Insumo</th>
                                     <th>Color</th>
                                     <th>Talla</th>
+                                    <th>Diseño</th>
                                     <th>Cantidad</th>
                                     <th>Destino</th>
                                     <th>Estado</th>
                                     <th>Responsable</th>
-                                    <th>Tipo de Salida</th>
+                                    <th>Tipo de Salida</th> <!-- Nueva columna para indicar si es lavado o no -->
+                                    <th>Acciones</th>  
                                 </tr>
                             </tfoot>
                         </table>

@@ -1,92 +1,184 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <!--start page wrapper -->
-    <div class="page-wrapper">
-        <div class="page-content">
-            <!--breadcrumb-->
-            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">Bodega</div>
-                <div class="ps-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
-                            </li>
-                            <li class="breadcrumb-item active" aria-current="page">Inventario de Bodega</li>
-                        </ol>
-                    </nav>
-                </div>
-            </div>
-            <!--end breadcrumb-->
-            <h6 class="mb-0 text-uppercase">Inventario de Productos en Bodega</h6>
-            <hr />
+<div class="page-wrapper">
+    <div class="page-content">
 
-            <!-- Enlaces a otras secciones -->
-            <div class="mb-3">
-                <a href="{% url 'entradas' %}" class="btn btn-primary">Entradas de Productos</a>
-                <a href="{% url 'salidas' %}" class="btn btn-danger">Salidas de Productos</a>
+        <!-- Breadcrumb -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Bodega</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Inventario de Bodega</li>
+                    </ol>
+                </nav>
             </div>
+        </div>
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example2" class="table table-striped table-bordered">
-                            <thead>
+        <!-- Título -->
+        <h6 class="mb-0 text-uppercase">Inventario de Productos en Bodega</h6>
+        <hr />
+
+        <!-- Acciones -->
+        <div class="mb-3">
+            <a href="{% url 'crear_stock' %}" class="btn btn-success">
+                <i class="bx bx-plus"></i> Registrar stock
+            </a>
+            <a href="{% url 'entradas' %}" class="btn btn-primary">
+                <i class="bx bx-log-in"></i> Entradas de Productos
+            </a>
+            <a href="{% url 'salidas_producto' %}" class="btn btn-danger">
+                <i class="bx bx-log-out"></i> Salidas de Productos
+            </a>
+        </div>
+
+        <!-- Tabla de inventario -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example2" class="table table-striped table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Producto</th>
+                                <th>Color</th>
+                                <th>Talla</th>
+                                <th>Diseño</th>
+                                <th>Cantidad en Bodega</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if stock %}
+                            {% for item in stock %}
                                 <tr>
-                                    <th>Producto</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Diseño</th>
-                                    <th>Cantidad en Bodega</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if stock %}
-                                    {% for item in stock %}
-                                    <tr>
-                                        <td>{{ item.producto_variante.producto.referencia }}</td>
-                                        <td>{{ item.producto_variante.color }}</td>
-                                        <td>{{ item.producto_variante.talla }}</td>
-                                        <td>
-                                            {% if item.producto_variante.diseno %}
-                                                <a href="{{ item.producto_variante.diseno.imagen.url }}" target="_blank">
-                                                    <img src="{{ item.producto_variante.diseno.imagen.url }}" alt="{{ item.producto_variante.diseno.nombre }}" width="40" height="40" style="border-radius: 5px; margin: 2px;">
-                                                </a>
+                                    <td>{{ item.stock.producto_variante.producto.referencia }}</td>
+                                    <td>{{ item.stock.producto_variante.color }}</td>
+                                    <td>{{ item.stock.producto_variante.talla }}</td>
+                                    <!-- ... -->
+
+                                    <td>
+                                        {% if item.stock.producto_variante.diseno %}
+                                            {% with imagen=item.stock.producto_variante.diseno.imagenes.first %}
+                                                {% if imagen %}
+                                                    <a href="{{ imagen.imagen.url }}" target="_blank" title="{{ item.stock.producto_variante.diseno.nombre }}">
+                                                        <img src="{{ imagen.imagen.url }}" alt="Diseño" width="45" height="45" class="rounded shadow-sm border">
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">Sin imagen</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">Sin diseño</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            {% if item.stock.cantidad == 0 %}
+                                                <span class="text-danger fw-bold">0</span>
+                                            {% elif item.stock.cantidad <= 5 %}
+                                                <span class="text-warning fw-bold">{{ item.stock.cantidad }}</span>
                                             {% else %}
-                                                Sin diseño
+                                                {{ item.stock.cantidad }}
                                             {% endif %}
-                                        </td>
-                                        <td>{{ item.cantidad }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="5" class="text-center text-muted">
-                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            Actualmente no hay productos en bodega.
-                                        </td>
-                                    </tr>
-                                {% endif %}    
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Diseño</th>
-                                    <th>Cantidad en Bodega</th>
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <a href="{% url 'editar_stock' item.stock.id %}" class="btn btn-sm btn-primary" title="Editar">
+                                            <i class="bx bx-edit"></i>
+                                        </a>
+
+                                        <button class="btn btn-sm btn-danger delete-stock" data-id="{{ item.stock.id }}" title="Eliminar">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+
+                                        {% if item.tiene_movimientos %}
+                                            <button class="btn btn-sm btn-outline-info ver-historial"
+                                                title="Historial de movimientos del producto (entradas y salidas)"
+                                                data-variante="{{ item.stock.producto_variante.id }}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalHistorial">
+                                                <i class="bx bx-history"></i>
+                                            </button>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-outline-secondary" disabled title="Sin movimientos registrados">
+                                                <i class="bx bx-history"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                                {% endfor %}
+
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i>
+                                    Actualmente no hay productos en bodega.
+                                </td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Color</th>
+                                <th>Talla</th>
+                                <th>Diseño</th>
+                                <th>Cantidad en Bodega</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
+
     </div>
-    <!--end page wrapper -->
-    <!--start overlay-->
-    <div class="overlay toggle-icon"></div>
-    <!--end overlay-->
-    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-    <!--End Back To Top Button-->
+</div>
+<!-- Overlay y botón subir -->
+<div class="overlay toggle-icon"></div>
+<a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+
+<p class="text-danger">Variante ID: {{ variante.id }}</p>
+
+<div class="modal fade" id="modalHistorial" tabindex="-1" aria-labelledby="modalHistorialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalHistorialLabel">Historial de movimientos</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="contenidoHistorial">
+                <p class="text-muted">Cargando...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("modalHistorial");
+        const contenido = document.getElementById("contenidoHistorial");
+
+        document.querySelectorAll(".ver-historial").forEach(btn => {
+            btn.addEventListener("click", function () {
+                const varianteId = this.getAttribute("data-variante");
+
+                fetch(`/bodega/historial/${varianteId}/`)
+                    .then(response => response.text())
+                    .then(data => {
+                        contenido.innerHTML = data;
+                    })
+                    .catch(err => {
+                        contenido.innerHTML = `<p class="text-danger">Error al cargar el historial.</p>`;
+                    });
+            });
+        });
+    });
+</script>
 {% endblock %}

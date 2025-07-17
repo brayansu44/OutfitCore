@@ -3,67 +3,190 @@
 <div class="page-wrapper">
     <div class="page-content">
 
-        <h4 class="mb-3">Detalles de {{ producto.referencia }}</h4>
-
-        <p><strong>Categoría:</strong> {{ producto.categoria.nombre }}</p>
-        <p><strong>Género:</strong> {{ producto.genero.nombre }}</p>
-        <p><strong>Descripción:</strong> {{ producto.descripcion|default:"Sin descripción" }}</p>
-
-        <hr>
-
-        <h5>Variantes disponibles</h5>
-        <table id="tabla-variantes" class="table table-bordered">
-            <div class="mb-3">
-                <input type="text" id="filtroDiseno" class="form-control w-25" placeholder="Filtrar por diseño...">
+        <!-- Breadcrumb -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Detalles del Producto</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'productos' %}">Productos</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ producto.referencia }}</li>
+                    </ol>
+                </nav>
             </div>
-            <thead>
-                <tr>
-                    <th>Código de barras</th>
-                    <th>Color</th>
-                    <th>Talla</th>
-                    <th>Diseño</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for variante in variantes %}
-                <tr>
-                    <td>{{ variante.get_codigo_barra }}</td>
-                    <td>{{ variante.color.nombre }}</td>
-                    <td>{{ variante.talla.nombre }}</td>
-                    <td>
-                        {% if variante.diseno.imagen %}
-                        <img src="{{ variante.diseno.imagen.url }}" alt="{{ variante.diseno.nombre }}" width="40"
-                            height="40" style="border-radius: 5px;">
-                        <span class="d-none">{{ variante.diseno.nombre }}</span>
-                        {% else %}
-                        <span>{{ variante.diseno.nombre }}</span>
-                        {% endif %}
-                    </td>
+        </div>
 
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <!-- Datos del producto -->
+        <div class="card p-4 shadow-sm">
+            <h4>{{ producto.referencia }}</h4>
+            <p><strong>Categoría:</strong> {{ producto.categoria.nombre }}</p>
+            <p><strong>Género:</strong> {{ producto.genero.nombre }}</p>
+            <p><strong>Descripción:</strong> {{ producto.descripcion|default:"Sin descripción" }}</p>
+            <p><strong>Estado:</strong>
+                {% if producto.estado == "Disponible" %}
+                <span class="badge bg-success">Disponible</span>
+                {% else %}
+                <span class="badge bg-danger">No disponible</span>
+                {% endif %}
+            </p>
+        </div>
 
-        <a href="{% url 'productos' %}" class="btn btn-secondary mt-3">
-            <i class="bx bx-arrow-back"></i> Volver
-        </a>
+        <!-- Variantes del producto -->
+        <div class="card mt-4 p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Variantes disponibles ({{ variantes.paginator.count }})</h5>
 
+                <div class="d-flex gap-2 flex-wrap">
+                    <input type="text" id="filtroDiseno" class="form-control" placeholder="Filtrar por diseño...">
+                    <input type="text" id="filtroColor" class="form-control" placeholder="Filtrar por color...">
+                    <input type="text" id="filtroTalla" class="form-control" placeholder="Filtrar por talla...">
+                    <a href="{% url 'exportar_variantes_excel' producto.id %}" class="btn btn-outline-success btn-sm">
+                        <i class="bx bxs-file-export"></i> Excel
+                    </a>
+                    <a href="{% url 'exportar_variantes_pdf' producto.id %}" class="btn btn-outline-danger btn-sm"
+                        target="_blank">
+                        <i class="bx bxs-file-pdf"></i> PDF
+                    </a>
+                </div>
+            </div>
+
+            <p class="text-muted small" id="contador-resultados"></p>
+
+            <div class="table-responsive">
+                <table id="tabla-variantes" class="table table-bordered align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Código de barras</th>
+                            <th>Color</th>
+                            <th>Talla</th>
+                            <th>Diseño</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for variante in variantes %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <code>{{ variante.get_codigo_barra }}</code>
+                                    <button class="btn btn-light btn-sm ms-2"
+                                        onclick="copiarCodigo('{{ variante.get_codigo_barra }}')" title="Copiar código">
+                                        <i class="bx bx-copy"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>{{ variante.color.nombre }}</td>
+                            <td>{{ variante.talla.nombre }}</td>
+                            <td>
+                                {% if variante.diseno %}
+                                <div class="d-flex flex-wrap align-items-center gap-1">
+                                    {% for imagen in variante.diseno.imagenes.all %}
+                                    <img src="{{ imagen.imagen.url }}" alt="{{ variante.diseno.nombre }}" width="40"
+                                        height="40" class="rounded border">
+                                    {% endfor %}
+                                    {% if not variante.diseno.imagenes.all %}
+                                    <span>{{ variante.diseno.nombre }}</span>
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <span class="text-muted fst-italic">Sin diseño</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'detalle_variante' variante.id %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bx bx-search"></i> Ver detalle
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <nav aria-label="Paginación de variantes">
+                <ul class="pagination justify-content-center">
+                    {% if variantes.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ variantes.previous_page_number }}">&laquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    {% endif %}
+
+                    {% for num in variantes.paginator.page_range %}
+                    {% if variantes.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if variantes.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ variantes.next_page_number }}">&raquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+
+            <div class="mt-4">
+                <a href="{% url 'productos' %}" class="btn btn-secondary">
+                    <i class="bx bx-arrow-back"></i> Volver
+                </a>
+            </div>
+        </div>
     </div>
 </div>
+
+<!-- Toast para copiado -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+    <div id="toast-copiado" class="toast align-items-center text-bg-dark border-0" role="alert" aria-live="assertive"
+        aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                Código copiado al portapapeles.
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Cerrar"></button>
+        </div>
+    </div>
+</div>
+
 <script>
-    document.getElementById("filtroDiseno").addEventListener("input", function () {
-        const filtro = this.value.toLowerCase();
+    function aplicarFiltros() {
+        const diseno = document.getElementById("filtroDiseno").value.toLowerCase();
+        const color = document.getElementById("filtroColor").value.toLowerCase();
+        const talla = document.getElementById("filtroTalla").value.toLowerCase();
         const filas = document.querySelectorAll("#tabla-variantes tbody tr");
 
+        let visibles = 0;
         filas.forEach(fila => {
             const texto = fila.innerText.toLowerCase();
-            if (texto.includes(filtro)) {
-                fila.style.display = "";
-            } else {
-                fila.style.display = "none";
-            }
+            const visible = texto.includes(diseno) && texto.includes(color) && texto.includes(talla);
+            fila.style.display = visible ? "" : "none";
+            if (visible) visibles++;
         });
-    });
+
+        document.getElementById("contador-resultados").innerText = `${visibles} resultado(s) encontrado(s).`;
+    }
+
+    document.getElementById("filtroDiseno").addEventListener("input", aplicarFiltros);
+    document.getElementById("filtroColor").addEventListener("input", aplicarFiltros);
+    document.getElementById("filtroTalla").addEventListener("input", aplicarFiltros);
+
+    function copiarCodigo(texto) {
+        navigator.clipboard.writeText(texto).then(() => {
+            const toastEl = document.getElementById("toast-copiado");
+            const toast = new bootstrap.Toast(toastEl);
+            toast.show();
+        }).catch(err => {
+            alert("Error al copiar: " + err);
+        });
+    }
 </script>
 {% endblock %}

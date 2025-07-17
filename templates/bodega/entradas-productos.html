@@ -1,85 +1,147 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="page-wrapper">
-        <div class="page-content">
-            <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
-                <div class="breadcrumb-title pe-3">Bodega</div>
-                <div class="ps-3">
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb mb-0 p-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'inventario_bodega' %}">Inventario</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Entradas de Insumos</li>
-                        </ol>
-                    </nav>
-                </div>
+<div class="page-wrapper">
+    <div class="page-content">
+        <!-- Breadcrumb -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Bodega</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'inventario_bodega' %}">Inventario</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Entradas de Insumos</li>
+                    </ol>
+                </nav>
             </div>
+        </div>
 
-            <h6 class="mb-0 text-uppercase">Entradas de Insumos</h6>
-            <hr />
+        <h6 class="mb-0 text-uppercase">Entradas de Insumos</h6>
+        <hr />
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example2" class="table table-striped table-bordered">
-                            <thead>
+        <!-- Botón para agregar nueva entrada (si aplica) -->
+        <div class="mb-3">
+            <a href="{% url 'crear_entrada' %}" class="btn btn-success">
+                <i class="bx bx-plus"></i> Nueva entrada
+            </a>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example2" class="table table-striped table-bordered">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Referencia</th>
+                                <th>Color</th>
+                                <th>Talla</th>
+                                <th>Diseño</th>
+                                <th>Cantidad Total</th>
+                                <th>Cantidad Lavado</th>
+                                <th>Responsable</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if entrega_corte %}
+                                {% for entrada in entrega_corte %}
                                 <tr>
-                                    <th>Fecha</th>
-                                    <th>Insumo</th>
-                                    <th>Cantidad Total</th>
-                                    <th>Cantidad Lavado</th>
-                                    <th>Responsable</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if entrega_corte %}
-                                    {% for entrada in entrega_corte %}
-                                    <tr>
-                                        <td>{{ entrada.fecha }}</td>
-                                        <td>{{ entrada.producto.producto.referencia }}</td>
-                                        <td>{{ entrada.cantidad }}</td>
-                                        <td>{{ entrada.cantidad_lavado }}</td>
-                                        <td>{{ entrada.user_responsable }}</td>
-                                        <td>
-                                            {% if entrada.cantidad_lavado > 0 %}
-                                                Lavado
+                                    <td>{{ entrada.fecha }}</td>
+                                    <td>{{ entrada.producto.producto.referencia }}</td>
+                                    <td>{{ entrada.producto.color }}</td>
+                                    <td>{{ entrada.producto.talla }}</td>
+                                    <td>
+                                        {% if entrada.producto.diseno %}
+                                            {% with imagen=entrada.producto.diseno.imagenes.first %}
+                                                {% if imagen %}
+                                                    <a href="{{ imagen.imagen.url }}" target="_blank" title="{{ entrada.producto.diseno.nombre }}">
+                                                        <img src="{{ imagen.imagen.url }}"
+                                                            alt="Diseño: {{ entrada.producto.diseno.nombre }}"
+                                                            width="45" height="45"
+                                                            class="rounded shadow-sm border">
+                                                    </a>
+                                                {% else %}
+                                                    <span class="text-muted">Sin imagen</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        {% else %}
+                                            <span class="badge bg-secondary">Sin diseño</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ entrada.cantidad }}</td>
+                                    <td>{{ entrada.cantidad_lavado }}</td>
+                                    <td>{{ entrada.user_responsable }}</td>
+                                    <td>
+                                        <span class="badge
+                                            {% if entrada.cantidad_lavado == 0 %}
+                                                bg-success
+                                            {% elif entrada.cantidad_lavado < entrada.cantidad %}
+                                                bg-warning
                                             {% else %}
-                                                Pendiente
+                                                bg-primary
                                             {% endif %}
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                {% else %}
-                                    <tr>
-                                        <td colspan="6" class="text-center text-muted">
-                                            <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            No hay registros de entradas de insumos.
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Fecha</th>
-                                    <th>Insumo</th>
-                                    <th>Cantidad Total</th>
-                                    <th>Cantidad Lavado</th>
-                                    <th>Responsable</th>
-                                    <th>Estado</th>
+                                        ">
+                                            {% if entrada.cantidad_lavado == 0 %}
+                                                Completado
+                                            {% elif entrada.cantidad_lavado < entrada.cantidad %}
+                                                Parcialmente en lavado
+                                            {% else %}
+                                                En lavado
+                                            {% endif %}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'editar_entrada' entrada.id %}" class="btn btn-sm btn-primary">
+                                            <i class="bx bx-edit"></i>
+                                        </a>
+                                        <button class="btn btn-danger btn-sm delete-entrada" data-id="{{ entrada.id }}">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </td>
                                 </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">
+                                        <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i>
+                                        No hay registros de entradas de insumos.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Referencia</th>
+                                <th>Color</th>
+                                <th>Talla</th>
+                                <th>Diseño</th>
+                                <th>Cantidad Total</th>
+                                <th>Cantidad Lavado</th>
+                                <th>Responsable</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <!--end page wrapper -->
-    <!--start overlay-->
-    <div class="overlay toggle-icon"></div>
-    <!--end overlay-->
-    <!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
-    <!--End Back To Top Button-->
+</div>
+
+<!--end overlay-->
+<div class="overlay toggle-icon"></div>
+<!--Start Back To Top Button--> 
+<a href="javaScript:;" class="back-to-top">
+    <i class='bx bxs-up-arrow-alt'></i>
+</a>
+<!--End Back To Top Button-->
 {% endblock %}

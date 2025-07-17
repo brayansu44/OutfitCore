@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <div class="alert alert-warning text-center mt-4">
+            <h4 class="alert-heading"><i class="bx bx-error-circle"></i> Sin movimientos registrados</h4>
+            <p>Este producto no tiene entradas ni salidas registradas. No se puede generar el archivo solicitado.</p>
+            <hr>
+            <a href="{% url 'inventario_bodega' %}" class="btn btn-primary">
+                <i class="bx bx-arrow-back"></i> Volver al inventario
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

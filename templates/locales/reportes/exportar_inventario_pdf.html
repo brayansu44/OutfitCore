@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario PDF</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #999; padding: 6px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        h2 { text-align: center; }
+    </style>
+</head>
+<body>
+    <h2>Inventario de {{ local.nombre }}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Talla</th>
+                <th>Color</th>
+                <th>Diseño</th>
+                <th>Entradas</th>
+                <th>Salidas</th>
+                <th>Stock Actual</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventario %}
+            <tr>
+                <td>{{ item.variante.producto.referencia }}</td>
+                <td>{{ item.variante.talla.nombre }}</td>
+                <td>{{ item.variante.color.nombre }}</td>
+                <td>
+                    {% if item.variante.diseno %}
+                        {{ item.variante.diseno.nombre }}
+                    {% else %}
+                        Sin diseño
+                    {% endif %}
+                </td>
+                <td>{{ item.entradas }}</td>
+                <td>{{ item.salidas }}</td>
+                <td>{{ item.stock_actual }}</td>
+                <td>{{ item.fecha|date:"d/m/Y" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

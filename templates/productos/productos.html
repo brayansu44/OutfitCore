@@ -86,19 +86,22 @@
                                             </div>                                            
                                         </td>                                                                                                                    
                                         <td>
-                                            {% with imagenes_diseno=producto.diseno.all %}
-                                                {% if imagenes_diseno %}
-                                                    {% for diseno in imagenes_diseno %}
-                                                        {% if diseno.imagen %}
-                                                            <a href="{{ diseno.imagen.url }}" target="_blank">
-                                                                <img src="{{ diseno.imagen.url }}" alt="{{ diseno.nombre }}" width="40" height="40" style="border-radius: 5px; margin: 2px;">
-                                                            </a>
-                                                        {% else %}
-                                                            {{ diseno.nombre }}{% if not forloop.last %}, {% endif %}
-                                                        {% endif %}
+                                            {% with disenios=producto.diseno.all %}
+                                                {% if disenios %}
+                                                    {% for diseno in disenios %}
+                                                        <div class="mb-2">
+                                                            <strong style="font-size: 12px;">{{ diseno.nombre }}</strong><br>
+                                                            {% for imagen in diseno.imagenes.all %}
+                                                                <a href="{{ imagen.imagen.url }}" target="_blank">
+                                                                    <img src="{{ imagen.imagen.url }}" alt="{{ diseno.nombre }}" width="40" height="40" style="border-radius: 5px; margin: 2px;">
+                                                                </a>
+                                                            {% empty %}
+                                                                <span class="text-muted" style="font-size: 12px;">Sin imágenes</span>
+                                                            {% endfor %}
+                                                        </div>
                                                     {% endfor %}
                                                 {% else %}
-                                                    Sin diseños
+                                                    <span class="text-muted">Sin diseños</span>
                                                 {% endif %}
                                             {% endwith %}
                                         </td>
@@ -131,11 +134,7 @@
                                                 <span class="text-muted">Sin descripcion</span>
                                             {% endif %}
                                         </td>
-                                        <td style="display: none;">
-                                            {% for variante in producto.variantes.all %}
-                                                <span>{{ variante.producto.codigo }}-{{ variante.color.nombre }}-{{ variante.talla.nombre }}</span>
-                                            {% endfor %}
-                                        </td>
+                                        
                                         <td>
                                             <a href="{% url 'editar_producto' producto.id %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>

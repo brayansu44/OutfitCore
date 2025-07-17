@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resumen de Inventario</title>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; margin: 40px; }
+        h1, h2, h3 { text-align: center; }
+        .header, .footer { text-align: center; margin-bottom: 20px; }
+        .logo { width: 80px; height: auto; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #000; padding: 6px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .footer { margin-top: 40px; font-size: 10px; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    {% if logo_path %}
+        <img src="{{ logo_path }}" alt="Logo Empresa" class="logo">
+    {% else %}
+        <h2>{{ local.empresa.razon_social }}</h2>
+    {% endif %}
+    <h3>Resumen de Inventario</h3>
+</div>
+
+<p><strong>Local:</strong> {{ local.nombre }}</p>
+<p><strong>Producto:</strong> {{ producto.referencia }}</p>
+<p><strong>Fecha de generación:</strong> {{ now|date:"d/m/Y H:i" }}</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Talla</th>
+            <th>Stock Total</th>
+            <th>Salidas</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in inventario %}
+        <tr>
+            <td>{{ item.variante__talla__nombre }}</td>
+            <td>{{ item.stock_total }}</td>
+            <td>{{ item.salidas_total }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th>Total</th>
+            <th>{{ total_stock }}</th>
+            <th>{{ total_salidas }}</th>
+        </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    Generado automáticamente por el sistema Kiddes
+</div>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <div>
+        <h6 class="text-primary mb-0">Producto: {{ variante.producto.referencia }}</h6>
+        <p class="mb-0"><strong>Color:</strong> {{ variante.color }} | <strong>Talla:</strong> {{ variante.talla }}</p>
+    </div>
+    <div>
+        <a href="{% url 'exportar_historial_excel' variante.id %}" class="btn btn-outline-success btn-sm" target="_blank">
+            <i class="bx bx-file"></i> Exportar a Excel
+        </a>
+        <a href="{% url 'exportar_historial_pdf' variante.id %}" class="btn btn-outline-danger btn-sm" target="_blank">
+            <i class="bx bxs-file-pdf"></i> Exportar a PDF
+        </a>
+    </div>
+</div>
+
+
+{% if entradas or salidas %}
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Fecha</th>
+                    <th>Cantidad</th>
+                    <th>Responsable</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entrada in entradas %}
+                <tr>
+                    <td><span class="badge bg-success">Entrada</span></td>
+                    <td>{{ entrada.fecha }}</td>
+                    <td>{{ entrada.cantidad }}</td>
+                    <td>{{ entrada.user_responsable }}</td>
+                    <td><span class="badge bg-info">Completado</span></td>
+                </tr>
+                {% endfor %}
+
+                {% for salida in salidas %}
+                <tr>
+                    <td>
+                        {% if salida.es_lavado %}
+                            <span class="badge bg-warning text-dark">Lavado</span>
+                        {% else %}
+                            <span class="badge bg-danger">Salida</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ salida.fecha }}</td>
+                    <td>{{ salida.cantidad }}</td>
+                    <td>{{ salida.user_responsable }}</td>
+                    <td>
+                        {% if salida.estado == "Pendiente" %}
+                            <span class="badge bg-secondary">Pendiente</span>
+                        {% elif salida.estado == "Completado" %}
+                            <span class="badge bg-success">Completado</span>
+                        {% elif salida.estado == "Confirmado" %}
+                            <span class="badge bg-primary">Confirmado</span>
+                        {% else %}
+                            <span class="badge bg-dark">{{ salida.estado }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p class="text-muted text-center">No hay movimientos registrados para este producto.</p>
+{% endif %}
+
