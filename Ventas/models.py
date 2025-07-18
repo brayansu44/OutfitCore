@@ -23,10 +23,6 @@ class Ventas(models.Model):
     creado_en           = models.DateTimeField(auto_now_add=True)
     actualizado_en      = models.DateTimeField(auto_now=True)
 
-    '''@property
-    def cliente(self):
-        return self.Factura.cliente'''
-
     def __str__(self):
         return f"Venta {self.id} - {self.fecha} - {self.estado}"
     
@@ -43,4 +39,4 @@ class DetalleVentas(models.Model):
         return self.varianteID.get_codigo_barra()
 
     def __str__(self):
-        return f"{self.varianteID} x {self.cantidad}"
+        return f"{self.variante} x {self.cantidad}"

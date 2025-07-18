@@ -7,6 +7,7 @@ from django.forms import modelformset_factory
 from .forms import VentaForm, DetalleVentasFormSet
 from .models import Ventas, DetalleVentas
 
+@login_required(login_url='login')
 def lista_ventas(request):
     ventas = Ventas.objects.all().order_by('-fecha')  # Ordenar por fecha descendente
     return render(request, 'ventas/lista_ventas.html', {'ventas': ventas})

@@ -14,7 +14,7 @@ class VentaForm(forms.ModelForm):
 
     class Meta:
         model = Ventas
-        fields = ['local', 'vendedor', 'fecha', 'estado']  # Agrega más si usas otros campos manuales
+        fields = ['local', 'vendedor', 'cliente', 'fecha', 'estado']  # Agrega más si usas otros campos manuales
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -31,6 +31,9 @@ class VentaForm(forms.ModelForm):
         self.fields['vendedor'].widget.attrs.update({'class': 'form-select'})
 
         self.fields['estado'].widget.attrs.update({'class': 'form-select'})
+
+        self.fields['cliente'].empty_label = "Seleccione un cliente"
+        self.fields['cliente'].widget.attrs.update({'class': 'form-select'})
 
          # Inicializa fecha si ya existe en la instancia
         if self.instance and self.instance.fecha:
