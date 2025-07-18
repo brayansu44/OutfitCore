@@ -11,16 +11,16 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'ventas' %}">Ventas</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Consulta de Facturas de Venta</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'compras' %}">Compras</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Consulta de Facturas de Compras</li>
                         </ol>
                     </nav>
                 </div>
             </div>
             <!-- Botón de agregar tela -->
             <div class="mb-3">
-                <a href="{% url 'agregar_factura_venta' %}" class="btn btn-success">
-                    <i class="bx bx-plus"></i> Agregar Factura de Venta
+                <a href="{% url 'agregar_factura_compra' %}" class="btn btn-success">
+                    <i class="bx bx-plus"></i> Agregar Factura de Compra
                 </a>
             </div>
             <!--end breadcrumb-->
@@ -34,7 +34,7 @@
                             <thead>
                                 <tr>
                                     <th>Numero Factura</th>
-                                    <th>Cliente</th>
+                                    <th>Proveedor</th>
                                     <th>Fecha de Emisión</th>
                                     <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>
@@ -47,16 +47,16 @@
                                     {% for factura in factura %}
                                     <tr>
                                         <td>{{ factura.numero_factura }}</td>
-                                        <td>{{ factura.cliente }}</td>
+                                        <td>{{ factura.proveedor }}</td>
                                         <td>{{ factura.fecha_emision }}</td>
                                         <td>{{ factura.fecha_vencimiento }}</td>
                                         <td>{{ factura.monto_total }}</td>
                                         <td>{{ factura.saldo_pendiente }}</td>
                                         <td class="text-center">
-                                            <a href="{% url 'editar_factura_venta' factura.id %}" class="btn btn-sm btn-info">
+                                            <a href="{% url 'editar_factura_compra' factura.id %}" class="btn btn-sm btn-info">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete-factura" id="ventas" data-id="{{ factura.id }}">
+                                            <button class="btn btn-danger btn-sm delete-factura" id="compras" data-id="{{ factura.id }}">
                                                 <i class="bx bx-trash"></i>
                                             </button>                                            
                                         </td>
@@ -66,7 +66,7 @@
                                     <tr>
                                         <td colspan="7" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
-                                            Actualmente no hay facturas de ventas registradas en el sistema.
+                                            Actualmente no hay facturas de compras registradas en el sistema.
                                         </td>
                                     </tr>
                                 {% endif %}    
@@ -74,7 +74,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Numero Factura</th>
-                                    <th>Cliente</th>
+                                    <th>Proveedor</th>
                                     <th>Fecha de Emisión</th>
                                     <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>

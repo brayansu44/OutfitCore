@@ -1,6 +1,6 @@
-function ViewDelete(aux, id, auxi) {
+function ViewDelete(url, aux, id) {
     Swal.fire({
-        title: `¿Deseas eliminar esta ${auxi}?`,
+        title: `¿Deseas eliminar esta ${aux}?`,
         text: "Una vez eliminada, no podrás recuperarla.",
         icon: "warning",
         showCancelButton: true,
@@ -10,7 +10,7 @@ function ViewDelete(aux, id, auxi) {
         cancelButtonText: "Cancelar"
     }).then((result) => {
         if (result.isConfirmed) {
-            fetch(`/cuentas/${aux}/facturas/delete/${id}/`, {
+            fetch(`/cuentas/${url}/${aux}s/delete/${id}/`, {
                 method: "POST",
                 headers: {
                     "X-CSRFToken": csrfToken
@@ -19,7 +19,7 @@ function ViewDelete(aux, id, auxi) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire("Eliminado", `La ${auxi} ha sido eliminada.`, "success")
+                        Swal.fire("Eliminado", `La ${aux} ha sido eliminada.`, "success")
                             .then(() => location.reload());
                     } else {
                         Swal.fire("Error", `No se pudo eliminar la ${auxi}.`, "error");
@@ -32,10 +32,35 @@ function ViewDelete(aux, id, auxi) {
     });
 }
 
-// FORM AGREGAR CLIENTE
+// VIEW DELETE
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-factura").forEach(button => {
+        button.addEventListener("click", function () {
+            let url = this.id
+            let aux = "factura"
+            let id = this.getAttribute("data-id")
+            
+            ViewDelete(url, aux, id)
+
+        });
+    });
+
+    document.querySelectorAll(".delete-pago").forEach(button => {
+        button.addEventListener("click", function () {
+            let url = this.id
+            let aux = "pago"
+            let id = this.getAttribute("data-id")
+            
+            ViewDelete(url, aux, id)
+
+        });
+    });
+
+})
+// FORM "AGREGAR" MODAL
 document.addEventListener("DOMContentLoaded", function () {
 
-    // FACTURA DE VENTA
+    // FACTURA DE VENTA - MODAL CLIENTE
 
     let clienteFormURL = "";
     // Cargar el formulario cuando se abre el modal
@@ -54,6 +79,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    //Lanzar SUBMIT del FORM
+    $(document).on('click', '#submitAddCliente', function () {
+        const form = document.getElementById('clienteForm');
+        if (form.checkValidity()) {
+            $('#clienteForm').submit();
+        } else {
+            form.reportValidity();  // muestra los errores nativos del navegador
+        }
+    });
+
     // Enviar el formulario via AJAX
     $(document).on('submit', '#clienteForm', function (e) {
         e.preventDefault();
@@ -69,18 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
     })
 
     
-    document.querySelectorAll(".delete-factura").forEach(button => {
-        button.addEventListener("click", function () {
-            let aux = this.id;
-            let id = this.getAttribute("data-id")
-            let auxi = "factura"
-            
-            ViewDelete(aux, id, auxi)
-
-        });
-    });
-
-    // PAGO DE VENTA
+    
+    // PAGO DE VENTA - MODAL FACTURA
     
     let facturaFormURL = "";
     // Cargar el formulario cuando se abre el modal
@@ -99,6 +124,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    //Lanzar SUBMIT del FORM
+    $(document).on('click', '#submitAddFactura', function () {
+        const form = document.getElementById('facturaForm');
+        if (form.checkValidity()) {
+            $('#facturaForm').submit();
+        } else {
+            form.reportValidity();  // muestra los errores nativos del navegador
+        }
+    });
+
     // Enviar el formulario via AJAX
     $(document).on('submit', '#facturaForm', function (e) {
         e.preventDefault();
@@ -112,19 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     })
-
-    
-    document.querySelectorAll(".delete-pago").forEach(button => {
-        button.addEventListener("click", function () {
-            let aux = this.id;
-            let id = this.getAttribute("data-id")
-            let auxi = "pago"
-            
-            ViewDelete(aux, id, auxi)
-
-        });
-    });
-
 });
 
 

@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content %}
     <!--start page wrapper -->
     <div class="page-wrapper">
@@ -11,9 +13,9 @@
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb mb-0 p-0">
                             <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'ventas' %}">Ventas</a></li>
-                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'pago_venta' %}">Lista de pagos</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">{{ accion }} Pago</li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'compras' %}">Compras</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'factura_compra' %}">Lista de Facturas</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">{{ accion }} Factura</li>
                         </ol>
                     </nav>
                 </div>
@@ -27,21 +29,26 @@
                         <div>
                             <i class="bx bx-palette me-1 font-22 text-info"></i>
                         </div>
-                        <h5 class="mb-0 text-info">{{ accion }} Pago recibido</h5>
+                        <h5 class="mb-0 text-info">{{ accion }} Factura de Compra</h5>
                     </div>
                     <hr>
 
                     <form method="POST" class="row g-3 needs-validation" novalidate>
                         {% csrf_token %}
+
+                        <div class="col-md-6">
+                            <label class="form-label"><strong>Número de factura</strong></label>
+                            <input type="text" class="form-control" value="TKC-{{ now|date:'Y' }}-XXXX" disabled>
+                            <div class="form-text">Este número se asignará automáticamente al guardar.</div>
+                        </div>
+
                         {% for field in form %}
-                            <div class="{% if field.name == 'observaciones' %}col-md-12{% else %}col-md-6{% endif %}">
+                            <div class="{% if field.name == 'fecha_vencimiento' %}col-md-12{% else %}col-md-6{% endif %}">
                                 <label for="{{ field.id_for_label }}" class="form-label">{{ field.label|safe }}</label>
-                                {% if field.name == 'factura' %}
+                                {% if field.name == 'proveedor' %}
                                     <div class="d-flex align-items-center">
                                         {{ field }}
-                                        <a href="#" class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalFactura" 
-                                        data-url="{% url 'addFacturaVenta' %}"
-                                        title="Agregar nueva Factura">
+                                        <a href="{%  url 'proveedores' %}" class="btn btn-outline-info btn-sm ms-2" title="Agregar nuevo proveedor">
                                            <i class="bx bx-plus"></i>
                                         </a>
                                     </div>
@@ -56,29 +63,11 @@
                             <button type="submit" class="btn btn-info px-5">
                                 <i class="bx bx-save"></i> Guardar
                             </button>
-                            <a href="{% url 'pago_venta' %}" class="btn btn-light px-5">
+                            <a href="{% url 'factura_compra' %}" class="btn btn-light px-5">
                                 <i class="bx bx-arrow-back"></i> Volver
                             </a>
                         </div>
                     </form>
-
-                    <div class="modal fade" id="modalFactura" tabindex="-1" aria-labelledby="modalFacturaLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content border-top border-0 border-4 border-info">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-info">Nueva Factura</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-                                <div class="modal-body" id="modalFacturaBody">
-                                    <!-- formulario vía AJAX -->
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Volver</button>
-                                    <button type="submit" id="submitAddFactura" class="btn btn-info">Guardar Cambios</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     
                 </div>
             </div>
@@ -94,8 +83,6 @@
     <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
     <!--End Back To Top Button--> 
 {% endblock %}
-
-{% load static %}
 
 {% block script %}  
     <script src="{% static 'js/cuentas/cuentas.js' %}">
