@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.inventario_bodega, name='inventario_bodega'),
+    path('inventario/', views.inventario_bodega, name='inventario_bodega'),
     path('inventario/agregar/', views.crear_stock, name='crear_stock'),
     path('inventario/editar/<int:stock_id>/', views.editar_stock, name='editar_stock'),
     path('inventario/eliminar/<int:stock_id>/', views.eliminar_stock, name='eliminar_stock'),
@@ -25,4 +25,18 @@ urlpatterns = [
     path('insumos/agregar/', views.agregar_insumo, name='agregar_insumo'),
     path('insumos/editar/<int:insumo_id>/', views.editar_insumo, name='editar_insumo'),
     path('insumos/eliminar/<int:insumo_id>/', views.eliminar_insumo, name='eliminar_insumo'),
+
+    path('ingresos/', views.listar_ingresos_insumo, name='ingresos_insumos'),
+    path('insumos/ingreso/nuevo/', views.agregar_ingreso_insumo, name='agregar_ingreso_insumo'),
+    path('ingresos-insumos/<int:ingreso_id>/editar/', views.editar_ingreso_insumo, name='editar_ingreso_insumo'),
+    path('ingresos-insumos/eliminar/<int:ingreso_id>/', views.eliminar_ingreso_insumo, name='eliminar_ingreso_insumo'),
+    path('ingresos-insumos/<int:ingreso_id>/detalle/', views.detalle_ingreso_insumo, name='detalle_ingreso_insumo'),
+    path('ingresos/exportar/excel/<int:ingreso_id>/', views.exportar_detalle_ingreso_excel, name='exportar_detalle_ingreso_excel'),
+    path('ingresos/exportar/pdf/<int:ingreso_id>/', views.exportar_detalle_ingreso_pdf, name='exportar_detalle_ingreso_pdf'),
+
+    path('uso-insumos/', views.lista_uso_insumos, name='lista_uso_insumos'),
+    path('uso-insumos/crear/', views.crear_uso_insumo, name='crear_uso_insumo'),
+    path('obtener-stock/<int:insumo_id>/', views.obtener_stock_insumo, name='obtener_stock_insumo'),
+    path('uso-insumos/<int:uso_id>/editar/', views.editar_uso_insumo, name='editar_uso_insumo'),
+    path('uso-insumos/eliminar/<int:uso_id>/', views.eliminar_uso_insumo, name='eliminar_uso_insumo'),
 ]    

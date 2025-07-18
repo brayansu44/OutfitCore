@@ -6,6 +6,9 @@ from locales.models import InventarioLocal
 from notificaciones.models import Notificacion
 from django.core.exceptions import ValidationError
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 class EstadoChoices(models.TextChoices):
     PENDIENTE = 'Pendiente', 'Pendiente'
     CONFIRMADO = 'Confirmado', 'Confirmado'
@@ -274,18 +277,14 @@ class TipoInsumo(models.Model):
 
 class Insumo(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
+    stock_actual = models.PositiveIntegerField(default=0)
     tipo_insumo = models.ForeignKey(TipoInsumo, on_delete=models.CASCADE)
     unidad_medida = models.ForeignKey(UnidadMedida, on_delete=models.CASCADE)
+    #activo = models.BooleanField(default=True)
+
 
     def __str__(self):
         return f"{self.nombre} ({self.tipo_insumo})"
-
-    @property
-    def stock_actual(self):
-        """Calcula el stock en tiempo real basado en ingresos y usos registrados."""
-        ingresos = self.ingresos.aggregate(total=models.Sum('cantidad'))['total'] or 0
-        usos = self.usos.aggregate(total=models.Sum('cantidad'))['total'] or 0
-        return ingresos - usos
     
 
 class IngresoInsumo(models.Model):
@@ -300,6 +299,14 @@ class IngresoInsumo(models.Model):
         """Si el ingreso está completado, actualiza el stock del insumo."""
         super().save(*args, **kwargs)
 
+class DetalleIngresoInsumo(models.Model):
+    ingreso = models.ForeignKey(IngresoInsumo, on_delete=models.CASCADE, related_name='detalles')
+    insumo = models.ForeignKey(Insumo, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.insumo.nombre} x {self.cantidad}"
+
 class UsoInsumo(models.Model):
     DESTINO_CHOICES = [
         ('Costura', 'Costura'),
@@ -309,6 +316,7 @@ class UsoInsumo(models.Model):
     producto = models.ForeignKey(ProductoVariante, on_delete=models.CASCADE, related_name="insumos_usados")
     fecha = models.DateField(auto_now_add=True)
     cantidad = models.PositiveIntegerField()
+    #costo_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     uso_destino = models.CharField(max_length=50, choices=DESTINO_CHOICES, default='Lavado')
     observaciones = models.TextField(null=True, blank=True) 
     user_responsable = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE)
@@ -319,6 +327,28 @@ class UsoInsumo(models.Model):
             raise ValidationError(f"No hay suficiente stock de {self.insumo.nombre}.")
 
     def save(self, *args, **kwargs):
-        """Descuenta el stock automáticamente al guardar un uso de insumo."""
-        self.clean()  # Llama la validación antes de guardar
-        super().save(*args, **kwargs)
+        self.clean()  # Valida el stock antes de guardar
+        super().save(*args, **kwargs)  # Guardar el uso descuenta indirectamente el stock
+
+class MovimientoStock(models.Model):
+    TIPO_CHOICES = [
+        ('Ingreso', 'Ingreso'),
+        ('Uso', 'Uso'),
+        ('Ajuste', 'Ajuste'),
+    ]
+
+    insumo = models.ForeignKey(Insumo, on_delete=models.CASCADE)
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    cantidad = models.IntegerField()  # Positivo o negativo según tipo
+    fecha = models.DateTimeField(auto_now_add=True)
+    detalle = models.TextField(blank=True, null=True)
+    responsable = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f"{self.tipo} - {self.insumo.nombre} - {self.cantidad}"
+    
+class LoteInsumo(models.Model):
+    insumo = models.ForeignKey(Insumo, on_delete=models.CASCADE)
+    fecha_caducidad = models.DateField()
+    cantidad = models.PositiveIntegerField()
+    ingreso = models.ForeignKey(IngresoInsumo, on_delete=models.CASCADE)

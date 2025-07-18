@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb con botón de navegación -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center justify-content-between mb-3">
+            <div class="breadcrumb-title pe-3">Detalle de Ingreso de Insumos</div>
+            <div class="d-flex gap-2">
+                <a href="{% url 'ingresos_insumos' %}" class="btn btn-sm btn-outline-secondary">
+                    ← Volver a Ingresos
+                </a>
+                <a href="{% url 'exportar_detalle_ingreso_excel' ingreso.id %}" class="btn btn-sm btn-outline-success">
+                    <i class="bx bx-file"></i> Exportar a Excel
+                </a>
+                <a href="{% url 'exportar_detalle_ingreso_pdf' ingreso.id %}" class="btn btn-sm btn-outline-danger">
+                    <i class="bx bxs-file-pdf"></i> Exportar a PDF
+                </a>
+            </div>
+        </div>
+
+        <!-- Información general del ingreso -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Información General</h5>
+                <p><strong>Fecha de Ingreso:</strong> {{ ingreso.fecha|date:"d/m/Y" }}</p>
+                <p><strong>Proveedor:</strong> {{ ingreso.proveedor.Razon_Social }}</p>
+                <p><strong>Registrado por:</strong>
+                    {{ ingreso.user_responsable.full_name|default:ingreso.user_responsable.usuario.username }}
+                </p>
+                <p><strong>Estado del Ingreso:</strong>
+                    {% if ingreso.estado == 'Aprobado' %}
+                    <span class="badge bg-success">Aprobado</span>
+                    {% elif ingreso.estado == 'Pendiente' %}
+                    <span class="badge bg-warning text-dark">Pendiente</span>
+                    {% else %}
+                    <span class="badge bg-secondary">{{ ingreso.estado }}</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- Detalle de los insumos ingresados -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Insumos Ingresados</h5>
+
+                {% if detalles %}
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-hover table-bordered table-sm align-middle">
+                        <thead class="table-light text-center">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre del Insumo</th>
+                                <th>Cantidad</th>
+                                <th>Unidad</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detalle in detalles %}
+                            <tr>
+                                <td class="text-center">{{ forloop.counter }}</td>
+                                <td class="text-center">{{ detalle.insumo.nombre }}</td>
+                                <td class="text-center">{{ detalle.cantidad }}</td>
+                                <td class="text-center">{{ detalle.insumo.unidad_medida.nombre }}</td>
+                                <td class="text-center">{{ detalle.insumo.tipo_insumo.nombre }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="alert alert-warning" role="alert">
+                    Este ingreso no tiene insumos registrados.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

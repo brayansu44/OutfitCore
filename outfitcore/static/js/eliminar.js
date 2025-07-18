@@ -555,3 +555,94 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+// Ingresos insumos
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-ingreso-insumo").forEach(button => {
+        button.addEventListener("click", function () {
+            let ingresoId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Deseas eliminar este ingreso?",
+                text: "Una vez eliminada, no podrás recuperarla.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/bodega/ingresos-insumos/eliminar/${ingresoId}/`, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("Eliminado", "El ingreso ha sido eliminado.", "success")
+                                    .then(() => location.reload());
+                            } else {
+                                Swal.fire("Error", "No se pudo eliminar el ingreso.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                        });
+                }
+            });
+        });
+    });
+});
+
+// uso de insumos
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".eliminar-uso-insumo").forEach(button => {
+        button.addEventListener("click", function () {
+            let usoId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Qué deseas hacer?",
+                icon: "warning",
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: "Eliminar con devolución",
+                denyButtonText: "Eliminar completamente",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#28a745",
+                denyButtonColor: "#d33",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
+                let url = '';
+                if (result.isConfirmed) {
+                    url = `/bodega/uso-insumos/eliminar/${usoId}/?devolver=1`;
+                } else if (result.isDenied) {
+                    url = `/bodega/uso-insumos/eliminar/${usoId}/?devolver=0`;
+                }
+
+                if (url !== '') {
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Eliminado", "El uso fue eliminado correctamente.", "success")
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire("Error", "No se pudo eliminar el uso.", "error");
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                    });
+                }
+            });
+        });
+    });
+});

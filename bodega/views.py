@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
 from .models import *
 from usuarios.models import PerfilUsuario
-from .forms import SalidaProductoForm, StockForm, EntregaCorteForm, InsumoForm
+from .forms import SalidaProductoForm, StockForm, EntregaCorteForm, InsumoForm, IngresoInsumoForm, UsoInsumoForm
 import json
 import openpyxl
 import os
@@ -18,6 +18,7 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Table, TableStyle, Spacer, Image
 from reportlab.lib.units import inch
 from reportlab.lib.styles import getSampleStyleSheet
+from openpyxl import Workbook
 
 # Vista del inventario de bodega
 @login_required(login_url='login')
@@ -413,3 +414,290 @@ def eliminar_insumo(request, insumo_id):
         insumo.delete()
 
     return JsonResponse({'success': True})
+
+# Ingreso Insumo
+
+@login_required
+def listar_ingresos_insumo(request):
+    ingresos = IngresoInsumo.objects.select_related('user_responsable').order_by('-fecha')
+    return render(request, 'bodega/insumos/listar_ingresos_insumo.html', {'ingresos': ingresos})
+
+@login_required
+@transaction.atomic
+def agregar_ingreso_insumo(request):
+    if request.method == 'POST':
+        form = IngresoInsumoForm(request.POST)
+        if form.is_valid():
+            ingreso = form.save(commit=False)
+            ingreso.user_responsable = request.user.perfilusuario
+            ingreso.save()  # Guardamos el ingreso
+
+            # Crear automáticamente el detalle del ingreso
+            insumo = ingreso.insumo
+            cantidad = ingreso.cantidad
+
+            DetalleIngresoInsumo.objects.create(
+                ingreso=ingreso,
+                insumo=insumo,
+                cantidad=cantidad
+            )
+
+            # Actualizar el stock del insumo
+            insumo.stock_actual += cantidad
+            insumo.save()
+
+            return redirect('ingresos_insumos')  # URL a la lista de ingresos
+    else:
+        form = IngresoInsumoForm()
+
+    context = {
+        'form': form,
+        'accion': 'Crear',
+    }
+    return render(request, 'bodega/insumos/form_ingreso_insumo.html', context)
+
+@login_required
+def editar_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+    cantidad_anterior = ingreso.cantidad  # Guardamos la cantidad original
+
+    if request.method == 'POST':
+        form = IngresoInsumoForm(request.POST, instance=ingreso)
+        if form.is_valid():
+            ingreso_editado = form.save(commit=False)
+            ingreso_editado.user_responsable = request.user.perfilusuario  # Asegurar el user_responsable
+
+            # Actualizar el stock restando lo viejo y sumando lo nuevo
+            diferencia = ingreso_editado.cantidad - cantidad_anterior
+            ingreso_editado.insumo.stock_actual += diferencia
+            ingreso_editado.insumo.save()
+
+            ingreso_editado.save()
+            messages.success(request, 'Ingreso actualizado correctamente.')
+            return redirect('ingresos_insumos')
+    else:
+        form = IngresoInsumoForm(instance=ingreso)
+
+    return render(request, 'bodega/insumos/form_ingreso_insumo.html', {
+        'form': form,
+        'accion': 'Editar ingreso de insumo'
+    })
+
+
+@login_required
+def eliminar_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+
+    with transaction.atomic():
+        # Restar el stock
+        for detalle in ingreso.detalles.all():
+            insumo = detalle.insumo
+            insumo.stock_actual -= detalle.cantidad
+            insumo.save()
+
+        # Eliminar el ingreso (esto también debería eliminar los detalles si usas on_delete=models.CASCADE)
+        ingreso.delete()
+
+    return JsonResponse({'success': True})
+
+
+def detalle_ingreso_insumo(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+    detalles = ingreso.detalles.all()
+    return render(request, 'bodega/insumos/detalle_ingreso_insumo.html', {
+        'ingreso': ingreso,
+        'detalles': detalles
+    })
+
+@login_required
+def exportar_detalle_ingreso_excel(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+    detalles = DetalleIngresoInsumo.objects.filter(ingreso=ingreso)
+
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Detalle Ingreso"
+
+    # Información general
+    ws.append(["Ingreso de Insumos"])
+    ws.append(["Fecha:", ingreso.fecha.strftime('%d/%m/%Y')])
+    ws.append(["Proveedor:", ingreso.proveedor.Razon_Social])
+    ws.append(["Registrado por:", str(ingreso.user_responsable)])
+    ws.append(["Estado:", ingreso.estado])
+    ws.append([])
+
+    # Encabezado tabla
+    ws.append(["#", "Insumo", "Cantidad", "Unidad de Medida", "Tipo de Insumo"])
+
+    for i, detalle in enumerate(detalles, start=1):
+        ws.append([
+            i,
+            detalle.insumo.nombre,
+            detalle.cantidad,
+            detalle.insumo.unidad_medida.nombre,
+            detalle.insumo.tipo_insumo.nombre,
+        ])
+
+    # Ajustar ancho de columnas
+    for col in ws.columns:
+        max_length = max(len(str(cell.value or '')) for cell in col)
+        col_letter = get_column_letter(col[0].column)
+        ws.column_dimensions[col_letter].width = max_length + 2
+
+    # Preparar respuesta
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response['Content-Disposition'] = f'attachment; filename=Detalle_Ingreso_{ingreso_id}.xlsx'
+    wb.save(response)
+    return response
+
+@login_required
+def exportar_detalle_ingreso_pdf(request, ingreso_id):
+    ingreso = get_object_or_404(IngresoInsumo, id=ingreso_id)
+    detalles = DetalleIngresoInsumo.objects.filter(ingreso=ingreso)
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="Detalle_Ingreso_{ingreso_id}.pdf"'
+
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    # Logo (opcional)
+    logo_path = os.path.join(settings.BASE_DIR, 'outfitcore', 'static', 'images', 'logo-img.png')
+    if os.path.exists(logo_path):
+        elements.append(Image(logo_path, width=2 * inch, height=1 * inch))
+
+    elements.append(Spacer(1, 12))
+
+    # Título e información general
+    elements.append(Paragraph("Detalle de Ingreso de Insumos", styles['Title']))
+    elements.append(Spacer(1, 8))
+    elements.append(Paragraph(f"<strong>Fecha:</strong> {ingreso.fecha.strftime('%d/%m/%Y')}", styles['Normal']))
+    elements.append(Paragraph(f"<strong>Proveedor:</strong> {ingreso.proveedor.Razon_Social}", styles['Normal']))
+    elements.append(Paragraph(f"<strong>Registrado por:</strong> {ingreso.user_responsable}", styles['Normal']))
+    elements.append(Paragraph(f"<strong>Estado:</strong> {ingreso.estado}", styles['Normal']))
+    elements.append(Spacer(1, 12))
+
+    # Tabla de insumos
+    data = [["#", "Insumo", "Cantidad", "Unidad de Medida", "Tipo de Insumo"]]
+    for i, d in enumerate(detalles, 1):
+        data.append([
+            i,
+            d.insumo.nombre,
+            d.cantidad,
+            d.insumo.unidad_medida.nombre,
+            d.insumo.tipo_insumo.nombre
+        ])
+
+    table = Table(data, colWidths=[0.5*inch, 2.2*inch, 1*inch, 1.5*inch, 2*inch])
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, -1), 9),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ]))
+
+    elements.append(table)
+    doc.build(elements)
+
+    return response
+
+@login_required(login_url='login')
+def lista_uso_insumos(request):
+    usos = UsoInsumo.objects.select_related('insumo', 'producto', 'user_responsable')
+    return render(request, 'bodega/insumos/uso_insumo_list.html', {'usos': usos})
+
+@login_required
+def obtener_stock_insumo(request, insumo_id):
+    try:
+        insumo = Insumo.objects.get(id=insumo_id)
+        return JsonResponse({'stock_actual': insumo.stock_actual})
+    except Insumo.DoesNotExist:
+        return JsonResponse({'stock_actual': 0})
+
+@login_required(login_url='login')
+def crear_uso_insumo(request):
+    if request.method == 'POST':
+        form = UsoInsumoForm(request.POST)
+        if form.is_valid():
+            uso = form.save(commit=False)
+
+            if uso.cantidad > uso.insumo.stock_actual:
+                form.add_error('cantidad', 'No hay suficiente stock del insumo.')
+
+            uso.user_responsable = request.user.perfilusuario
+            uso.insumo.stock_actual -= uso.cantidad
+            uso.insumo.save()
+            form.save()
+            messages.success(request, 'Agregado correctamente')
+            return redirect('lista_uso_insumos')  # Asegúrate que esta URL exista
+    else:
+        form = UsoInsumoForm()
+
+    context = {
+        'form': form,
+        'accion': 'Registrar uso de insumo',
+    }
+    return render(request, 'bodega/insumos/uso_insumo_form.html', context)
+
+
+@login_required(login_url='login')
+@transaction.atomic
+def editar_uso_insumo(request, uso_id):
+    uso = get_object_or_404(UsoInsumo, id=uso_id)
+    insumo = uso.insumo  # Guardamos la referencia del insumo original
+    cantidad_anterior = uso.cantidad  # Para calcular la diferencia luego
+
+    if request.method == 'POST':
+        form = UsoInsumoForm(request.POST, instance=uso)
+        if form.is_valid():
+            uso_editado = form.save(commit=False)
+            nueva_cantidad = uso_editado.cantidad
+            diferencia = nueva_cantidad - cantidad_anterior
+
+            if diferencia > 0 and diferencia > insumo.stock_actual:
+                form.add_error('cantidad', 'No hay suficiente stock del insumo para este ajuste.')
+            else:
+                # Ajustar el stock
+                insumo.stock_actual -= diferencia
+                insumo.save()
+                uso_editado.save()
+                messages.success(request, "Uso de insumo actualizado.")
+                return redirect('lista_uso_insumos')
+    else:
+        form = UsoInsumoForm(instance=uso)
+
+    return render(request, 'bodega/insumos/uso_insumo_form.html', {
+        'form': form,
+        'accion': 'Editar uso de insumo'
+    })
+
+
+@csrf_exempt
+@login_required(login_url='login')
+@require_POST
+def eliminar_uso_insumo(request, uso_id):
+    uso = get_object_or_404(UsoInsumo, id=uso_id)
+    devolver = request.GET.get('devolver') == '1'
+
+    try:
+        with transaction.atomic():
+            if devolver:
+                # Devolver la cantidad al stock del insumo
+                insumo = Insumo.objects.select_for_update().get(pk=uso.insumo.pk)
+                insumo.stock_actual = F('stock_actual') + uso.cantidad
+                insumo.save()
+
+            # Eliminar el uso
+            uso.delete()
+
+        return JsonResponse({'success': True})
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)})
+
+
+
