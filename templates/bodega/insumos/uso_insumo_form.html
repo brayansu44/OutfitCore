@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Insumos</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'lista_uso_insumos' %}">Usos</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ accion }}</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="col-xl-8 mx-auto">
+            <hr />
+            <div class="card border-top border-0 border-4 border-primary">
+                <div class="card-body p-5">
+                    <div class="card-title d-flex align-items-center">
+                        <div><i class="bx bx-package me-1 font-22 text-primary"></i></div>
+                        <h5 class="mb-0 text-primary">{{ accion }}</h5>
+                    </div>
+                    <hr>
+
+                    <form method="POST" class="row g-3 needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <div class="col-md-6">
+                            <label for="{{ form.insumo.id_for_label }}" class="form-label">Insumo</label>
+                            {{ form.insumo }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.producto.id_for_label }}" class="form-label">Producto</label>
+                            {{ form.producto }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.cantidad.id_for_label }}" class="form-label">Cantidad</label>
+                            {{ form.cantidad }}
+                            <div class="form-text" id="stock-disponible-text"></div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="{{ form.uso_destino.id_for_label }}" class="form-label">Destino</label>
+                            {{ form.uso_destino }}
+                        </div>
+
+                        <div class="col-12">
+                            <label for="{{ form.observaciones.id_for_label }}" class="form-label">Observaciones</label>
+                            {{ form.observaciones }}
+                        </div>
+
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary px-5">Guardar</button>
+                            <a href="{% url 'lista_uso_insumos' %}" class="btn btn-secondary px-4">Cancelar</a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const insumoSelect = document.getElementById("id_insumo");
+    const cantidadInput = document.getElementById("id_cantidad");
+    const stockText = document.getElementById("stock-disponible-text");
+
+    function actualizarStock(insumoId) {
+        if (!insumoId) return;
+
+        fetch(`/bodega/obtener-stock/${insumoId}/`)
+            .then(response => response.json())
+            .then(data => {
+                const stock = data.stock_actual;
+                cantidadInput.setAttribute("max", stock);
+                stockText.textContent = `Stock disponible: ${stock} unidades`;
+
+                if (cantidadInput.value > stock) {
+                    cantidadInput.value = stock;
+                }
+            });
+    }
+
+    insumoSelect.addEventListener("change", function () {
+        const insumoId = this.value;
+        actualizarStock(insumoId);
+    });
+
+    // Si ya hay un insumo seleccionado al cargar la página (por ejemplo en edición o error de validación)
+    if (insumoSelect.value) {
+        actualizarStock(insumoSelect.value);
+    }
+});
+</script>
+{% endblock %}

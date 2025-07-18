@@ -1,5 +1,6 @@
 from django import forms
-from .models import SalidaProducto, InventarioLocal, Stock, EntregaCorte, Insumo, IngresoInsumo
+from django.forms import modelformset_factory
+from .models import SalidaProducto, InventarioLocal, Stock, EntregaCorte, Insumo, IngresoInsumo, DetalleIngresoInsumo, UsoInsumo
 from usuarios.models import PerfilUsuario
 
 class SalidaProductoForm(forms.ModelForm):
@@ -102,10 +103,11 @@ class IngresoInsumoForm(forms.ModelForm):
         self.fields['proveedor'].empty_label = "Seleccione un proveedor"
         self.fields['proveedor'].widget.attrs.update({'class': 'form-select'})
 
+
 class UsoInsumoForm(forms.ModelForm):
     class Meta:
-        model = IngresoInsumo
-        fields = ['insumo', 'cantidad', 'proveedor']
+        model = UsoInsumo
+        fields = ['insumo', 'producto', 'cantidad', 'uso_destino', 'observaciones']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -115,5 +117,5 @@ class UsoInsumoForm(forms.ModelForm):
         self.fields['insumo'].empty_label = "Seleccione un insumo"
         self.fields['insumo'].widget.attrs.update({'class': 'form-select'})
 
-        self.fields['proveedor'].empty_label = "Seleccione un proveedor"
-        self.fields['proveedor'].widget.attrs.update({'class': 'form-select'})
+        self.fields['producto'].empty_label = "Seleccione un producto"
+        self.fields['producto'].widget.attrs.update({'class': 'form-select'})

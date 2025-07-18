@@ -15,9 +15,17 @@
                 </div>
             </div>
 
-            <a href="{% url 'agregar_insumo' %}" class="btn btn-primary mb-3">
-                <i class="bx bx-plus"></i> Agregar Insumo
-            </a>
+            <div class="mb-3">
+                <a href="{% url 'agregar_insumo' %}" class="btn btn-primary me-2">
+                    <i class="bx bx-plus"></i> Agregar Insumo
+                </a>
+                <a href="{% url 'ingresos_insumos' %}" class="btn btn-outline-secondary me-2">
+                    Ver Ingreso de Insumos
+                </a>
+                <a href="{% url 'lista_uso_insumos' %}" class="btn btn-outline-secondary">
+                    Ver Uso de Insumos
+                </a>
+            </div>
 
             <h6 class="mb-0 text-uppercase">Inventario de Insumos</h6>
             <hr />

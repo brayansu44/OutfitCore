@@ -66,39 +66,54 @@
         </li>
         {% endwith %}
 
-        <li>
+        {% with request.path as path %}
+        <li class="{% if '/productos/' in path %}mm-active{% endif %}">
             <a href="{% url 'productos' %}">
                 <div class="parent-icon"><i class='fas fa-box'></i>
                 </div>
                 <div class="menu-title">Productos</div>
             </a>
         </li>
-        <li>
+        {% endwith %}
+
+        {% with request.path as path %}
+        <li class="{% if '/empresas/' in path %}mm-active{% endif %}">
             <a href="{% url 'empresas' %}">
                 <div class="parent-icon"><i class='fas fa-building'></i>
                 </div>
                 <div class="menu-title">Empresas</div>
             </a>
         </li>
-        <li>
+        {% endwith %}
+
+        {% with request.path as path %}
+        <li class="{% if '/locales/' in path %}mm-active{% endif %}">
             <a href="{% url 'locales' %}">
                 <div class="parent-icon"><i class='fas fa-store'></i>
                 </div>
                 <div class="menu-title">Locales</div>
             </a>
         </li>
-        <li>
-            <a href="#" class="has-arrow">
+        {% endwith %}
+
+        {% with request.path as path %}
+        <li class="{% if '/bodega/' in path %}mm-active{% endif %}">
+            <a href="#" class="has-arrow" aria-expanded="{% if '/bodega/' in path %}true{% else %}false{% endif %}">
                 <div class="parent-icon"><i class='fas fa-warehouse'></i>
                 </div>
                 <div class="menu-title">Bodega</div>
             </a>
-            <ul>
-                <li> <a href="{% url 'inventario_bodega' %}"><i class="bx bx-right-arrow-alt"></i>Inventario de Bodega</a> </li>
-                <li> <a href="{% url 'inventario_insumos' %}"><i class="bx bx-right-arrow-alt"></i>Inventario de Insumos</a> </li>
-                <li> <a href="{% url 'ingresos_insumos' %}"><i class="bx bx-right-arrow-alt"></i>Ingresos de Insumos</a> </li>
+            <ul class="{% if '/bodega/' in path %}mm-collapse mm-show{% else %}mm-collapse{% endif %}">
+                <li class="{% if '/bodega/inventario/' in path %}active mm-active{% endif %}"> 
+                    <a href="{% url 'inventario_bodega' %}"><i class="bx bx-right-arrow-alt"></i>Inventario de Bodega</a> 
+                </li>
+                <li class="{% if '/bodega/inventario-insumos/' in path %}active mm-active{% endif %}"> 
+                    <a href="{% url 'inventario_insumos' %}"><i class="bx bx-right-arrow-alt"></i>Inventario de Insumos</a>
+                </li>
             </ul>
         </li>
+        {% endwith %}
+
         <li>
             <a href="#">
                 <div class="parent-icon"><i class="fas fa-shopping-cart"></i>

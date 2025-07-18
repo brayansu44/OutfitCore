@@ -596,3 +596,53 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+// uso de insumos
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".eliminar-uso-insumo").forEach(button => {
+        button.addEventListener("click", function () {
+            let usoId = this.getAttribute("data-id");
+
+            Swal.fire({
+                title: "¿Qué deseas hacer?",
+                icon: "warning",
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: "Eliminar con devolución",
+                denyButtonText: "Eliminar completamente",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#28a745",
+                denyButtonColor: "#d33",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
+                let url = '';
+                if (result.isConfirmed) {
+                    url = `/bodega/uso-insumos/eliminar/${usoId}/?devolver=1`;
+                } else if (result.isDenied) {
+                    url = `/bodega/uso-insumos/eliminar/${usoId}/?devolver=0`;
+                }
+
+                if (url !== '') {
+                    fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "X-CSRFToken": csrfToken
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire("Eliminado", "El uso fue eliminado correctamente.", "success")
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire("Error", "No se pudo eliminar el uso.", "error");
+                        }
+                    })
+                    .catch(() => {
+                        Swal.fire("Error", "Hubo un problema con la solicitud.", "error");
+                    });
+                }
+            });
+        });
+    });
+});
