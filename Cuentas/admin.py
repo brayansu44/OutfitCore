@@ -5,15 +5,15 @@ from .models import Cliente, FacturaVenta, PagoRecibido, FacturaCompra, Pago
 # ---- Módulo de Cuentas por Cobrar ----
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
-    list_display = ('id', 'identificacion', 'nombre', 'telefono', 'direccion')
+    list_display = ('id', 'tipo_identificacion', 'identificacion', 'nombre', 'telefono', 'direccion')
     search_fields = ('identificacion', 'nombre',)
 
 @admin.register(FacturaVenta)
 class FacturaVentaAdmin(admin.ModelAdmin):
     readonly_fields = ('numero_factura', 'fecha_emision')
-    list_display = ('numero_factura', 'cliente', 'fecha_emision', 'fecha_vencimiento', 'monto_total', 'saldo_pendiente')
-    list_filter = ('fecha_emision', 'fecha_vencimiento')
-    search_fields = ('numero_factura', 'cliente__nombre')
+    list_display = ('numero_factura', 'cliente', 'fecha_emision', 'monto_total', 'saldo_pendiente')
+    list_filter = ('fecha_emision', 'numero_factura')
+    search_fields = ('numero_factura', 'cliente__tipo_identificacion', 'cliente__identificacion')
     ordering = ('-fecha_emision',)
 
 @admin.register(PagoRecibido)
@@ -26,8 +26,8 @@ class PagoRecibidoAdmin(admin.ModelAdmin):
 @admin.register(FacturaCompra)
 class FacturaCompraAdmin(admin.ModelAdmin):
     readonly_fields = ('numero_factura', 'fecha_emision')
-    list_display = ('numero_factura', 'proveedor', 'fecha_emision', 'fecha_vencimiento', 'monto_total', 'saldo_pendiente')
-    list_filter = ('fecha_emision', 'fecha_vencimiento')
+    list_display = ('numero_factura', 'proveedor', 'fecha_emision', 'monto_total', 'saldo_pendiente')
+    list_filter = ('fecha_emision', 'numero_factura')
     search_fields = ('numero_factura', 'proveedor__nombre')
     ordering = ('-fecha_emision',)
 

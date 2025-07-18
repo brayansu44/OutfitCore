@@ -21,13 +21,13 @@
 
             <div class="col-xl-7 mx-auto">
             <hr/>
-            <div class="card border-top border-0 border-4 border-primary">
+            <div class="card border-top border-0 border-4 border-info">
                 <div class="card-body p-5">
                     <div class="card-title d-flex align-items-center">
                         <div>
-                            <i class="bx bx-palette me-1 font-22 text-primary"></i>
+                            <i class="bx bx-palette me-1 font-22 text-info"></i>
                         </div>
-                        <h5 class="mb-0 text-primary">{{ accion }} Factura de Venta</h5>
+                        <h5 class="mb-0 text-info">{{ accion }} Factura de Venta</h5>
                     </div>
                     <hr>
 
@@ -46,7 +46,7 @@
                                 {% if field.name == 'cliente' %}
                                     <div class="d-flex align-items-center">
                                         {{ field }}
-                                        <a href="#" class="btn btn-outline-primary btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" 
+                                        <a href="#" class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" 
                                         data-url="{% url 'agregar_cliente' %}" 
                                         title="Agregar nuevo cliente">
                                            <i class="bx bx-plus"></i>
@@ -60,33 +60,29 @@
                         {% endfor %}
 
                         <div class="col-12">
-                            <button type="submit" class="btn btn-success px-5">
+                            <button type="submit" class="btn btn-info px-5">
                                 <i class="bx bx-save"></i> Guardar
                             </button>
-                            <a href="{% url 'factura_venta' %}" class="btn btn-secondary px-5">
-                                <i class="bx bx-arrow-back"></i> Cancelar
+                            <a href="{% url 'factura_venta' %}" class="btn btn-light px-5">
+                                <i class="bx bx-arrow-back"></i> Volver
                             </a>
                         </div>
                     </form>
 
                     <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content bg-dark">
+                            <div class="modal-content border-top border-0 border-4 border-info">
                                 <div class="modal-header">
-                                    <h5 class="modal-title text-white">Nuevo Cliente</h5>
+                                    <h5 class="modal-title text-info">Agregar Cliente</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
-                                <form id="clienteForm" class="row g-3 needs-validation" novalidate>
-                                    {% csrf_token %}
-                                
-                                    <div class="modal-body text-white" id="modalClienteBody">
-                                        <!-- formulario vía AJAX -->
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Volver</button>
-                                        <button type="submit" class="btn btn-dark">Guardar Cambios</button>
-                                    </div>
-                                </form>
+                                <div class="modal-body" id="modalClienteBody">
+                                    <!-- formulario vía AJAX -->
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Volver</button>
+                                    <button type="submit" id="submitAddCliente" class="btn btn-info">Guardar Cambios</button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -49,10 +49,10 @@
                                         <td>{{ pago.metodo_pago }}</td>
                                         <td>{{ pago.observaciones }}</td>
                                         <td class="text-center">
-                                            <a href="{% url 'editar_pago_venta' pago.id %}" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'editar_pago_venta' pago.id %}" class="btn btn-sm btn-info">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete-pago" id="ventas" data-id="{{ pago.id }}">
+                                            <button class="btn btn-danger btn-sm delete-pago" data-id="{{ pago.id }}">
                                                 <i class="bx bx-trash"></i>
                                             </button>                                            
                                         </td>
