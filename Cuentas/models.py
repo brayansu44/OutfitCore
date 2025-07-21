@@ -29,27 +29,36 @@ class FacturaVenta(models.Model):
     saldo_pendiente     = models.FloatField(null=True)
 
     def save(self, *args, **kwargs):
-        if not self.numero_factura:
-            año = timezone.now().year
-            with transaction.atomic():
-                ultima_factura = FacturaVenta.objects.filter(
-                    numero_factura__startswith=f"TKV-{año}-"
-                ).order_by('-numero_factura').first()
+        if not self.pk:  # Si la instancia es nueva (sin PK)
+            # Generar número consecutivo
+            if not self.numero_factura:
+                año = timezone.now().year
+                with transaction.atomic():
+                    ultima_factura = FacturaVenta.objects.filter(
+                        numero_factura__startswith=f"TKV-{año}-"
+                    ).order_by('-numero_factura').first()
 
-                if ultima_factura:
-                    ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1])
-                else:
-                    ultimo_numero = 0
+                    if ultima_factura:
+                        ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1])
+                    else:
+                        ultimo_numero = 0
 
-                nuevo_numero = ultimo_numero + 1
-                self.numero_factura = f"TKV-{año}-{nuevo_numero:04d}"
+                    nuevo_numero = ultimo_numero + 1
+                    self.numero_factura = f"TKV-{año}-{nuevo_numero:04d}"
+
+            self.saldo_pendiente = self.monto_total or 0
                 
-        super().save(*args, **kwargs)
+            super().save(*args, **kwargs) # Guarda la instancia por primera vez
+
+        else:
+            # Ya tiene PK: actualiza saldo y estado
+            self.actualizar_saldo()
+            super().save(*args, **kwargs)
 
     def actualizar_saldo(self):
         pagos = self.pagorecibido_set.aggregate(models.Sum('monto_pagado'))['monto_pagado__sum'] or 0
-        self.saldo_pendiente = self.monto_total - pagos
-        self.save()
+        monto = self.monto_total or 0
+        self.saldo_pendiente = monto - pagos
 
     def __str__(self):
         return f"{self.numero_factura} {self.cliente.tipo_identificacion} {self.cliente.identificacion}"
@@ -73,6 +82,7 @@ class PagoRecibido(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.factura.actualizar_saldo()
+        self.factura.save()
 
     def __str__(self):
         return f"Pago {self.monto_pagado} - {self.factura.numero_factura}"
@@ -86,42 +96,44 @@ class FacturaCompra(models.Model):
     ESTADO = (
         ('Saldado', 'Saldado'),
         ('Pendiente', 'Pendiente'),
-        ('Cancelado', 'Cancelado'),
+        ('Vencido', 'Vencido'),
     )
     numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
     fecha_vencimiento   = models.DateField(null=True)
     monto_total         = models.FloatField(blank=True)
-    saldo_pendiente     = models.FloatField(null=False, default=0)
-    estado              = models.CharField(max_length=50, choices=ESTADO, default='Pendiente')
+    saldo_pendiente     = models.FloatField(null=True)
+    estado              = models.CharField(max_length=50, choices=ESTADO, default="Pendiente")
 
     def save(self, *args, **kwargs):
-        if not self.numero_factura:
-            año = timezone.now().year
-            with transaction.atomic():
-                ultima_factura = FacturaCompra.objects.filter(
-                    numero_factura__startswith=f"TKC-{año}-"
-                ).order_by('-numero_factura').first()
+        if not self.pk:  # Si la instancia es nueva (sin PK)
+            # Generar número consecutivo
+            if not self.numero_factura:
+                año = timezone.now().year
+                with transaction.atomic():
+                    ultima_factura = FacturaCompra.objects.filter(
+                        numero_factura__startswith=f"TKC-{año}-"
+                    ).order_by('-numero_factura').first()
 
-                if ultima_factura:
-                    ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1])
-                else:
-                    ultimo_numero = 0
+                    ultimo_numero = int(ultima_factura.numero_factura.split("-")[-1]) if ultima_factura else 0
+                    self.numero_factura = f"TKC-{año}-{ultimo_numero + 1:04d}"
 
-                nuevo_numero = ultimo_numero + 1
-                self.numero_factura = f"TKC-{año}-{nuevo_numero:04d}"
-        if not self.pk:
+            self.saldo_pendiente = self.monto_total or 0
+
+            super().save(*args, **kwargs)  # Guarda la instancia por primera vez
+
+        else:
+            # Ya tiene PK: actualiza saldo y estado
+            self.actualizar_saldo_compra()
+            self.actualizar_estado()
             super().save(*args, **kwargs)
-
-        self.actualizar_saldo_compra()
-        self.actualizar_estado()    
-        super().save(*args, **kwargs)
 
     def actualizar_saldo_compra(self):
         pagos = self.pago_set.aggregate(models.Sum('monto_pagado'))['monto_pagado__sum'] or 0
-        self.saldo_pendiente = self.monto_total or 0
-        self.saldo_pendiente -= pagos
+        monto = self.monto_total or 0
+        self.saldo_pendiente = monto - pagos
+
 
     def actualizar_estado(self):
         fecha_actual = timezone.now().date()
@@ -153,8 +165,11 @@ class Pago(models.Model):
     observaciones   = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.factura.actualizar_saldo_compra()
+        super().save(*args, **kwargs)           # Guarda el pago
+        self.factura.actualizar_saldo_compra()  # Recalcula el saldo
+        self.factura.actualizar_estado()        # Recalcula el estado si lo necesitas
+        self.factura.save()                     # Guarda los cambios en la factura
+
 
     def __str__(self):
         return f"Pago {self.monto_pagado} - {self.factura.numero_factura}"

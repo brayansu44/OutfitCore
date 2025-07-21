@@ -14,7 +14,7 @@ class ContratoAdmin(admin.ModelAdmin):
 
 @admin.register(Devengado)
 class DevengadoAdmin(admin.ModelAdmin):
-    list_display = ('contrato', 'total', 'auxilio_transporte', 'exonerado_aportes', 'dias_liquidados', 'horas_extras', 'recargos_nocturnos', 'recargos_dominical')
+    list_display = ('contrato', 'total', 'auxilio_transporte', 'exonerado_aportes', 'dias_liquidados', 'horas_extras_diurna', 'horas_extras_nocturna', 'horas_extras_diurna_dominical', 'horas_extras_nocturna_dominical', 'recargos_nocturnos', 'recargos_dominical', 'recargos_nocturnos_dominical')
     list_filter = ('contrato',)
 
 @admin.register(Deducciones)
@@ -24,13 +24,13 @@ class DeduccionesAdmin(admin.ModelAdmin):
 
 @admin.register(Provisiones)
 class ProvisionesAdmin(admin.ModelAdmin):
-    list_display = ('contrato', 'total', 'pension', 'salud', 'prima', 'cesantias')
-    list_filter = ('contrato',)
+    list_display = ('nomina', 'total', 'pension', 'salud', 'prima', 'cesantias')
+    list_filter = ('nomina',)
 
 @admin.register(AportesParafiscal)
 class AportesParafiscalAdmin(admin.ModelAdmin):
-    list_display = ('contrato', 'sena', 'icbf', 'caja_compensacion', 'aporte_salud')
-    list_filter = ('contrato',)
+    list_display = ('nomina', 'sena', 'icbf', 'ccf', 'aporte_salud')
+    list_filter = ('nomina',)
 
 @admin.register(Nomina)
 class NominaAdmin(admin.ModelAdmin):

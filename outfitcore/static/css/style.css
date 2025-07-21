@@ -29,8 +29,9 @@
     border: 1px solid #FFEEBA;
 }
 
-.cancelada,
 .cancelado,
+.cancelada,
+.vencido,
 .agotado {
     background-color: #F8D7DA;
     color: #721C24;

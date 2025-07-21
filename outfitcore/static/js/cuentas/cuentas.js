@@ -19,7 +19,7 @@ function ViewDelete(url, aux, id) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        Swal.fire("Eliminado", `La ${aux} ha sido eliminada.`, "success")
+                        Swal.fire("Eliminado", `${aux} eliminada.`, "success")
                             .then(() => location.reload());
                     } else {
                         Swal.fire("Error", `No se pudo eliminar la ${auxi}.`, "error");

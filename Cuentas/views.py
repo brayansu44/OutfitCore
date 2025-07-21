@@ -169,7 +169,7 @@ def delete_pago_venta(request, pago_id):
     if request.method == "POST":
         pago = get_object_or_404(PagoRecibido, id=pago_id)
         pago.delete()
-        msj = f"Pago {pago.factura} eliminado correctamente."
+        msj = f"Pago de la factura {pago.factura} eliminado correctamente."
         return JsonResponse({"success": True, "message": msj})
 
     return JsonResponse({"success": False, "error": "Método no permitido"})
@@ -274,7 +274,7 @@ def delete_pago_compra(request, pago_id):
     if request.method == "POST":
         pago = get_object_or_404(Pago, id=pago_id)
         pago.delete()
-        msj = f"Pago {pago.factura} eliminado correctamente."
+        msj = f"Pago de la factura {pago.factura} eliminado correctamente."
         return JsonResponse({"success": True, "message": msj})
 
     return JsonResponse({"success": False, "error": "Método no permitido"})
