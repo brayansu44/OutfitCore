@@ -83,17 +83,24 @@ class PagoRecibido(models.Model):
 
 # Modulo de cuentas por pagar
 class FacturaCompra(models.Model):
+    ESTADO = (
+        ('Saldado', 'Saldado'),
+        ('Pendiente', 'Pendiente'),
+        ('Cancelado', 'Cancelado'),
+    )
     numero_factura      = models.CharField(max_length=20, unique=True, blank=True)
     proveedor           = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_emision       = models.DateField(auto_now_add=True)
+    fecha_vencimiento   = models.DateField(null=True)
     monto_total         = models.FloatField(blank=True)
-    saldo_pendiente     = models.FloatField(null=True)
+    saldo_pendiente     = models.FloatField(null=False, default=0)
+    estado              = models.CharField(max_length=50, choices=ESTADO, default='Pendiente')
 
     def save(self, *args, **kwargs):
         if not self.numero_factura:
             año = timezone.now().year
             with transaction.atomic():
-                ultima_factura = FacturaVenta.objects.filter(
+                ultima_factura = FacturaCompra.objects.filter(
                     numero_factura__startswith=f"TKC-{año}-"
                 ).order_by('-numero_factura').first()
 
@@ -104,11 +111,30 @@ class FacturaCompra(models.Model):
 
                 nuevo_numero = ultimo_numero + 1
                 self.numero_factura = f"TKC-{año}-{nuevo_numero:04d}"
-                
+        if not self.pk:
+            super().save(*args, **kwargs)
+
+        self.actualizar_saldo_compra()
+        self.actualizar_estado()    
         super().save(*args, **kwargs)
 
+    def actualizar_saldo_compra(self):
+        pagos = self.pago_set.aggregate(models.Sum('monto_pagado'))['monto_pagado__sum'] or 0
+        self.saldo_pendiente = self.monto_total or 0
+        self.saldo_pendiente -= pagos
+
+    def actualizar_estado(self):
+        fecha_actual = timezone.now().date()
+
+        if self.saldo_pendiente is not None and self.saldo_pendiente <= 0:
+            self.estado = 'Saldado'
+        elif self.fecha_vencimiento and (fecha_actual > self.fecha_vencimiento):
+            self.estado = 'Cancelado'
+        else:
+            self.estado = 'Pendiente'
+
     def __str__(self):
-        return f"{self.numero_factura} {self.cliente.tipo_identificacion} {self.cliente.identificacion}"
+        return f"{self.numero_factura} {self.proveedor.Tipo_documento} {self.proveedor.Identificacion}"
 
     class Meta:
         verbose_name = "Factura de Compra"
@@ -128,7 +154,7 @@ class Pago(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.factura.actualizar_saldo()
+        self.factura.actualizar_saldo_compra()
 
     def __str__(self):
         return f"Pago {self.monto_pagado} - {self.factura.numero_factura}"

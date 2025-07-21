@@ -27,7 +27,7 @@ class ClienteForm(forms.ModelForm):
 
 
 class FacturaVentaForm(forms.ModelForm):
-    
+
     class Meta:
         model = FacturaVenta
         fields = [
@@ -72,11 +72,18 @@ class PagoVentaForm(forms.ModelForm):
         self.fields['factura'].widget.attrs.update({'class': 'form-select'})
 
 class FacturaCompraForm(forms.ModelForm):
+    fecha_vencimiento = forms.DateField(
+        widget=forms.DateInput(
+            attrs={'type': 'date', 'class': 'form-control'},
+            format='%Y-%m-%d'
+        ),
+        required=True
+    )
 
     class Meta:
         model = FacturaCompra
         fields = [
-            'proveedor', 'monto_total']
+            'proveedor', 'fecha_vencimiento', 'monto_total']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -93,6 +100,8 @@ class FacturaCompraForm(forms.ModelForm):
         self.fields['proveedor'].empty_label = "Seleccione proveedor"
         self.fields['proveedor'].widget.attrs.update({'class': 'form-select'})
         
+        if self.instance and self.instance.fecha_vencimiento:
+            self.initial['fecha_vencimiento'] = self.instance.fecha_vencimiento.strftime('%Y-%m-%d')
 
 class PagoForm(forms.ModelForm):
 

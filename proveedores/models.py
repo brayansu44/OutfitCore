@@ -6,9 +6,9 @@ class Proveedor(models.Model):
     UserResponsable       = models.ForeignKey(PerfilUsuario, on_delete=models.CASCADE)
     Razon_Social          = models.CharField(max_length=100, null=False, blank=False)
     Tipo_documentos=(
-        ('C.C.','C.C'),
-        ('NIT.','NIT.'),
-        ('PAS','PAS'),
+        ('CC','Cedula Ciudadania'),
+        ('NIT.','NNúmero Identificación TributariaIT.'),
+        ('PAS','Pasaporte'),
     )
     Tipo_documento          = models.CharField(max_length=50, choices=Tipo_documentos, default='NIT')
     Identificacion          = models.IntegerField(unique=True, null=False, blank=False)

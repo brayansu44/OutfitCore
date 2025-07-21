@@ -139,11 +139,54 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
         $.post(facturaFormURL, $(this).serialize(), function (data) {
             if (data.success) {
-                let nuevaOpcion = new Option(data.nombre, data.id, true, true);
-                $('#id_cliente').append(nuevaOpcion).trigger('change');
+                let nuevaOpcion = new Option(data.numero_factura, data.id, true, true);
+                $('#id_factura').append(nuevaOpcion).trigger('change');
                 $('#modalFactura').modal('hide');
             } else {
                 $('#modalFacturaBody').html(data.form_html);
+            }
+        });
+    })
+
+    // PAGO DE VENTA - MODAL FACTURA COMPRA
+    
+    let facturaCompraFormURL = "";
+    // Cargar el formulario cuando se abre el modal
+    $('#modalFacturaCompra').on('show.bs.modal', function (event) {
+        const trigger  = $(event.relatedTarget);
+        facturaCompraFormURL = trigger.data('url');  // ← captura la URL definida en el HTML
+        $('#modalFacturaCompraBody').html(`
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Cargando formulario...</p>
+            </div>
+        `);
+
+        $.get(facturaCompraFormURL, function (data) {
+            $('#modalFacturaCompraBody').html(data);
+        });
+    });
+
+    //Lanzar SUBMIT del FORM
+    $(document).on('click', '#submitAddFacturaCompra', function () {
+        const form = document.getElementById('facturaCompraForm');
+        if (form.checkValidity()) {
+            $('#facturaCompraForm').submit();
+        } else {
+            form.reportValidity();  // muestra los errores nativos del navegador
+        }
+    });
+
+    // Enviar el formulario via AJAX
+    $(document).on('submit', '#facturaCompraForm', function (e) {
+        e.preventDefault();
+        $.post(facturaCompraFormURL, $(this).serialize(), function (data) {
+            if (data.success) {
+                let nuevaOpcion = new Option(data.numero_factura, data.id, true, true);
+                $('#id_factura').append(nuevaOpcion).trigger('change');
+                $('#modalFacturaCompra').modal('hide');
+            } else {
+                $('#modalFacturaCompraBody').html(data.form_html);
             }
         });
     })

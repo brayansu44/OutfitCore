@@ -36,7 +36,6 @@
                                     <th>Numero Factura</th>
                                     <th>Cliente</th>
                                     <th>Fecha de Emisión</th>
-                                    <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>
                                     <th>Saldo Pendiente</th>
                                     <th>Acciones</th>
@@ -49,7 +48,6 @@
                                         <td>{{ factura.numero_factura }}</td>
                                         <td>{{ factura.cliente }}</td>
                                         <td>{{ factura.fecha_emision }}</td>
-                                        <td>{{ factura.fecha_vencimiento }}</td>
                                         <td>{{ factura.monto_total }}</td>
                                         <td>{{ factura.saldo_pendiente }}</td>
                                         <td class="text-center">
@@ -64,7 +62,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">
+                                        <td colspan="6" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             Actualmente no hay facturas de ventas registradas en el sistema.
                                         </td>
@@ -76,7 +74,6 @@
                                     <th>Numero Factura</th>
                                     <th>Cliente</th>
                                     <th>Fecha de Emisión</th>
-                                    <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>
                                     <th>Saldo Pendiente</th>
                                     <th>Acciones</th>

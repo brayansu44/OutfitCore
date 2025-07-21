@@ -26,8 +26,8 @@ class PagoRecibidoAdmin(admin.ModelAdmin):
 @admin.register(FacturaCompra)
 class FacturaCompraAdmin(admin.ModelAdmin):
     readonly_fields = ('numero_factura', 'fecha_emision')
-    list_display = ('numero_factura', 'proveedor', 'fecha_emision', 'monto_total', 'saldo_pendiente')
-    list_filter = ('fecha_emision', 'numero_factura')
+    list_display = ('numero_factura', 'proveedor', 'fecha_emision', 'fecha_vencimiento', 'monto_total', 'saldo_pendiente', 'estado')
+    list_filter = ('fecha_emision', 'fecha_vencimiento', 'numero_factura')
     search_fields = ('numero_factura', 'proveedor__nombre')
     ordering = ('-fecha_emision',)
 

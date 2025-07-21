@@ -8,6 +8,7 @@ urlpatterns = [
     #MODAL CONTENT
     path('clientes/', views.agregar_cliente, name='agregar_cliente'),
     path('facturaVenta/', views.addFacturaVenta, name='addFacturaVenta'),
+    path('facturaCompra/', views.addFacturaCompra, name='addFacturaCompra'),
 
     #FACTURA DE VENTA
     path('ventas/facturas', views.Factura_venta, name='factura_venta'),

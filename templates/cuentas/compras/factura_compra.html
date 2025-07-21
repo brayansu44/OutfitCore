@@ -39,6 +39,7 @@
                                     <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>
                                     <th>Saldo Pendiente</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -52,6 +53,11 @@
                                         <td>{{ factura.fecha_vencimiento }}</td>
                                         <td>{{ factura.monto_total }}</td>
                                         <td>{{ factura.saldo_pendiente }}</td>
+                                        <td>
+                                            <span class="estado {{ factura.estado|lower }}">
+                                                {{ factura.estado }}
+                                            </span>
+                                        </td>
                                         <td class="text-center">
                                             <a href="{% url 'editar_factura_compra' factura.id %}" class="btn btn-sm btn-info">
                                                 <i class="bx bx-edit"></i>
@@ -64,7 +70,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="7" class="text-center text-muted">
+                                        <td colspan="8" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             Actualmente no hay facturas de compras registradas en el sistema.
                                         </td>
@@ -79,6 +85,7 @@
                                     <th>Fecha de Vencimiento</th>
                                     <th>Monto Total</th>
                                     <th>Saldo Pendiente</th>
+                                    <th>Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </tfoot>

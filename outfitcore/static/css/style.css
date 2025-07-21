@@ -13,25 +13,24 @@
     border: 1px solid #6c757d;
 }
 
+.completada,
 .completo,
+.saldado,
 .activo {
     background-color: #D4EDDA;
     color: #155724;
     border: 1px solid #C3E6CB;
 }
 
+.pendiente,
 .incompleto {
     background-color: #FFF3CD;
     color: #856404;
     border: 1px solid #FFEEBA;
 }
 
-.completo {
-    background-color: #D4EDDA;
-    color: #155724;
-    border: 1px solid #C3E6CB;
-}
-
+.cancelada,
+.cancelado,
 .agotado {
     background-color: #F8D7DA;
     color: #721C24;
@@ -40,23 +39,6 @@
     padding: 5px 10px;
     border-radius: 5px;
     text-align: center;
-}
-
-.pendiente {
-    background-color: #FFF3CD;
-    color: #856404;
-    border: 1px solid #FFEEBA;
-}
-
-.completada {
-    background-color: #D4EDDA;
-    color: #155724;
-    border: 1px solid #C3E6CB;
-}
-
-.cancelada {
-    background-color: #F8D7DA;
-    color: #721C24;
 }
 
 .modal-body {

@@ -51,6 +51,25 @@ def addFacturaVenta(request):
     }
     return render(request, 'cuentas/form_modal.html', context)
 
+@login_required(login_url='login')
+def addFacturaCompra(request):
+    if request.method == 'POST':
+        form = FacturaCompraForm(request.POST)
+        if form.is_valid():
+            factura = form.save()
+            return JsonResponse({'success': True, 'id': factura.id, 'numero_factura': str(factura)})
+        else:
+            return JsonResponse({'success': False, 'form_html': render_to_string('cuentas/form_modal.html', {'form': form}, request)})
+    else:
+        form = FacturaCompraForm()
+    
+    context = {
+        'form': form, 
+        'accion': 'FacturaCompra',
+        'now': timezone.now()
+    }
+    return render(request, 'cuentas/form_modal.html', context)
+
 #FACTURA DE VENTA
 @login_required(login_url = 'login')
 def Factura_venta(request):
