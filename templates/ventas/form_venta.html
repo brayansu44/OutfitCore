@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-wrapper">
+    <div class="page-content">
+
+        <!-- Breadcrumb -->
+        <div class="page-breadcrumb d-none d-sm-flex align-items-center mb-3">
+            <div class="breadcrumb-title pe-3">Ventas</div>
+            <div class="ps-3">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb mb-0 p-0">
+                        <li class="breadcrumb-item"><a href="{% url 'home' %}"><i class="bx bx-home-alt"></i></a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'lista_ventas' %}">Lista de Ventas</a></li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <div class="col-xl-10 mx-auto">
+            <hr />
+            <div class="card border-top border-0 border-4 border-primary">
+                <div class="card-body p-5">
+                    <div class="card-title d-flex align-items-center">
+                        <div><i class="bx bx-cart me-1 font-22 text-primary"></i></div>
+                        <h5 class="mb-0 text-primary">{{ accion }} Venta</h5>
+                    </div>
+                    <hr>
+
+                    <form method="POST" class="row g-3 needs-validation" novalidate>
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        <!-- Campos del formulario principal -->
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.local.id_for_label }}">{{ form.local.label|safe }}</label>
+                            {{ form.local }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.vendedor.id_for_label }}">{{ form.vendedor.label|safe }}</label>
+                            {{ form.vendedor }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.fecha.id_for_label }}">{{ form.fecha.label|safe }}</label>
+                            {{ form.fecha }}
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.estado.id_for_label }}">{{ form.estado.label|safe }}</label>
+                            {{ form.estado }}
+                        </div>
+
+                        <div class="col-md-6">
+                        <label class="form-label" for="{{ form.cliente.id_for_label }}">{{ form.cliente.label|safe }}</label>
+                        <div class="d-flex align-items-center">
+                            {{ form.cliente }}
+                            <button type="button" class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" title="Agregar nuevo cliente">
+                                <i class="bx bx-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+
+                        <hr class="mt-4 mb-3">
+                        <h5 class="text-secondary">Detalle de la Venta</h5>
+
+                        {{ formset.management_form }}
+                        <div id="formset-container">
+                            {% for form in formset.forms %}
+                                <div class="row border rounded p-3 mb-2 formset-form">
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ form.variante.label|safe }}</label>
+                                        {{ form.variante }}
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class="form-label">{{ form.cantidad.label|safe }}</label>
+                                        {{ form.cantidad }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">{{ form.vr_unidad.label|safe }}</label>
+                                        {{ form.vr_unidad }}
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-danger btn-sm remove-form-btn ms-2">
+                                            <i class="bx bx-x"></i> Eliminar
+                                        </button>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="col-12">
+                            <button type="button" class="btn btn-secondary mb-3" id="add-form-btn">
+                                <i class="bx bx-plus"></i> Agregar otra variante
+                            </button>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="col-12 mt-2">
+                            <button type="submit" class="btn btn-success px-5">
+                                <i class="bx bx-save"></i> Guardar
+                            </button>
+                            <a href="{% url 'lista_ventas' %}" class="btn btn-secondary px-5">
+                                <i class="bx bx-arrow-back"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modalCliente" tabindex="-1" aria-labelledby="modalClienteLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-top border-0 border-4 border-info">
+                <div class="modal-header">
+                    <h5 class="modal-title text-info">Agregar Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modalClienteBody">
+                    <!-- formulario vía AJAX -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Volver</button>
+                    <button type="submit" id="submitAddCliente" class="btn btn-info">Guardar Cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('formset-container');
+    const addFormBtn = document.getElementById('add-form-btn');
+    const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+
+    function updateFormCount() {
+        totalForms.setAttribute('value', document.querySelectorAll('.formset-form').length);
+    }
+
+    function cloneEmptyForm() {
+        const currentForms = document.querySelectorAll('.formset-form').length;
+        const formRegex = new RegExp(`form-(\\d){1,}-`, 'g');
+        const newForm = container.children[0].cloneNode(true);
+        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${currentForms}-`);
+
+        // Limpiar campos
+        newForm.querySelectorAll('input, select').forEach(input => {
+            if (!input.name.endsWith('-DELETE')) input.value = '';
+            if (input.type === 'checkbox') input.checked = false;
+        });
+
+        container.appendChild(newForm);
+        updateFormCount();
+        attachAutoAddListener(newForm);
+    }
+
+    addFormBtn.addEventListener('click', cloneEmptyForm);
+
+    container.addEventListener('click', function (e) {
+        if (e.target.closest('.remove-form-btn')) {
+            const btn = e.target.closest('.remove-form-btn');
+            const formDiv = btn.closest('.formset-form');
+            const deleteCheckbox = formDiv.querySelector('input[type="checkbox"][name$="-DELETE"]');
+            if (deleteCheckbox) {
+                deleteCheckbox.checked = true;
+                formDiv.style.display = 'none';
+            } else {
+                formDiv.remove();
+                updateFormCount();
+            }
+        }
+    });
+
+    // Escucha para autoagregar cuando se llena el último formulario
+    function attachAutoAddListener(form) {
+        const inputs = form.querySelectorAll('input, select');
+
+        inputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const allForms = document.querySelectorAll('.formset-form');
+                const lastForm = allForms[allForms.length - 1];
+                if (form === lastForm) {
+                    // Si el usuario cambió algo en el último formulario, se agrega uno nuevo
+                    cloneEmptyForm();
+                }
+            });
+        });
+    }
+
+    // Inicialmente conectar el autoadd al primer formulario
+    document.querySelectorAll('.formset-form').forEach(form => {
+        attachAutoAddListener(form);
+    });
+</script>
+{% load static %}
+<script src="{% static 'js/cuentas/cuentas.js' %}"></script>
+{% endblock %}

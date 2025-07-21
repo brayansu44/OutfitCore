@@ -3,15 +3,15 @@ from .models import *
 
 #@admin.register(Ventas)
 class VentasAdmin(admin.ModelAdmin):
-    list_display = ('LocalID', 'FacturaID', 'Fecha')
-    search_fields = ('LocalID', 'Factura')
+    list_display = ('local', 'fecha', 'estado', 'vendedor')
+    search_fields = ('local', 'estado')
     list_filter = ()
 
 #@admin.register(Item)
-class ItemAdmin(admin.ModelAdmin):
-    list_display = ('ventaID', 'productoID', 'cantidad', 'vr_unidad', 'vr_total', 'observacion')
-    search_fields = ('ventaID', 'productoID')
+class DetalleVentasAdmin(admin.ModelAdmin):
+    list_display = ('venta', 'variante', 'cantidad', 'vr_unidad', 'vr_total', 'observacion')
+    search_fields = ('venta', 'variante')
     list_filter = ()
 
 admin.site.register(Ventas, VentasAdmin)
-admin.site.register(Item, ItemAdmin)
+admin.site.register(DetalleVentas, DetalleVentasAdmin)
