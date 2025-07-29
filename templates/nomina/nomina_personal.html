@@ -23,7 +23,7 @@
 
             <!-- Botón de agregar tela -->
             <div class="mb-3">
-                <a href="" class="btn btn-success">
+                <a href="{% url 'agregar_nomina_personal' %}" class="btn btn-success">
                     <i class="bx bx-plus"></i> Agregar Nomina
                 </a>
             </div>
@@ -35,8 +35,7 @@
                             <thead>
                                 <tr>
                                     <th>Usuario</th>
-                                    <th>Fecha de Inicio</th>
-                                    <th>Fecha de Fin</th>
+                                    <th>Periodo de Pago</th>
                                     <th>Fecha de Liquidación</th>
                                     <th>Contrato</th>
                                     <th>Devengado</th>
@@ -52,8 +51,7 @@
                                     {% for nomina in nomina %}
                                     <tr>
                                         <td>{{ perfil.perfil }}</td>
-                                        <td>{{ nomina.fecha_inicio }}</td>
-                                        <td>{{ nomina.fecha_fin }}</td>
+                                        <td>{{ nomina.periodo_pago }}</td>
                                         <td>{{ nomina.fecha_liquidacion }}</td>
                                         <td>{{ nomina.contrato }}</td>
                                         <td>{{ nomina.devengado }}</td>
@@ -62,10 +60,10 @@
                                         <td>{{ nomina.aportes_parafiscal }}</td>
                                         <td>{{ nomina.neto_pagado }}</td>
                                         <td class="text-center">
-                                            <a href="" class="btn btn-sm btn-primary">
+                                            <a href="{% url 'editar_nomina_personal' %}" class="btn btn-sm btn-primary">
                                                 <i class="bx bx-edit"></i>
                                             </a>
-                                            <button class="btn btn-danger btn-sm delete-tela" data-id="{{ tela.id }}">
+                                            <button class="btn btn-danger btn-sm delete-tela" data-id="{{ nomina.id }}">
                                                 <i class="bx bx-trash"></i>
                                             </button>                                            
                                         </td>
@@ -73,7 +71,7 @@
                                     {% endfor %}
                                 {% else %}
                                     <tr>
-                                        <td colspan="11" class="text-center text-muted">
+                                        <td colspan="10" class="text-center text-muted">
                                             <i class="bx bx-info-circle" style="font-size: 20px; color: #ff9800;"></i> 
                                             Actualmente no hay Nomina de personal generada.
                                         </td>
@@ -83,8 +81,7 @@
                             <tfoot>
                                 <tr>
                                     <th>Usuario</th>
-                                    <th>Fecha de Inicio</th>
-                                    <th>Fecha de Fin</th>
+                                    <th>Periodo de Pago</th>
                                     <th>Fecha de Liquidación</th>
                                     <th>Contrato</th>
                                     <th>Devengado</th>

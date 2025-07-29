@@ -1,6 +1,25 @@
 from django import forms
 from .models import *
 
+class NominaForm(forms.ModelForm):
+
+    periodo_pago = forms.DateField(
+        widget=forms.DateInput(
+            attrs={'type': 'month'}
+        ),
+        required=True
+    )
+
+    class Meta:
+        model = Nomina
+        fields = [
+            'periodo_pago', 'contrato', 'devengado', 'deducciones']
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'form-control'})
+
 class EPSForm(forms.ModelForm):
     class Meta:
         model = EPS

@@ -5,7 +5,12 @@ urlpatterns = [
     path('', views.nomina , name='nomina'),
     path('Contratos/', views.Contratos , name='Contratos'),
     path('Parametrizacion/', views.Parametrizacion , name='Parametrizacion'),
+
+    #NOMINA PERSONAL
     path('Nomina_personal/', views.Nomina_personal , name='Nomina_personal'),
+    path('Nomina_personal/add', views.agregar_nomina_personal , name='agregar_nomina_personal'),
+    path('Nomina_personal/edit/<int:nomina_id>/', views.editar_nomina_personal , name='editar_nomina_personal'),
+
     path('SeguridadSocial/<str:tab_id>/', views.SeguridadSocial , name='SeguridadSocial'),
 
     #EPS

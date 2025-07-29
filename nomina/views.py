@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib import messages
@@ -10,9 +10,7 @@ from .models import *
 
 @login_required(login_url = 'login')
 def nomina(request):
-    nomina        = Nomina.objects.all()
-
-    return render(request, 'nomina/nomina.html', {'nomina': nomina})
+    return render(request, 'nomina/nomina.html')
 
 @login_required(login_url = 'login')
 def Contratos(request):
@@ -24,6 +22,7 @@ def Contratos(request):
 
     return render(request, 'nomina/contratos.html', context )
 
+#NOMINA PERSONAL
 @login_required(login_url = 'login')
 def Nomina_personal(request):
     nomina     = Nomina.objects.all()
@@ -36,6 +35,40 @@ def Nomina_personal(request):
     }
 
     return render(request, 'nomina/nomina_personal.html', context )
+
+@login_required(login_url='login')
+def agregar_nomina_personal(request):
+    if request.method == 'POST':
+        form = NominaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Nomina agregada correctamente.")
+            return redirect('Nomina_personal')
+    else:
+        form = NominaForm()
+
+    context = {
+        'form': form, 
+        'accion': 'Agregar'
+    }
+        
+    return render(request, 'nomina/form_nomina_personal.html', context)
+
+@login_required(login_url='login')
+def editar_nomina_personal(request, nomina_id):
+    nomina = get_object_or_404(Nomina, id=nomina_id)
+    
+    if request.method == "POST":
+        form = NominaForm(request.POST, instance=nomina)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Nomina actualizada correctamente.")
+            return redirect('Nomina_personal')
+    else:
+        form = NominaForm(instance=nomina)
+    
+    return render(request, 'nomina/form_nomina_personal.html', {'form': form, 'accion': 'Editar'})
+
 
 @login_required(login_url = 'login')
 def Parametrizacion(request):
