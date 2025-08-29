@@ -42,6 +42,16 @@
                             <label class="form-label" for="{{ form.vendedor.id_for_label }}">{{ form.vendedor.label|safe }}</label>
                             {{ form.vendedor }}
                         </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.cliente.id_for_label }}">{{ form.cliente.label|safe }}</label>
+                            <div class="d-flex align-items-center">
+                                {{ form.cliente }}
+                                <button type="button" class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" title="Agregar nuevo cliente">
+                                    <i class="bx bx-plus"></i>
+                                </button>
+                            </div>
+                        </div>
 
                         <div class="col-md-6">
                             <label class="form-label" for="{{ form.fecha.id_for_label }}">{{ form.fecha.label|safe }}</label>
@@ -49,53 +59,53 @@
                         </div>
 
                         <div class="col-md-6">
+                            <label class="form-label" for="{{ form.metodo_pago.id_for_label }}">{{ form.metodo_pago.label|safe }}</label>
+                            {{ form.metodo_pago }}
+                            <div class="invalid-feedback">
+                                Selecciona un método de pago válido.
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
                             <label class="form-label" for="{{ form.estado.id_for_label }}">{{ form.estado.label|safe }}</label>
                             {{ form.estado }}
                         </div>
 
-                        <div class="col-md-6">
-                        <label class="form-label" for="{{ form.cliente.id_for_label }}">{{ form.cliente.label|safe }}</label>
-                        <div class="d-flex align-items-center">
-                            {{ form.cliente }}
-                            <button type="button" class="btn btn-outline-info btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#modalCliente" title="Agregar nuevo cliente">
-                                <i class="bx bx-plus"></i>
-                            </button>
-                        </div>
-                    </div>
 
+                        <div id="detalle-venta-section" style="display:none;">
+                            <hr class="mt-4 mb-3">
+                            <h5 class="text-secondary">Detalle de la Venta</h5>
 
-                        <hr class="mt-4 mb-3">
-                        <h5 class="text-secondary">Detalle de la Venta</h5>
+                            {{ formset.management_form }}
+                            <div id="formset-container">
+                                {% for form in formset.forms %}
+                                    <div class="row border rounded p-3 mb-2 formset-form">
+                                        <div class="col-md-4">
+                                            <label for="id_variante" class="form-label">{{ form.variante.label|safe }}</label>
+                                            {{ form.variante }}
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">{{ form.cantidad.label|safe }}</label>
+                                            {{ form.cantidad }}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">{{ form.vr_unidad.label|safe }}</label>
+                                            {{ form.vr_unidad }}
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button type="button" class="btn btn-danger btn-sm remove-form-btn ms-2">
+                                                <i class="bx bx-x"></i> Eliminar
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
 
-                        {{ formset.management_form }}
-                        <div id="formset-container">
-                            {% for form in formset.forms %}
-                                <div class="row border rounded p-3 mb-2 formset-form">
-                                    <div class="col-md-4">
-                                        <label class="form-label">{{ form.variante.label|safe }}</label>
-                                        {{ form.variante }}
-                                    </div>
-                                    <div class="col-md-2">
-                                        <label class="form-label">{{ form.cantidad.label|safe }}</label>
-                                        {{ form.cantidad }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class="form-label">{{ form.vr_unidad.label|safe }}</label>
-                                        {{ form.vr_unidad }}
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-end">
-                                        <button type="button" class="btn btn-danger btn-sm remove-form-btn ms-2">
-                                            <i class="bx bx-x"></i> Eliminar
-                                        </button>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-
-                        <div class="col-12">
-                            <button type="button" class="btn btn-secondary mb-3" id="add-form-btn">
-                                <i class="bx bx-plus"></i> Agregar otra variante
-                            </button>
+                            <div class="col-12">
+                                <button type="button" class="btn btn-secondary mb-3" id="add-form-btn">
+                                    <i class="bx bx-plus"></i> Agregar otra variante
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Botones -->
@@ -132,70 +142,10 @@
     </div>
 </div>
 
-<script>
-    const container = document.getElementById('formset-container');
-    const addFormBtn = document.getElementById('add-form-btn');
-    const totalForms = document.querySelector('#id_form-TOTAL_FORMS');
+<input type="hidden" id="url-obtener-variantes" value="{% url 'obtener_variantes' %}">
+<input type="hidden" id="placeholder-variante" value="Seleccione un producto">
 
-    function updateFormCount() {
-        totalForms.setAttribute('value', document.querySelectorAll('.formset-form').length);
-    }
-
-    function cloneEmptyForm() {
-        const currentForms = document.querySelectorAll('.formset-form').length;
-        const formRegex = new RegExp(`form-(\\d){1,}-`, 'g');
-        const newForm = container.children[0].cloneNode(true);
-        newForm.innerHTML = newForm.innerHTML.replace(formRegex, `form-${currentForms}-`);
-
-        // Limpiar campos
-        newForm.querySelectorAll('input, select').forEach(input => {
-            if (!input.name.endsWith('-DELETE')) input.value = '';
-            if (input.type === 'checkbox') input.checked = false;
-        });
-
-        container.appendChild(newForm);
-        updateFormCount();
-        attachAutoAddListener(newForm);
-    }
-
-    addFormBtn.addEventListener('click', cloneEmptyForm);
-
-    container.addEventListener('click', function (e) {
-        if (e.target.closest('.remove-form-btn')) {
-            const btn = e.target.closest('.remove-form-btn');
-            const formDiv = btn.closest('.formset-form');
-            const deleteCheckbox = formDiv.querySelector('input[type="checkbox"][name$="-DELETE"]');
-            if (deleteCheckbox) {
-                deleteCheckbox.checked = true;
-                formDiv.style.display = 'none';
-            } else {
-                formDiv.remove();
-                updateFormCount();
-            }
-        }
-    });
-
-    // Escucha para autoagregar cuando se llena el último formulario
-    function attachAutoAddListener(form) {
-        const inputs = form.querySelectorAll('input, select');
-
-        inputs.forEach(input => {
-            input.addEventListener('change', () => {
-                const allForms = document.querySelectorAll('.formset-form');
-                const lastForm = allForms[allForms.length - 1];
-                if (form === lastForm) {
-                    // Si el usuario cambió algo en el último formulario, se agrega uno nuevo
-                    cloneEmptyForm();
-                }
-            });
-        });
-    }
-
-    // Inicialmente conectar el autoadd al primer formulario
-    document.querySelectorAll('.formset-form').forEach(form => {
-        attachAutoAddListener(form);
-    });
-</script>
 {% load static %}
 <script src="{% static 'js/cuentas/cuentas.js' %}"></script>
+<script src="{% static 'js/ventas.js' %}"></script>
 {% endblock %}

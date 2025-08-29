@@ -33,9 +33,12 @@
                     <table id="example2" class="table table-striped table-bordered">
                         <thead>
                             <tr>
+                                <th>Tipo</th>
                                 <th>Fecha</th>
                                 <th>Cliente</th>
+                                <th>Vendedor</th>
                                 <th>Total</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -43,11 +46,22 @@
                             {% if ventas %}
                                 {% for venta in ventas %}
                                 <tr>
+                                    <td>{{ venta.metodo_pago }}</td>
                                     <td>{{ venta.fecha|date:"d/m/Y" }}</td>
                                     <td>{{ venta.cliente.nombre }}</td>
-                                    <td>${{ venta.total|floatformat:0 }}</td>
+                                    <td> {{venta.vendedor.full_name}} </td>
+                                    <td>${{ venta.vr_total|floatformat:0 }}</td>
                                     <td class="text-center">
-                                        <a href="#" class="btn btn-sm btn-info" title="Ver Detalles">
+                                        {% if venta.estado == 'PAGADA' %}
+                                            <span class="badge bg-success rounded-pill" style="font-size: 1.1rem; padding: 0.5em 1em;">Pagada</span>
+                                        {% elif venta.estado == 'ANULADA' %}
+                                            <span class="badge bg-danger rounded-pill" style="font-size: 1.1rem; padding: 0.5em 1em;">Anulada</span>
+                                        {% elif venta.estado == 'PENDIENTE' %}
+                                            <span class="badge bg-warning text-dark rounded-pill" style="font-size: 1.1rem; padding: 0.5em 1em;">Pendiente</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="{% url 'venta_detalle' venta.id %}" class="btn btn-sm btn-info" title="Ver Detalles">
                                             <i class="bx bx-search"></i>
                                         </a>
                                         <a href="#" class="btn btn-sm btn-secondary" title="Imprimir Factura">
@@ -73,9 +87,12 @@
                         </tbody>
                         <tfoot>
                             <tr>
+                                <th>Tipo</th>
                                 <th>Fecha</th>
                                 <th>Cliente</th>
+                                <th>Vendedor</th>
                                 <th>Total</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </tfoot>
