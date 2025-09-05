@@ -53,7 +53,7 @@ class PagoVentaForm(forms.ModelForm):
     class Meta:
         model = PagoRecibido
         fields = [
-            'factura', 'metodo_pago', 'monto_pagado', 'observaciones']
+            'metodo_pago', 'monto_pagado', 'observaciones']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -68,8 +68,6 @@ class PagoVentaForm(forms.ModelForm):
                 field.label = f"<strong>{field.label if field.label else field_name}</strong>"
         
         self.fields['metodo_pago'].widget.attrs.update({'class': 'form-select'})
-        self.fields['factura'].empty_label = "Seleccione Factura"
-        self.fields['factura'].widget.attrs.update({'class': 'form-select'})
 
 class FacturaCompraForm(forms.ModelForm):
     fecha_vencimiento = forms.DateField(

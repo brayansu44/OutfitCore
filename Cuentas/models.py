@@ -73,19 +73,14 @@ class PagoRecibido(models.Model):
         ('Transferencia', 'Transferencia'),
         ('Tarjeta', 'Tarjeta de Crédito/Débito'),
     ]
-    factura         = models.ForeignKey(FacturaVenta, on_delete=models.CASCADE)   
+    venta           = models.ForeignKey("Ventas.Ventas", on_delete=models.CASCADE, related_name="pagos", null=True, blank=True)  
     monto_pagado    = models.FloatField(null=False)
-    fecha_pago      = models.DateField(auto_now_add=True)
     metodo_pago     = models.CharField(max_length=50, choices=METODOS_PAGO, default='Efectivo')
     observaciones   = models.TextField(blank=True, null=True)
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.factura.actualizar_saldo()
-        self.factura.save()
+    fecha_pago      = models.DateField(auto_now_add=True)
 
     def __str__(self):
-        return f"Pago {self.monto_pagado} - {self.factura.numero_factura}"
+        return f"Pago {self.monto_pagado} por {self.metodo_pago} - {self.venta.codigo if self.venta else 'Sin venta'}"
 
     class Meta:
         verbose_name = "Pago Recibido"

@@ -46,11 +46,12 @@ class VentaForm(forms.ModelForm):
 class DetalleVentasForm(forms.ModelForm):
     class Meta:
         model = DetalleVentas
-        fields = ['variante', 'cantidad', 'vr_unidad']
+        fields = ['variante', 'cantidad', 'vr_unidad', 'descuento_item']
         widgets = {
             'variante': forms.Select(attrs={'class': 'form-select detalle-variante'}),
             'cantidad': forms.NumberInput(attrs={'class': 'form-control'}),
             'vr_unidad': forms.NumberInput(attrs={'class': 'form-control'}),
+            'descuento_item': forms.NumberInput(attrs={'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):

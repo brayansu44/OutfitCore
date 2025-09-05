@@ -18,9 +18,8 @@ class FacturaVentaAdmin(admin.ModelAdmin):
 
 @admin.register(PagoRecibido)
 class PagoRecibidoAdmin(admin.ModelAdmin):
-    list_display = ('factura', 'monto_pagado', 'fecha_pago', 'metodo_pago')
+    list_display = ('monto_pagado', 'fecha_pago', 'metodo_pago')
     list_filter = ('fecha_pago', 'metodo_pago')
-    search_fields = ('factura__numero_factura', 'factura__cliente__nombre')
 
 # ---- Módulo de Cuentas por Pagar ----
 @admin.register(FacturaCompra)

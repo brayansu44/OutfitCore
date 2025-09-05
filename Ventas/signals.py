@@ -27,8 +27,8 @@ def crear_factura_y_pago(sender, instance, created, **kwargs):
             # 4. Crear PagoRecibido si la venta tiene metodo_pago
             if hasattr(venta, 'metodo_pago') and venta.metodo_pago:
                 PagoRecibido.objects.create(
-                    factura=factura,
-                    monto_pagado=total,
+                    venta=venta,
+                    monto_pagado=venta.subtotal,
                     metodo_pago=venta.metodo_pago
                 )
                 # 5. Actualizar estado de la venta a PAGADA

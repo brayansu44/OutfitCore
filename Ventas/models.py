@@ -23,11 +23,12 @@ class Ventas(models.Model):
         ('Tarjeta', 'Tarjeta de Crédito/Débito'),
     ]
 
-    codigo = models.CharField(max_length=20, unique=True, blank=False, null=False)
+    codigo                  = models.CharField(max_length=20, unique=True, blank=False, null=False)
     local                   = models.ForeignKey(Local, on_delete=models.CASCADE)
     vendedor                = models.ForeignKey("usuarios.PerfilUsuario", on_delete=models.CASCADE, null=False, blank=False)
     cliente                 = models.ForeignKey(Cliente, on_delete=models.CASCADE, null=False, blank=False)
     fecha                   = models.DateField(null=False, blank=False)
+    subtotal                = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     descuento_porcentaje    = models.FloatField(default=0, help_text="Porcentaje de descuento aplicado a la venta")
     descuento_total         = models.FloatField(default=0, help_text="Valor absoluto de descuento aplicado")
     metodo_pago             = models.CharField(max_length=20, choices=METODOS_PAGO, default='Efectivo', null=False, blank=False)
@@ -41,22 +42,45 @@ class Ventas(models.Model):
     factura                 = models.OneToOneField(FacturaVenta, on_delete=models.SET_NULL, null=True, blank=True, related_name='venta')
 
     def save(self, *args, **kwargs):
-        self.ganancia = sum(det.vr_total - det.variante.costo for det in self.detalles.all())
+        if not self.pk:  
+            # Guardar primero para tener PK
+            super().save(*args, **kwargs)
 
-        if not self.codigo:
-            self.codigo = self.generar_codigo_unico()
-        super().save(*args, **kwargs)
-
-        # Calcular el descuento total si hay porcentaje
+        # Solo calcular si ya está guardada
         subtotal = sum(det.vr_total for det in self.detalles.all())
-        if self.descuento_porcentaje > 0:
-            self.descuento_total = subtotal * (self.descuento_porcentaje / 100)
-        # Calcular el cambio solo si el cliente pagó algo
-        if self.monto_pagado > 0:
-            total_a_pagar = subtotal - self.descuento_total
-            self.cambio = max(self.monto_pagado - total_a_pagar, 0)
+        self.subtotal = subtotal
+        self.descuento_total = subtotal * (self.descuento_porcentaje / 100)
+        base = subtotal - self.descuento_total
+        self.iva = base * 0.19
+        self.ganancia = sum(det.ganancia_item for det in self.detalles.all())
 
-        super().save(*args, **kwargs)
+        super().save(update_fields=["subtotal", "descuento_total", "iva", "ganancia"])
+
+    @property
+    def subtotal_calculado(self):
+        return sum(det.vr_total for det in self.detalles.all())
+
+    @property
+    def total_iva_calculado(self):
+        return sum(det.iva_item for det in self.detalles.all())
+
+    @property
+    def ganancia_calculada(self):
+        return sum(det.ganancia_item for det in self.detalles.all())
+
+    @property
+    def total_pagado(self):
+        return sum(pago.monto for pago in self.pagos.all())
+
+    @property
+    def cambio_calculado(self):
+        return max(self.total_pagado - self.subtotal, 0)
+
+    @property
+    def saldo_pendiente(self):
+        return max(self.subtotal - self.total_pagado, 0)
+
+
 
     def generar_codigo_unico(self, length=12):
         # caracteres que se pueden usar: letras mayúsculas + números
@@ -68,25 +92,6 @@ class Ventas(models.Model):
     
     def __str__(self):
         return f"Venta {self.id} - {self.fecha} - {self.estado}"
-    
-    @property
-    def vr_total(self):
-        subtotal = sum(det.vr_total for det in self.detalles.all())
-        if self.descuento_porcentaje > 0:
-            return subtotal * (1 - self.descuento_porcentaje / 100)
-        return max(subtotal - self.descuento_total, 0)  # no permitir negativo
-    
-    @property
-    def subtotal(self):
-        return sum(det.vr_total for det in self.detalles.all())
-
-    @property
-    def total_iva(self):
-        return sum(det.iva_item for det in self.detalles.all())
-
-    @property
-    def total_ganancia(self):
-        return sum(det.ganancia_item for det in self.detalles.all())
 
 class DetalleVentas(models.Model):
     venta           = models.ForeignKey(Ventas, on_delete=models.CASCADE, related_name="detalles")
@@ -101,14 +106,14 @@ class DetalleVentas(models.Model):
 
     def save(self, *args, **kwargs):
         # calcular el total automáticamente
-        self.vr_total = self.cantidad * self.vr_unidad - self.descuento_item
+        self.vr_total = (self.vr_unidad * self.cantidad) - self.descuento_item
         self.iva_item = self.vr_total * 0.19  # ejemplo 19% de IVA
-        self.ganancia_item = self.vr_total - self.costo_producto  # si tienes costo
+        self.ganancia_item = (self.vr_unidad - self.variante.costo) * self.cantidad
         super().save(*args, **kwargs)
 
 
     def get_codigo_barra(self):
-        return self.varianteID.get_codigo_barra()
+        return self.variante.get_codigo_barra()
 
     def __str__(self):
         return f"{self.variante} x {self.cantidad}"

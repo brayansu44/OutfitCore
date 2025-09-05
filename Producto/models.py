@@ -79,6 +79,8 @@ class ProductoVariante(models.Model):
     color    = models.ForeignKey(Color, on_delete=models.CASCADE, related_name="variantes")
     talla    = models.ForeignKey(Talla, on_delete=models.CASCADE, related_name="variantes")
     diseno   = models.ForeignKey(Diseno, on_delete=models.CASCADE, null=True, blank=True, related_name="variantes")
+    costo    = models.FloatField(default=0.0, help_text="Costo de adquisición del producto")
+    precio_sugerido = models.FloatField(default=0.0, help_text="Precio sugerido de venta")
 
     class Meta:
         unique_together = ('producto', 'color', 'talla', 'diseno')  

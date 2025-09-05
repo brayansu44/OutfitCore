@@ -39,10 +39,10 @@ def crear_venta(request):
         form = VentaForm(request.POST)
         if form.is_valid():
             venta = form.save(commit=False)
-            # aquí obtenemos el local que seleccionó el usuario en el form de la venta
             local = venta.local
 
-            # instanciamos el formset pasando local
+            venta.save()  # 👈 guardamos primero la venta
+
             formset = DetalleVentasFormSet(
                 request.POST,
                 instance=venta,
@@ -51,7 +51,6 @@ def crear_venta(request):
             )
 
             if formset.is_valid():
-                venta.save()
                 formset.save()
                 return redirect('lista_ventas')
             else:
@@ -60,14 +59,15 @@ def crear_venta(request):
             print("ERRORES EN FORMULARIO PRINCIPAL", form.errors)
     else:
         form = VentaForm()
-        # formset inicial sin local, para que los select de variante salgan vacíos
-        formset = DetalleVentasFormSet(instance=Ventas(), prefix="detalles", local=None)
+        formset = DetalleVentasFormSet(instance=None, prefix="detalles", local=None)
+
 
     return render(request, 'ventas/form_venta.html', {
         'form': form,
         'formset': formset,
         'accion': 'Crear',
     })
+
 
 @login_required(login_url='login')
 def venta_detalle(request, pk):
